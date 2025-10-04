@@ -1,10 +1,8 @@
 <?php
     class Model{
-
         protected static $conn;
         protected static $table;
       
-    
         public static function setConnection($conn){
             self::$conn = $conn;   
         }
@@ -90,11 +88,9 @@
                     . " WHERE $column $operator :value";
     
                 $stmt = self::$conn->prepare($sql);
-    
+
                 $stmt->bindValue(':value', $value);
-    
                 $stmt->execute();
-    
                 $rows = $stmt->fetchAll();
     
                 return count($rows) > 0
@@ -106,37 +102,30 @@
             }
         }
     
-        protected function belongsToMany($relatedClass, $pivotTable, $foreignKey, $relatedKey){
-            try{
-                $relatedTable = $relatedClass::$table;
+        // protected function belongsToMany($relatedClass, $pivotTable, $foreignKey, $relatedKey){
+        //     try{
+        //         $relatedTable = $relatedClass::$table;
     
-                $sql = "SELECT rt.* FROM $relatedTable rt INNER JOIN $pivotTable pt ON rt.id = pt.$relatedKey WHERE pt.$foreignKey =:id";
+        //         $sql = "SELECT rt.* FROM $relatedTable rt INNER JOIN $pivotTable pt ON rt.id = pt.$relatedKey WHERE pt.$foreignKey =:id";
     
-                $stmt = self::$conn->prepare($sql);
+        //         $stmt = self::$conn->prepare($sql);
     
-                $stmt->bindValue(':id', $this->id);
+        //         $stmt->bindValue(':id', $this->id);
     
-                $stmt->execute();
+        //         $stmt->execute();
     
-                $rows = $stmt->fetchAll();
+        //         $rows = $stmt->fetchAll();
     
-                return $rows
-                ? array_map(fn($data) => new $relatedClass($data), $rows)
-                : [];
-            }
-            catch(PDOException $e){
-                die("Error fetching data: " . $e->getMessage());
-            }
-        }
+        //         return $rows
+        //         ? array_map(fn($data) => new $relatedClass($data), $rows)
+        //         : [];
+        //     }
+        //     catch(PDOException $e){
+        //         die("Error fetching data: " . $e->getMessage());
+        //     }
+        // }
 
         
 
     }
-
-
-
-
-
-
-
     ?>
