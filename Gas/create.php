@@ -120,7 +120,7 @@
 
         <!-- Right Side - Order Summary -->
         <div class="w-80">
-          <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
+          <div class="bg-white rounded-2xl shadow-xl p-6 top-8">
             <h2 class="border-b border-black text-xl font-bold text-gray-800 mb-6 pb-2">Order Summary</h2>
 
             <div class="space-y-3 mb-4 text-sm overflow-y-auto max-h-96">
