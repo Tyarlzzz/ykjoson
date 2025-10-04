@@ -23,7 +23,7 @@
               </div>
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
-                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number"
+                <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
             </div>
