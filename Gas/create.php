@@ -119,7 +119,7 @@
         </div>
 
         <!-- Right Side - Order Summary -->
-        <div class="w-96">
+        <div class="w-80">
           <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
             <h2 class="border-b border-black text-xl font-bold text-gray-800 mb-6 pb-2">Order Summary</h2>
 
@@ -172,12 +172,16 @@
           <!-- Action Buttons Outside Container -->
           <div class="flex gap-3 mt-6">
             <button type="button" onclick="cancelOrder()"
-              class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-semibold transition">
+              class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl font-semibold transition">
               Cancel
             </button>
             <button type="submit"
-              class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition">
-              <span class="text-xl">+</span>
+              class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
+              <div class="bg-white rounded-full p-1 flex items-center justify-center">
+                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+              </div>
               <span>Submit</span>
             </button>
           </div>
