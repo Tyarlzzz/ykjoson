@@ -160,7 +160,7 @@
             <div class="border-t pt-4">
               <div class="flex justify-between items-center mb-2">
                 <span class="font-bold text-gray-700">Total Items:</span>
-                <span id="total-items" class="font-bold text-xl text-gray-800">3</span>
+                <span id="total-items" class="font-bold text-xl text-gray-800">0</span>
               </div>
               <div class="text-sm text-gray-600">
                 <span class="font-semibold">Notes:</span>
