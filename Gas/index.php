@@ -1,3 +1,14 @@
+<?php
+require_once '../database/Database.php';
+require_once '../Models/Gas.php';
+
+$database = new Database();
+$conn = $database->getConnection();
+Model::setConnection($conn);
+
+$gas = Gas::all(); 
+?>
+
 <?php require '../layout/header.php' ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
@@ -21,7 +32,12 @@
             </div>
             <span class="text-sm font-semibold text-gray-700">Total Customer</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">8</div>
+          <div class="text-3xl font-bold text-gray-900">
+            <?php
+              $totalCustomers = count(Gas::all());
+              echo $totalCustomers;
+            ?>
+          </div>
           <div class="text-xs text-gray-500 mt-1">Today</div>
         </div>
 
