@@ -5,6 +5,7 @@
 
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
         try {
+
             $database = new Database();
             $db = $database->getConnection();
             Gas::setConnection($db);
@@ -17,16 +18,18 @@
                 'phone_number' => $_POST['phone_number']
             ];
 
-            $gas = new Gas($customerData);
-            $customer = $gas->save();
-
-            if(!$customer){
+            $custSql = "INSERT INTO customer (fullname, address, phone_number, created_at) 
+                        VALUES (:fullname, :address, :phone_number, NOW())";
+            $custStmt = $db->prepare($custSql);
+            $custStmt->execute($customerData);
+            
+            $customer_id = $db->lastInsertId();
+            
+            if(!$customer_id){
                 throw new Exception("Failed to save customer");
             }
 
-            $customer_id = $customer->customer_id;
-
-            $user_id = 1;
+            $user_id = 1; 
 
             $orderSql = "INSERT INTO orders (business_type, customer_id, user_id, order_date, status, is_rushed, note, created_at) 
                          VALUES (:business_type, :customer_id, :user_id, :order_date, :status, :is_rushed, :note, NOW())";
@@ -143,7 +146,7 @@
                 </script>';
 
         } catch (Exception $e) {
-
+            
             $db->rollBack();
             
             echo '<script>

@@ -19,18 +19,18 @@
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full Name</label>
                 <input type="text" id="fullname" name="fullname" placeholder="Enter full name"
-                  class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+                  class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium required">
               </div>
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
                 <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number"
-                  class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+                  class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium required">
               </div>
             </div>
             <div class="mb-4">
               <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Delivery Address</label>
               <input type="text" id="address" name="address" placeholder="Enter delivery address"
-                class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+                class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium required">
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Note</label>

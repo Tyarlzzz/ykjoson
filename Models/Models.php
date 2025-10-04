@@ -19,7 +19,7 @@
     
         protected static function find($id){
             try{
-                $sql = "select * from " . static::$table . " where id = :id";
+                $sql = "select * from " . static::$table . " where id = :customer_id";
                 $stmt = self::$conn->prepare($sql);
                 $stmt->bindParam(':id', $id);
                 $stmt->execute();

@@ -51,7 +51,7 @@
 
         public function save () {
             $data = [
-                'curtomer_id' => $this->customer_id,
+                'customer_id' => $this->customer_id,
                 'fullname' => $this->fullname,
                 'address' => $this->address,
                 'phone_number' => $this->phone_number,
