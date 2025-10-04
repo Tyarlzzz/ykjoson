@@ -1,6 +1,7 @@
 <?php
 require_once '../database/Database.php';
 require_once '../Models/Gas.php';
+require_once '../Models/Models.php';
 
 $database = new Database();
 $conn = $database->getConnection();
