@@ -9,7 +9,7 @@
       <p class="text-gray-500 text-base" id="currentDate"></p>
     </div>
 
-    <form action="store.php" method="GET" id="orderForm">
+    <form action="store.php" method="POST" id="orderForm">
       <div class="flex gap-8">
         <!-- Left Side ng Form -->
         <div class="flex-1">
