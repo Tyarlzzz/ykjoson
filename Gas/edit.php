@@ -1,0 +1,226 @@
+<?php require '../layout/header.php' ?>
+
+<?php
+// Get order ID from URL
+$orderId = isset($_GET['id']) ? $_GET['id'] : null;
+
+// Mock data to form fill, replace with actual DB data later.
+$orderData = [
+  'id' => $orderId,
+  'fullName' => 'Erik S. Soliman',
+  'phoneNumber' => '09123456789',
+  'address' => 'San Nicolas, Gapan City',
+  'note' => '',
+  'petronQty' => 1,
+  'econoQty' => 0,
+  'seagasQty' => 0
+];
+?>
+
+<!-- Main Content Area -->
+<main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
+  <div class="w-full px-8">
+    <!-- Header -->
+    <div class="mb-8 flex justify-between items-center">
+      <h1 class="text-3xl font-extrabold text-gray-800">Edit | Delete Order</h1>
+      <p class="text-gray-500 text-base" id="currentDate"></p>
+    </div>
+
+    <form action="update.php" method="GET" id="orderForm">
+      <input type="hidden" name="orderId" value="<?php echo htmlspecialchars($orderData['id']); ?>">
+
+      <div class="flex gap-8">
+        <!-- Left Side ng Form -->
+        <div class="flex-1">
+          <!-- Customer Information -->
+          <div class="mb-6">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full
+                  Name</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
+                  value="<?php echo htmlspecialchars($orderData['fullName']); ?>"
+                  class="w-full px-4 py-3 border-2 border-gray-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number"
+                  value="<?php echo htmlspecialchars($orderData['phoneNumber']); ?>"
+                  class="w-full px-4 py-3 border-2 border-gray-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Delivery
+                Address</label>
+              <input type="text" id="address" name="address" placeholder="Enter delivery address"
+                value="<?php echo htmlspecialchars($orderData['address']); ?>"
+                class="w-full px-4 py-3 border-2 border-gray-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Note</label>
+              <textarea id="note" name="note" rows="3" placeholder="Add any special notes..."
+                class="w-full px-4 py-3 border-2 border-gray-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 resize-none text-gray-800 font-medium"><?php echo htmlspecialchars($orderData['note']); ?></textarea>
+            </div>
+          </div>
+
+          <!-- Brand Selection -->
+          <div class="mb-6">
+            <h2 class="text-lg font-bold text-gray-700 mb-4 pb-2 border-b-2 border-black">BRAND SELECTION
+            </h2>
+            <div class="grid grid-cols-4">
+              <!-- Petron -->
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300">
+                <h3 class="font-bold text-gray-700 text-lg">Petron</h3>
+                <div class="w-44 h-44 mx-auto p-0 my-4 bg-white shadow-md rounded-2xl flex items-center justify-center">
+                  <img src="../assets/images/petron.png" alt="Petron" class="w-32 h-32 object-contain">
+                </div>
+                <div class="flex items-center justify-center gap-3">
+                  <div class="inline-flex shadow-md items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="petron-qty"
+                      class="w-12 text-center font-bold text-gray-700 text-2xl"><?php echo $orderData['petronQty']; ?></span>
+                  </div>
+                  <button type="button" onclick="decreaseQty('petron')"
+                    class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
+                  <button type="button" onclick="increaseQty('petron')"
+                    class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
+                </div>
+              </div>
+
+              <!-- Econo -->
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300">
+                <h3 class="font-bold text-gray-700 text-lg">Econo</h3>
+                <div class="w-44 h-44 mx-auto my-4 p-0 bg-white shadow-md rounded-2xl flex items-center justify-center">
+                  <img src="../assets/images/econo.png" alt="Econo" class="w-32 h-32 object-contain">
+                </div>
+                <div class="flex items-center justify-center gap-2">
+                  <div class="inline-flex shadow-md items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="econo-qty"
+                      class="w-12 text-center font-bold text-gray-700 text-2xl"><?php echo $orderData['econoQty']; ?></span>
+                  </div>
+                  <button type="button" onclick="decreaseQty('econo')"
+                    class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
+                  <button type="button" onclick="increaseQty('econo')"
+                    class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
+                </div>
+              </div>
+
+              <!-- SeaGas -->
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300">
+                <h3 class="font-bold text-gray-700 text-lg">SeaGas</h3>
+                <div class="w-44 h-44 mx-auto my-4 p-0 bg-white shadow-md rounded-2xl flex items-center justify-center">
+                  <img src="../assets/images/seagas.png" alt="SeaGas" class="w-32 h-32 object-contain">
+                </div>
+
+
+                <div class="flex items-center justify-center gap-3">
+                  <div class="inline-flex shadow-md items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="seagas-qty"
+                      class="w-12 text-center font-bold text-gray-700 text-2xl"><?php echo $orderData['seagasQty']; ?></span>
+                  </div>
+                  <button type="button" onclick="decreaseQty('seagas')"
+                    class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
+                  <button type="button" onclick="increaseQty('seagas')"
+                    class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side - Order Summary -->
+        <div class="w-96">
+          <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
+            <h2 class="border-b border-black text-xl font-bold text-gray-800 mb-6 pb-2">Order Summary</h2>
+
+            <div class="space-y-3 mb-4 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Name:</span>
+                <span id="summary-name"
+                  class="font-semibold text-gray-800"><?php echo htmlspecialchars($orderData['fullName']); ?></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Phone Number:</span>
+                <span id="summary-phone"
+                  class="font-semibold text-gray-800"><?php echo htmlspecialchars($orderData['phoneNumber']); ?></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Address:</span>
+                <span id="summary-address"
+                  class="font-semibold text-gray-800 text-right"><?php echo htmlspecialchars($orderData['address']); ?></span>
+              </div>
+            </div>
+
+            <div class="border-t border-black pt-4 mb-4">
+              <h3 class="font-bold text-gray-700 mb-3">Brand</h3>
+              <div id="brand-summary" class="space-y-2 text-sm">
+                <!-- Populated by JavaScript -->
+              </div>
+            </div>
+
+            <div class="border-t pt-4">
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-bold text-gray-700">Total Items:</span>
+                <span id="total-items" class="font-bold text-xl text-gray-800">3</span>
+              </div>
+              <div class="text-sm text-gray-600">
+                <span class="font-semibold">Notes:</span>
+                <p id="summary-notes"
+                  class="mt-1 text-gray-500 <?php echo empty($orderData['note']) ? 'italic' : ''; ?>">
+                  <?php echo !empty($orderData['note']) ? htmlspecialchars($orderData['note']) : 'No notes'; ?>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons Outside Container -->
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="cancelEdit()"
+              class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl font-semibold transition">
+              Cancel
+            </button>
+            <button type="submit"
+              class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-2xl font-semibold transition">
+              Edit
+            </button>
+          </div>
+
+          <!-- Delete Button -->
+          <button type="button" onclick="deleteOrder()"
+            class="w-full mt-3 border-2 border-red-500 text-red-500 hover:bg-red-50 py-3 rounded-2xl font-semibold transition">
+            Delete Order
+          </button>
+        </div>
+      </div>
+
+      <input type="hidden" id="petron-qty-input" name="petronQty" value="<?php echo $orderData['petronQty']; ?>">
+      <input type="hidden" id="econo-qty-input" name="econoQty" value="<?php echo $orderData['econoQty']; ?>">
+      <input type="hidden" id="seagas-qty-input" name="seagasQty" value="<?php echo $orderData['seagasQty']; ?>">
+    </form>
+  </div>
+</main>
+
+</div> <!-- Close the flex container from header.php -->
+
+<style>
+  .item-card {
+    transition: all 0.2s ease;
+  }
+
+  .item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<script>
+  // Pass PHP data to JavaScript
+  window.initialOrderData = {
+    id: <?php echo json_encode($orderData['id']); ?>,
+    petronQty: <?php echo $orderData['petronQty']; ?>,
+    econoQty: <?php echo $orderData['econoQty']; ?>,
+    seagasQty: <?php echo $orderData['seagasQty']; ?>
+  };
+</script>
+<script src="../assets/js/gas_system_js/gasEditOrder.js"></script>
+
+<?php require '../layout/footer.php' ?>
