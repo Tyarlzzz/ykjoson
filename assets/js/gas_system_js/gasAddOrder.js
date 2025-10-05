@@ -64,7 +64,7 @@ document.getElementById('fullname').addEventListener('input', function (e) {
   document.getElementById('summary-name').textContent = e.target.value || '-';
 });
 
-document.getElementById('phonenumber').addEventListener('input', function (e) {
+document.getElementById('phone_number').addEventListener('input', function (e) {
   document.getElementById('summary-phone').textContent = e.target.value || '-';
 });
 
@@ -101,8 +101,8 @@ function cancelOrder() {
 
 // Form validation before submitting
 document.getElementById('orderForm').addEventListener('submit', function (e) {
-  const fullName = document.getElementById('fullName').value.trim();
-  const phoneNumber = document.getElementById('phoneNumber').value.trim();
+  const fullName = document.getElementById('fullname').value.trim();
+  const phoneNumber = document.getElementById('phone_number').value.trim();
   const address = document.getElementById('address').value.trim();
 
   // Validation if empty
@@ -125,3 +125,10 @@ document.getElementById('orderForm').addEventListener('submit', function (e) {
 
 // Initialize summary on page load
 updateSummary();
+
+// Initialize summary fields with default values
+document.getElementById('summary-name').textContent = '-';
+document.getElementById('summary-phone').textContent = '-';
+document.getElementById('summary-address').textContent = '-';
+document.getElementById('summary-notes').textContent = 'No notes';
+document.getElementById('summary-notes').classList.add('italic');
