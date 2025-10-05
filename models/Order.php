@@ -1,18 +1,18 @@
 <?php
-
-
-    require_once 'Model.php';
+    require_once 'Models.php';
 
     class Order extends Model{
         protected static $table = "orders"; //edit based sa pangalan ng table sa database
 
         //mga gusto maretrieve sa table, kung ano pangalan ng column sa users na table, dapat EXACTLY pareho sa column name sa table;
         public $order_id;
+        public $business_type;
         public $customer_id;
         public $user_id;
         public $order_date;
         public $status;
         public $is_rushed;
+        public $note;
         public $created_at;
         public $updated_at;
 
@@ -62,11 +62,13 @@
 
         public function save(){
             $data = [
+                "business_type" => $this->business_type,
                 "customer_id" => $this->customer_id,
                 "user_id" => $this->user_id,
                 "order_date" => $this->order_date,
                 "status" => $this->status,
                 "is_rushed" => $this->is_rushed,
+                "note" => $this->note,
                 "created_at" => $this->created_at,
                 "updated_at" => $this->updated_at
             ];

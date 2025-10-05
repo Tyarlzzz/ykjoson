@@ -1,6 +1,10 @@
     const options = { year: 'numeric', month: 'long', day: '2-digit' };
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', options);
+
+    const receipt = { year: 'numeric', month: 'long', day: '2-digit' };
+        document.getElementById('receiptDate').textContent = new Date().toLocaleDateString('en-US', options);
     
+
     const input = document.getElementById("amountInput");
 
     function appendNumber(num) {

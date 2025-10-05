@@ -1,6 +1,7 @@
 <?php
 require_once '../database/Database.php';
 require_once '../Models/Gas.php';
+require_once '../Models/GasOrder.php';
 require_once '../Models/Models.php';
 
 $database = new Database();
@@ -51,7 +52,12 @@ $gas = Gas::all();
             </div>
             <span class="text-sm font-semibold text-gray-700">Pending Order</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">7</div>
+          <div class="text-3xl font-bold text-gray-900">
+            <?php
+              $pendingOrders = GasOrder::countPending();
+              echo $pendingOrders;
+            ?>
+          </div>
           <div class="text-xs text-gray-500 mt-1">Today</div>
         </div>
       </div>
@@ -67,7 +73,12 @@ $gas = Gas::all();
             </div>
             <span class="text-sm font-semibold text-gray-700">Borrowed Tanks</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">10</div>
+          <div class="text-3xl font-bold text-gray-900">
+            <?php
+              $borrowedOrders = GasOrder::countBorrowed();
+              echo $borrowedOrders;
+            ?>
+          </div>
           <div class="text-xs text-gray-500 mt-1">This Month</div>
         </div>
 
@@ -80,7 +91,12 @@ $gas = Gas::all();
             </div>
             <span class="text-sm font-semibold text-gray-700">Returned Tanks</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">8</div>
+          <div class="text-3xl font-bold text-gray-900">
+            <?php
+              $deliveredOrders = GasOrder::countDelivered();
+              echo $deliveredOrders;
+            ?>
+          </div>
           <div class="text-xs text-gray-500 mt-1">This Month</div>
         </div>
       </div>
@@ -121,7 +137,7 @@ $gas = Gas::all();
       <div class="flex flex-col gap-5">
         <!-- Add Order Button -->
         <button
-          class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 hover:bg-[#DC2626] text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all border border-gray-100">
+          onclick="window.location.href='create.php'"class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 hover:bg-[#DC2626] text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all border border-gray-100">
           <div class="bg-white rounded-full p-1 flex items-center justify-center">
             <svg class="w-5 h-5 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -141,7 +157,12 @@ $gas = Gas::all();
             </svg>
             <span class="text-base">Delivered</span>
           </div>
-          <span class="text-3xl font-bold mt-1">22</span>
+          <span class="text-3xl font-bold mt-1">
+            <?php
+              $deliveredOrders = GasOrder::countDelivered();
+              echo $deliveredOrders;
+            ?>
+          </span>
         </div>
       </div>
     </div>

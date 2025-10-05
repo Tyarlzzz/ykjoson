@@ -2,15 +2,20 @@ body {
     font-family: 'Switzer', sans-serif;
     background-color: #F8F8F8;
 }
+
 #sidebar {
     background-color: #0C60CB;
+    position: relative;
 }
+
 #sidebar.gas-mode {
     background-color: #D92020;
 }
+
 #sidebar.collapsed {
     width: 80px !important;
 }
+
 #sidebar.collapsed .sidebar-text {
     opacity: 0;
     width: 0;
@@ -18,6 +23,13 @@ body {
     white-space: nowrap;
     margin-left: 0 !important;
 }
+
+#sidebar #collapseBtn {
+    position: absolute;
+    right: 0;
+    z-index: 10;
+}
+
 #sidebar.collapsed .nav-item {
     justify-content: flex-center;
     padding-left: 0 !important;
@@ -25,13 +37,40 @@ body {
     margin-left: 10px !important;
     margin-right: 0 !important;
 }
+
 #sidebar.collapsed .nav-item svg {
     margin: 0 auto;
 }
+
 #sidebar .nav-item {
   justify-content: flex-start;
 }
 
+#numpad .text-shadow{
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#ClearButton .clear-btn {
+  background-color: #e5e7eb; /* Tailwind's gray-200 */
+  border: 1px solid #d1d5db; /* gray-300 border */
+  border-radius: 6px;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #374151; /* gray-700 */
+  cursor: pointer;
+
+  /* Inset-like shadow */
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15), 
+              0 1px 2px rgba(0,0,0,0.1);
+  
+  transition: background 0.2s, transform 0.1s;
+}
+
+#ClearButton .clear-btn:active {
+  background-color: #9ca3af; /* even darker gray when pressed */
+  transform: scale(0.95); /* press effect */
+}
 
 .bg-status-returned{
     background-color: #E6D1F7 !important;
@@ -42,6 +81,7 @@ body {
     background-color: #F7F6D1 !important;
     color: #d1c003 !important;
 }
+
 .bg-status-borrowed{
     background-color: #F7E8D1 !important;
     color: #D3880E !important;
@@ -52,3 +92,36 @@ body {
     color: #1AD598 !important;
 }
 
+.customerCircle {
+    background: linear-gradient(31deg,#C5FF86 0%,#6DFF00 52%,#2BFF00 100%);
+}
+
+.pendingCircle {
+    background: linear-gradient(122deg,#FFFF8E 0%,#FBFF00 52%,#d79420 100%);
+}
+
+table.dataTable.no-footer {
+    border-bottom: none !important;
+}
+
+table.dataTable thead th,
+table.dataTable thead td {
+    border-bottom: none !important;
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+    border-bottom: none !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHead table {
+    border-bottom: none !important;
+}
+
+table.dataTable {
+    border-collapse: separate !important;
+    border-spacing: 0 10px !important;
+}
+
+table.dataTable thead th {
+    text-align: start !important;
+}
