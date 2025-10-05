@@ -22,7 +22,7 @@
         <aside id="sidebar" class="w-[260px] h-screen flex flex-col shadow-2xl transition-all duration-600 overflow-hidden flex-shrink-0">
             <div class="pl-4 py-5 flex items-center">
                 <img src="../assets/images/logo.png" alt="" class="w-10 h-10">
-                <a href="../LaundrySystem/dashboard.php" class="sidebar-text font-['Outfit'] font-bold text-2xl py-2 text-white ml-2">YK JOSON</a>
+                <a href="../Gas/index.php" class="sidebar-text font-['Outfit'] font-bold text-2xl py-2 text-white ml-2">YK JOSON</a>
 
                 <button id="collapseBtn" aria-expanded="true" class="ml-auto bg-white text-[#0C60CB] rounded-l-xl pl-3 pt-4 pb-4 pr-1 flex items-center shadow-xl">
                     <svg id="collapseIcon" class="w-5 h-5 transition-transform duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +35,7 @@
                 <p class="sidebar-text ml-1 mb-8 mt-8 text-xl text-[#D8D8D8]">MENU</p>
                 <ul class="space-y-10">
                     <li>
-                        <a href="../LaundrySystem/dashboard.php" class="nav-item flex items-center gap-3 ml-6">
+                        <a href="../Gas/index.php" class="nav-item flex items-center gap-3 ml-6">
                             <svg class="w-6 h-6 text-white flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3.5 5.25C3.5 4.83579 3.16421 4.5 2.75 4.5C2.33579 4.5 2 4.83579 2 5.25V17.25C2 18.4926 3.00736 19.5 4.25 19.5H21.25C21.6642 19.5 22 19.1642 22 18.75C22 18.3358 21.6642 18 21.25 18H4.25C3.83579 18 3.5 17.6642 3.5 17.25V5.25Z" fill="currentColor"/>
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M7 10.2773C5.89543 10.2773 5 11.1728 5 12.2773V15.7501C5 16.1643 5.33579 16.5001 5.75 16.5001H8.25C8.66421 16.5001 9 16.1643 9 15.7501V12.2773C9 11.1728 8.10457 10.2773 7 10.2773ZM6.5 12.2773C6.5 12.0012 6.72386 11.7773 7 11.7773C7.27614 11.7773 7.5 12.0012 7.5 12.2773V15.0001H6.5V12.2773Z" fill="currentColor"/>
@@ -46,7 +46,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-item flex items-center gap-3 ml-6">
+                        <a href="../Gas/create.php" class="nav-item flex items-center gap-3 ml-6">
                             <svg class="w-6 h-6 mt-1 text-white flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" version="1.1" viewBox="-5.0 -10.0 110.0 135.0">
                                 <path d="m67.5 47.891h-15.391v-15.391c0-1.1719-0.94922-2.1094-2.1094-2.1094-1.1719 0-2.1094 0.94922-2.1094 2.1094v15.391h-15.391c-1.1719 0-2.1094 0.94922-2.1094 2.1094 0 1.1719 0.94922 2.1094 2.1094 2.1094h15.391v15.391c0 1.1719 0.94922 2.1094 2.1094 2.1094 1.1719 0 2.1094-0.94922 2.1094-2.1094v-15.391h15.391c1.1719 0 2.1094-0.94922 2.1094-2.1094 0.011719-1.1719-0.9375-2.1094-2.1094-2.1094z" fill="currentColor" stroke="currentColor" stroke-width="6"/>
                                 <path d="m74.109 0h-48.219c-14.281 0-25.891 11.609-25.891 25.891v48.219c0 14.281 11.609 25.891 25.891 25.891h48.219c14.281 0 25.891-11.609 25.891-25.891v-48.219c0-14.281-11.609-25.891-25.891-25.891zm21.66 74.109c0 11.949-9.7188 21.672-21.672 21.672h-48.207c-11.949 0-21.672-9.7188-21.672-21.672v-48.219c0-11.949 9.7188-21.672 21.672-21.672h48.219c11.949 0 21.672 9.7188 21.672 21.672v48.219z" fill="currentColor" stroke="currentColor" stroke-width="6"/>
