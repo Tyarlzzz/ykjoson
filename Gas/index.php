@@ -121,7 +121,7 @@ $gas = Gas::all();
       <div class="flex flex-col gap-5">
         <!-- Add Order Button -->
         <button
-          class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 hover:bg-[#DC2626] text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all border border-gray-100">
+          onclick="window.location.href='create.php'"class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 hover:bg-[#DC2626] text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all border border-gray-100">
           <div class="bg-white rounded-full p-1 flex items-center justify-center">
             <svg class="w-5 h-5 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
