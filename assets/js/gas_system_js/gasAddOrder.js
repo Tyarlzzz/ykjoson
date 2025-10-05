@@ -60,11 +60,11 @@ function updateSummary() {
 }
 
 // Update summary when input fields change
-document.getElementById('fullName').addEventListener('input', function (e) {
+document.getElementById('fullname').addEventListener('input', function (e) {
   document.getElementById('summary-name').textContent = e.target.value || '-';
 });
 
-document.getElementById('phoneNumber').addEventListener('input', function (e) {
+document.getElementById('phonenumber').addEventListener('input', function (e) {
   document.getElementById('summary-phone').textContent = e.target.value || '-';
 });
 
