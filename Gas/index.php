@@ -73,7 +73,12 @@ $gas = Gas::all();
             </div>
             <span class="text-sm font-semibold text-gray-700">Borrowed Tanks</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">10</div>
+          <div class="text-3xl font-bold text-gray-900">
+            <?php
+              $borrowedOrders = GasOrder::countBorrowed();
+              echo $borrowedOrders;
+            ?>
+          </div>
           <div class="text-xs text-gray-500 mt-1">This Month</div>
         </div>
 

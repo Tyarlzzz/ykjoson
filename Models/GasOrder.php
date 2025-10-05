@@ -52,5 +52,10 @@ class GasOrder extends Order {
         $returnedOrders = self::where('status', '=', 'returned');
         return $returnedOrders ? count($returnedOrders) : 0;
     }
+
+    public static function countBorrowed() {
+        $borrowedOrders = self::where('status', '=', 'borrowed');
+        return $borrowedOrders ? count($borrowedOrders) : 0;
+    }
 }
 ?>
