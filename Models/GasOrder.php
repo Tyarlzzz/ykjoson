@@ -42,5 +42,10 @@ class GasOrder extends Order {
         $pendingOrders = self::where('status', '=', 'pending');
         return $pendingOrders ? count($pendingOrders) : 0;
     }
+
+    public static function countDelivered() {
+        $deliveredOrders = self::where('status', '=', 'delivered');
+        return $deliveredOrders ? count($deliveredOrders) : 0;
+    }
 }
 ?>

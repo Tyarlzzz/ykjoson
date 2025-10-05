@@ -147,7 +147,12 @@ $gas = Gas::all();
             </svg>
             <span class="text-base">Delivered</span>
           </div>
-          <span class="text-3xl font-bold mt-1">22</span>
+          <span class="text-3xl font-bold mt-1">
+            <?php
+              $deliveredOrders = GasOrder::countDelivered();
+              echo $deliveredOrders;
+            ?>
+          </span>
         </div>
       </div>
     </div>
