@@ -64,7 +64,7 @@ document.getElementById('fullname').addEventListener('input', function (e) {
   document.getElementById('summary-name').textContent = e.target.value || '-';
 });
 
-document.getElementById('phonenumber').addEventListener('input', function (e) {
+document.getElementById('phone_number').addEventListener('input', function (e) {
   document.getElementById('summary-phone').textContent = e.target.value || '-';
 });
 
