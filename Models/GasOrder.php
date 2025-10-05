@@ -47,5 +47,10 @@ class GasOrder extends Order {
         $deliveredOrders = self::where('status', '=', 'delivered');
         return $deliveredOrders ? count($deliveredOrders) : 0;
     }
+
+    public static function countReturned() {
+        $returnedOrders = self::where('status', '=', 'returned');
+        return $returnedOrders ? count($returnedOrders) : 0;
+    }
 }
 ?>

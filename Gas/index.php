@@ -86,7 +86,12 @@ $gas = Gas::all();
             </div>
             <span class="text-sm font-semibold text-gray-700">Returned Tanks</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">8</div>
+          <div class="text-3xl font-bold text-gray-900">
+            <?php
+              $deliveredOrders = GasOrder::countDelivered();
+              echo $deliveredOrders;
+            ?>
+          </div>
           <div class="text-xs text-gray-500 mt-1">This Month</div>
         </div>
       </div>
