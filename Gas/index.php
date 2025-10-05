@@ -1,6 +1,7 @@
 <?php
 require_once '../database/Database.php';
 require_once '../Models/Gas.php';
+require_once '../Models/GasOrder.php';
 require_once '../Models/Models.php';
 
 $database = new Database();
@@ -51,7 +52,12 @@ $gas = Gas::all();
             </div>
             <span class="text-sm font-semibold text-gray-700">Pending Order</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">7</div>
+          <div class="text-3xl font-bold text-gray-900">
+            <?php
+              $pendingOrders = GasOrder::countPending();
+              echo $pendingOrders;
+            ?>
+          </div>
           <div class="text-xs text-gray-500 mt-1">Today</div>
         </div>
       </div>
