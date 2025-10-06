@@ -173,6 +173,7 @@ $gas = Gas::all();
         <h2 class="text-xl font-bold text-gray-800">Today's Transactions</h2>
         <div class="flex items-center gap-3">
           <button
+            id = "selectAllBtn"
             class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
             Select all
           </button>
@@ -320,6 +321,21 @@ $gas = Gas::all();
         }
       }
     }
+  });
+</script>
+
+<script>
+  
+  const selectAllBtn = document.getElementById('selectAllBtn');
+  const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+  let allSelected = false;
+
+  selectAllBtn.addEventListener('click', () => {
+    allSelected = !allSelected;
+    checkboxes.forEach(checkbox => checkbox.checked = allSelected);
+
+    
+    selectAllBtn.textContent = allSelected ? 'Deselect all' : 'Select all';
   });
 </script>
 
