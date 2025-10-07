@@ -9,6 +9,7 @@ $conn = $database->getConnection();
 Model::setConnection($conn);
 
 $gas = Gas::all(); 
+
 ?>
 
 <?php require '../layout/header.php' ?>
