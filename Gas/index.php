@@ -8,17 +8,17 @@ $database = new Database();
 $conn = $database->getConnection();
 Model::setConnection($conn);
 
-$gas = Gas::all(); 
+$gas = Gas::all();
 
 ?>
 
 <?php require '../layout/header.php' ?>
 
-<main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
-  <div class="w-full px-5">
+<main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-6">
+  <div class="w-full">
     <!-- Header -->
     <div class="mb-8 flex justify-between items-center">
-      <h1 class="text-3xl font-extrabold text-gray-800">Point of Sale System</h1>
+      <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Point of Sale System</h1>
       <p class="text-gray-500 text-base" id="currentDate"></p>
     </div>
 
@@ -37,8 +37,8 @@ $gas = Gas::all();
           </div>
           <div class="text-3xl font-bold text-gray-900">
             <?php
-              $totalCustomers = count(Gas::all());
-              echo $totalCustomers;
+            $totalCustomers = count(Gas::all());
+            echo $totalCustomers;
             ?>
           </div>
           <div class="text-xs text-gray-500 mt-1">Today</div>
@@ -55,8 +55,8 @@ $gas = Gas::all();
           </div>
           <div class="text-3xl font-bold text-gray-900">
             <?php
-              $pendingOrders = GasOrder::countPending();
-              echo $pendingOrders;
+            $pendingOrders = GasOrder::countPending();
+            echo $pendingOrders;
             ?>
           </div>
           <div class="text-xs text-gray-500 mt-1">Today</div>
@@ -76,8 +76,8 @@ $gas = Gas::all();
           </div>
           <div class="text-3xl font-bold text-gray-900">
             <?php
-              $borrowedOrders = GasOrder::countBorrowed();
-              echo $borrowedOrders;
+            $borrowedOrders = GasOrder::countBorrowed();
+            echo $borrowedOrders;
             ?>
           </div>
           <div class="text-xs text-gray-500 mt-1">This Month</div>
@@ -94,8 +94,8 @@ $gas = Gas::all();
           </div>
           <div class="text-3xl font-bold text-gray-900">
             <?php
-              $deliveredOrders = GasOrder::countDelivered();
-              echo $deliveredOrders;
+            $deliveredOrders = GasOrder::countDelivered();
+            echo $deliveredOrders;
             ?>
           </div>
           <div class="text-xs text-gray-500 mt-1">This Month</div>
@@ -137,8 +137,8 @@ $gas = Gas::all();
       <!-- Right Column - Action Button -->
       <div class="flex flex-col gap-5">
         <!-- Add Order Button -->
-        <button
-          onclick="window.location.href='create.php'"class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 hover:bg-[#DC2626] text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all border border-gray-100">
+        <button onclick="window.location.href='create.php'"
+          class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 hover:bg-[#DC2626] text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all border border-gray-100">
           <div class="bg-white rounded-full p-1 flex items-center justify-center">
             <svg class="w-5 h-5 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -160,120 +160,125 @@ $gas = Gas::all();
           </div>
           <span class="text-3xl font-bold mt-1">
             <?php
-              $deliveredOrders = GasOrder::countDelivered();
-              echo $deliveredOrders;
+            $deliveredOrders = GasOrder::countDelivered();
+            echo $deliveredOrders;
             ?>
           </span>
         </div>
       </div>
     </div>
 
-    <!-- Transactions Table -->
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold text-gray-800">Today's Transactions</h2>
-        <div class="flex items-center gap-3">
-          <button
-            id = "selectAllBtn"
-            class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-            Select all
-          </button>
-          <div class="relative flex items-center">
-            <input type="text" placeholder="Search"
-              class="border border-gray-300 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-300">
-            <svg class="w-5 h-5 absolute left-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-          </div>
+    <!-- START NG TABLE -->
+    <div class="md:flex-row max-w-full mx-auto p-6 bg-white rounded-xl shadow-lg px-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span
+            class="font-[Switzer] text-sm"><?php echo date("F j, Y"); ?></span></h2>
+        <div class="flex items-center space-x-3">
           <div class="relative">
-            <select
-              class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:ring-2 focus:ring-gray-300">
-              <option>Status</option>
-              <option>Returned</option>
-              <option>Pending</option>
-              <option>Delivered</option>
-              <option>Borrowed</option>
-            </select>
+            <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
+            </svg>
+            <input id="GcustomSearch" type="text" placeholder="Search..."
+              class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-64" />
+          </div>
+          <select id="GstatusFilter"
+            class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">All Status</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Pending">Pending</option>
+            <option value="Borrowed">Borrowed</option>
+            <option value="Returned">Returned</option>
+          </select>
+          <div>
+            <a href=""> <!-- eto ung maximize button kasi clickable toh-->
+              <svg class="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none"
+                x="0px" y="0px">
+                <path
+                  d="M40.2196 2C39.115 2 38.2196 2.89543 38.2196 4C38.2196 5.10457 39.115 6 40.2196 6H55.1716L27.5858 33.5858C26.8047 34.3668 26.8047 35.6332 27.5858 36.4142C28.3668 37.1953 29.6332 37.1953 30.4142 36.4142L58 8.82843V24C58 25.1046 58.8954 26 60 26C61.1046 26 62 25.1046 62 24V4C62 2.89543 61.1046 2 60 2H40.2196Z"
+                  fill="black" />
+                <path
+                  d="M52 37C52 35.8954 51.1046 35 50 35C48.8954 35 48 35.8954 48 37V56C48 57.1046 47.1046 58 46 58H8C6.89543 58 6 57.1046 6 56L6 18C6 16.8954 6.89543 16 8 16L27 16C28.1046 16 29 15.1046 29 14C29 12.8954 28.1046 12 27 12L8 12C4.68629 12 2 14.6863 2 18L2 56C2 59.3137 4.68629 62 8 62H46C49.3137 62 52 59.3137 52 56V37Z"
+                  fill="black" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-left table-auto">
-          <thead class="bg-gray-50">
-            <tr class="text-sm text-gray-500 uppercase">
-              <th class="p-4 rounded-tl-lg"></th>
-              <th class="p-4">#</th>
-              <th class="p-4">Name</th>
-              <th class="p-4">Location</th>
-              <th class="p-4">Phone Number</th>
-              <th class="p-4">Brand</th>
-              <th class="p-4">Qty</th>
-              <th class="p-4 rounded-tr-lg">Status</th>
+      <div class="overflow-x-auto overflow-y-auto" style="height: 370px;">
+        <table id="GordersTable" class="w-full">
+          <thead>
+            <!-- SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN -->
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Phone Number</th>
+              <th>Qty</th>
+              <th>Status</th> <!--NAKA AUTO CHANGE COLOR NARIN TOH KAYA WALA NA KAYO PROBLEMA -->
             </tr>
           </thead>
           <tbody>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">001</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Erik S. Soliman</td>
-              <td class="p-4 text-sm text-gray-500">San Nicolas, Gapan City</td>
-              <td class="p-4 text-sm text-gray-500">09123456789</td>
-              <td class="p-4 text-sm text-gray-500">Petron</td>
-              <td class="p-4 text-sm text-gray-500">1</td>
-              <td class="p-4">
-                <span class="bg-status-returned text-sm px-3 py-1 rounded font-bold">Returned</span>
-              </td>
+            <!-- 
+                //SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN
+                //PAKI DELETE UNG IBANG TR KASI NDI NMN NA NEED KAPAG NAG FOR EACH NA 
+                -->
+            <tr>
+              <td>1</td>
+              <td>Erik Soliman</td>
+              <td>Brgy. San Isidro, Gapan City, Nueva Ecija</td>
+              <td>09123456789</td>
+              <td>3</td>
+              <td>Delivered</td>
             </tr>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">002</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Danielle Gonzales Quilambao</td>
-              <td class="p-4 text-sm text-gray-500">San Jose City</td>
-              <td class="p-4 text-sm text-gray-500">09123456789</td>
-              <td class="p-4 text-sm text-gray-500">Econo</td>
-              <td class="p-4 text-sm text-gray-500">2</td>
-              <td class="p-4">
-                <span class="bg-status-pending text-sm px-4 py-1 rounded font-bold">Pending</span>
-              </td>
+            <tr>
+              <td>2</td>
+              <td>Charles Jerald Capulong Carpio</td>
+              <td>Dorm 6, Room 69, CLSU Philippines</td>
+              <td>09987654321</td>
+              <td>7</td>
+              <td>Pending</td>
             </tr>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">003</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Jose Val Eowyn Laurente</td>
-              <td class="p-4 text-sm text-gray-500">Bulacan, San Miguel City</td>
-              <td class="p-4 text-sm text-gray-500">09837488827</td>
-              <td class="p-4 text-sm text-gray-500">SeaGas</td>
-              <td class="p-4 text-sm text-gray-500">1</td>
-              <td class="p-4">
-                <span class="bg-status-delivered text-sm px-3 py-1 rounded font-bold">Delivered</span>
-              </td>
+            <tr>
+              <td>3</td>
+              <td>Danielle Quiambao</td>
+              <td>Kapitan Pepe, Cabanatuan City, Nueva Ecija</td>
+              <td>09987654321</td>
+              <td>12</td>
+              <td>Returned</td>
             </tr>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">004</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Evrri Elefante</td>
-              <td class="p-4 text-sm text-gray-500">Nueva Ecija, Gapan City</td>
-              <td class="p-4 text-sm text-gray-500">09123456789</td>
-              <td class="p-4 text-sm text-gray-500">Petron</td>
-              <td class="p-4 text-sm text-gray-500">3</td>
-              <td class="p-4">
-                <span class="bg-status-returned text-sm px-3 py-1 rounded font-bold">Returned</span>
-              </td>
+            <tr>
+              <td>4</td>
+              <td>Eurrie Elepantine</td>
+              <td>Bagong Sikat, Science City of Munoz, Nueva Ecija</td>
+              <td>09987654321</td>
+              <td>28</td>
+              <td>Returned</td>
             </tr>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">005</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Jaztin Supsup</td>
-              <td class="p-4 text-sm text-gray-500">Bantug, Bukang Liwayway City</td>
-              <td class="p-4 text-sm text-gray-500">09827371738</td>
-              <td class="p-4 text-sm text-gray-500">SeaGas</td>
-              <td class="p-4 text-sm text-gray-500">1</td>
-              <td class="p-4">
-                <span class="bg-status-borrowed text-sm px-3 py-1 rounded font-bold">Borrowed</span>
-              </td>
+            <tr>
+              <td>5</td>
+              <td>Aj Castro</td>
+              <td>Bukang Liwayway, Bantu, Science City of Munoz, Nueva Ecija</td>
+              <td>09987654321</td>
+              <td>16</td>
+              <td>Borrowed</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Jaztin Zuriel Supsuo</td>
+              <td>Sapang Cawayan, Bantug, Science City of Munoz, Nueva Ecija</td>
+              <td>09987654321</td>
+              <td>32</td>
+              <td>Borrowed</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Jose Val Eowyn Laurente</td>
+              <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
+              <td>09987654321</td>
+              <td>32</td>
+              <td>Delivered</td>
             </tr>
           </tbody>
         </table>
@@ -287,8 +292,6 @@ $gas = Gas::all();
 
 <!-- Set current date - enUS format (ex: April 01, 2001) -->
 <script>
-  const options = { year: 'numeric', month: 'long', day: '2-digit' };
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', options);
 
   // Initialize Pie Chart
   const ctx = document.getElementById('brandsPieChart').getContext('2d');
@@ -325,19 +328,6 @@ $gas = Gas::all();
   });
 </script>
 
-<script>
-  
-  const selectAllBtn = document.getElementById('selectAllBtn');
-  const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-  let allSelected = false;
 
-  selectAllBtn.addEventListener('click', () => {
-    allSelected = !allSelected;
-    checkboxes.forEach(checkbox => checkbox.checked = allSelected);
-
-    
-    selectAllBtn.textContent = allSelected ? 'Deselect all' : 'Select all';
-  });
-</script>
 
 <?php require '../layout/footer.php' ?>
