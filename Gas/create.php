@@ -45,78 +45,67 @@
               <h2 class="text-lg font-medium text-gray-700">Brand Selection</h2>
               <div class="flex-1 h-px bg-black ml-4"></div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
               <!-- Petron -->
-              <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300 p-4 rounded-xl">
-                <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">Petron</h3>
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-1">
+                <h3 class="font-bold text-gray-700 text-xl">Petron</h3>
                 <div
-                  class="w-full aspect-square max-w-[120px] sm:max-w-[140px] md:max-w-[176px] mx-auto p-2 sm:p-3 md:p-4 my-2 sm:my-3 md:my-4 border-2 border-gray-200 bg-white shadow-sm rounded-2xl flex items-center justify-center">
-                  <img src="../assets/images/petron.png" alt="Petron"
-                    class="w-full h-full max-w-[80px] max-h-[80px] sm:max-w-[100px] sm:max-h-[100px] md:max-w-[128px] md:max-h-[128px] object-contain">
+                  class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center cursor-pointer"
+                  onclick="increaseQty('petron')">
+                  <img src="../assets/images/petron.png" alt="petron" class="w-4/5 h-4/5 object-contain">
                 </div>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
-                  <div
-                    class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="petron-qty" class="w-12 text-center font-bold text-gray-700 text-2xl">0</span>
+                <div class="flex items-center justify-center gap-2">
+                  <div class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="petron-qty" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none">0</span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <button type="button" onclick="decreaseQty('petron')"
-                      class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
-                    <button type="button" onclick="increaseQty('petron')"
-                      class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
-                  </div>
+                  <button type="button" onclick="decreaseQty('petron')"
+                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-5 lg:w-9 lg:h-9 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">−</button>
+                  <button type="button" onclick="increaseQty('petron')"
+                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-9 lg:h-9 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">+</button>
                 </div>
               </div>
 
               <!-- Econo -->
-              <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300 p-4 rounded-xl">
-                <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">Econo</h3>
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-1">
+                <h3 class="font-bold text-gray-700 text-lg">Econo</h3>
                 <div
-                  class="w-full aspect-square max-w-[120px] sm:max-w-[140px] md:max-w-[176px] mx-auto p-2 sm:p-3 md:p-4 my-2 sm:my-3 md:my-4 border-2 border-gray-200 bg-white shadow-sm rounded-2xl flex items-center justify-center">
-                  <img src="../assets/images/econo.png" alt="Econo"
-                    class="w-full h-full max-w-[80px] max-h-[80px] sm:max-w-[100px] sm:max-h-[100px] md:max-w-[128px] md:max-h-[128px] object-contain">
+                  class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center cursor-pointer"
+                  onclick="increaseQty('econo')">
+                  <img src="../assets/images/econo.png" alt="econo" class="w-4/5 h-4/5 object-contain">
                 </div>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
-                  <div
-                    class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="econo-qty" class="w-12 text-center font-bold text-gray-700 text-2xl">0</span>
+                <div class="flex items-center justify-center gap-2">
+                  <div class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="econo-qty" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none">0</span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <button type="button" onclick="decreaseQty('econo')"
-                      class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
-                    <button type="button" onclick="increaseQty('econo')"
-                      class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
-                  </div>
+                  <button type="button" onclick="decreaseQty('econo')"
+                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-5 lg:w-9 lg:h-9 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">−</button>
+                  <button type="button" onclick="increaseQty('econo')"
+                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-9 lg:h-9 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">+</button>
                 </div>
               </div>
 
               <!-- SeaGas -->
-              <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300 p-4 rounded-xl">
-                <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">SeaGas</h3>
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-1">
+                <h3 class="font-bold text-gray-700 text-lg">SeaGas</h3>
                 <div
-                  class="w-full aspect-square max-w-[120px] sm:max-w-[140px] md:max-w-[176px] mx-auto p-2 sm:p-3 md:p-4 my-2 sm:my-3 md:my-4 border-2 border-gray-200 bg-white shadow-sm rounded-2xl flex items-center justify-center">
-                  <img src="../assets/images/seagas.png" alt="SeaGas"
-                    class="w-full h-full max-w-[80px] max-h-[80px] sm:max-w-[100px] sm:max-h-[100px] md:max-w-[128px] md:max-h-[128px] object-contain">
+                  class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center cursor-pointer"
+                  onclick="increaseQty('seagas')">
+                  <img src="../assets/images/seagas.png" alt="seagas" class="w-4/5 h-4/5 object-contain">
                 </div>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
-                  <div
-                    class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="seagas-qty" class="w-12 text-center font-bold text-gray-700 text-2xl">0</span>
+                <div class="flex items-center justify-center gap-2">
+                  <div class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="seagas-qty" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none">0</span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <button type="button" onclick="decreaseQty('seagas')"
-                      class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
-                    <button type="button" onclick="increaseQty('seagas')"
-                      class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
-                  </div>
+                  <button type="button" onclick="decreaseQty('seagas')"
+                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-5 lg:w-9 lg:h-9 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">−</button>
+                  <button type="button" onclick="increaseQty('seagas')"
+                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-9 lg:h-9 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">+</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
 
         <!-- Right Side - Order Summary -->
         <div class="w-80">
@@ -197,16 +186,6 @@
 
 </div> <!-- Close the flex container from header.php -->
 
-<style>
-  .item-card {
-    transition: all 0.2s ease;
-  }
-
-  .item-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  }
-</style>
 <script src="../assets/js/gas_system_js/gasAddOrder.js"></script>
 
 <?php include '../layout/footer.php' ?>
