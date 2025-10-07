@@ -1,6 +1,6 @@
 <?php
 require_once '../database/Database.php';
-require_once '../Models/Gas.php';
+require_once '../Models/GasCustomer.php';
 require_once '../Models/GasOrder.php';
 require_once '../Models/Models.php';
 
