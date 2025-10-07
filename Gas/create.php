@@ -108,7 +108,7 @@
 
 
         <!-- Right Side - Order Summary -->
-        <div class="w-80">
+        <div class="w-1/3">
           <div class="bg-white rounded-2xl shadow-xl p-6 top-8">
             <h2 class="border-b border-black text-xl font-bold text-gray-800 mb-6 pb-2">Order Summary</h2>
 
