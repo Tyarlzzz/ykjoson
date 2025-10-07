@@ -1,8 +1,4 @@
-// Set current date - enUS format (ex: April 01, 2001)
-const options = { year: 'numeric', month: 'long', day: '2-digit' };
-document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', options);
-
-const fullNameInput = document.getElementById('fullName');
+ const fullNameInput = document.getElementById('fullName');
 const rushButton = document.getElementById('rushButton');
 const rushCheckbox = document.getElementById('rushOrderCheckbox'); // New: Reference to checkbox
 // Function to update button state based on fullName input
