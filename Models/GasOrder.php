@@ -39,22 +39,22 @@ class GasOrder extends Order {
     }
 
     public static function countPending() {
-        $pendingOrders = self::where('status', '=', 'pending');
+        $pendingOrders = self::where('status', '=', 'Pending');
         return $pendingOrders ? count($pendingOrders) : 0;
     }
 
     public static function countDelivered() {
-        $deliveredOrders = self::where('status', '=', 'delivered');
+        $deliveredOrders = self::where('status', '=', 'Delivered');
         return $deliveredOrders ? count($deliveredOrders) : 0;
     }
 
     public static function countReturned() {
-        $returnedOrders = self::where('status', '=', 'returned');
+        $returnedOrders = self::where('status', '=', 'Returned');
         return $returnedOrders ? count($returnedOrders) : 0;
     }
 
     public static function countBorrowed() {
-        $borrowedOrders = self::where('status', '=', 'borrowed');
+        $borrowedOrders = self::where('status', '=', 'Borrowed');
         return $borrowedOrders ? count($borrowedOrders) : 0;
     }
 }
