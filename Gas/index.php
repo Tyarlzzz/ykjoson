@@ -19,7 +19,7 @@ $gas = Gas::all();
     <!-- Header -->
     <div class="mb-8 flex justify-between items-center">
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Point of Sale System</h1>
-      <p class="text-gray-500 text-base" id="currentDate"></p>
+      <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
     </div>
 
     <!-- Statistics Cards Section -->
@@ -325,7 +325,5 @@ $gas = Gas::all();
     }
   });
 </script>
-
-
 
 <?php require '../layout/footer.php' ?>

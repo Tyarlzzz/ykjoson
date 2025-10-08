@@ -1,7 +1,3 @@
-// Set current date - enUS format (ex: April 01, 2001)
-const options = { year: 'numeric', month: 'long', day: '2-digit' };
-document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', options);
-
 // Initialize quantities
 const quantities = {
   petron: 0,
