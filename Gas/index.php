@@ -135,11 +135,11 @@ $gas = Gas::all();
       </div>
 
       <!-- Right Column - Action Button -->
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-4 h-full">
         <!-- Add Order Button -->
         <button onclick="window.location.href='create.php'"
-          class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 hover:bg-[#DC2626] text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all border border-gray-100">
-          <div class="bg-white rounded-full p-1 flex items-center justify-center">
+          class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all">
+          <div class="bg-white p-2 rounded-full flex items-center justify-center">
             <svg class="w-5 h-5 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -149,14 +149,14 @@ $gas = Gas::all();
 
         <!-- Delivered Button -->
         <div
-          class="bg-gradient-to-br from-green-500 via-green-400 to-green-300 text-white px-6 py-6 rounded-2xl shadow-md flex flex-col items-start justify-center font-semibold border border-green-100 gap-3">
-          <div class="flex items-center gap-1">
+          class="bg-gradient-to-br from-green-500 via-green-40 0 to-green-300 text-white rounded-2xl shadow-md flex-1 flex flex-col items-start justify-center px-6">
+          <div class="flex items-center gap-2">
             <svg class="w-12 h-12" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" fill="white" />
               <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 12l3 3L17 9" />
             </svg>
-            <span class="text-base">Delivered</span>
+            <span class="text-lg font-semibold">Delivered</span>
           </div>
           <span class="text-3xl font-bold mt-1">
             <?php
@@ -287,12 +287,10 @@ $gas = Gas::all();
   </div>
 </main>
 
-<!-- Chart.js Library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chart.js Library (local file) -->
+<script src="../assets/js/chart.umd.min.js"></script>
 
-<!-- Set current date - enUS format (ex: April 01, 2001) -->
 <script>
-
   // Initialize Pie Chart
   const ctx = document.getElementById('brandsPieChart').getContext('2d');
   const brandsPieChart = new Chart(ctx, {
