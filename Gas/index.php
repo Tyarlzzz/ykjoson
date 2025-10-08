@@ -37,8 +37,8 @@ $gas = Gas::all();
           </div>
           <div class="text-3xl font-bold text-gray-900">
             <?php
-            $totalCustomers = count(Gas::all());
-            echo $totalCustomers;
+              $totalCustomers = count(Gas::all());
+              echo $totalCustomers;
             ?>
           </div>
           <div class="text-xs text-gray-500 mt-1">Today</div>

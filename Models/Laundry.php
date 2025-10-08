@@ -1,7 +1,7 @@
 <?php
 require_once 'Order.php';
 
-class GasOrder extends Order {
+class Laundry extends Order {
     public static function all() {
         // Get all orders and filter by business_type = 'Laundry System'
         $allOrders = parent::all();

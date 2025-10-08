@@ -1,5 +1,14 @@
 <?php
     require '../layout/header.php';
+    require_once '../database/Database.php';
+    require_once '../Models/Models.php';
+    require_once '../Models/Laundry.php';
+
+    $database = new Database();
+    $conn = $database->getConnection();
+    Model::setConnection($conn);
+
+    $laundry = Laundry::all();
 ?>
 
 <main class="flex-1 overflow-x-hidden">
@@ -24,7 +33,12 @@
                         </div>
                         <span class="font-[Switzer] mr-10">Total Customers</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-3xl ms-1">23</div>
+                    <div class="font-['Outfit'] font-bold text-3xl ms-1">
+                        <?php
+                        $totalCustomers = count(Laundry::all());
+                        echo $totalCustomers;
+                        ?>
+                    </div>
                     <div class="font-[Switzer] text-sm text-gray-500 mt-1">Today</div>
                 </div>
             </a>
@@ -40,7 +54,12 @@
                         </div>
                         <span class="font-[Switzer] mr-10">Pending Deliveries</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-3xl ms-4 mb-[1.45rem]">5</div>
+                    <div class="font-['Outfit'] font-bold text-3xl ms-4 mb-[1.45rem]">
+                        <?php
+                            $PendingOrders = Laundry::countPending();
+                            echo $PendingOrders;
+                        ?>
+                    </div>
                 </div>
             </a>
             <a href="">
@@ -88,7 +107,12 @@
                         </div>
                         <span class="font-[Switzer] mr-10">On Hold</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-3xl ms-2.5 mt-3">13</div>
+                    <div class="font-['Outfit'] font-bold text-3xl ms-2.5 mt-3">
+                        <?php
+                            $OnHoldOrders = Laundry::countOnHold();
+                            echo $OnHoldOrders;
+                        ?>
+                    </div>
                 </div>
             </a>
             <a href="">
@@ -108,7 +132,12 @@
                         </div>
                             <span class="font-[Switzer] mr-10">On Wash</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-3xl ms-2.5 mt-3">26</div>
+                    <div class="font-['Outfit'] font-bold text-3xl ms-2.5 mt-3">
+                        <?php
+                            $OnWashOrders = Laundry::countOnWash();
+                            echo $OnWashOrders;
+                        ?>
+                    </div>
                 </div>
             </a>
             <a href="">
@@ -121,7 +150,12 @@
                         </div>
                             <span class="font-[Switzer] mr-10">On Dry</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-3xl ms-2.5 mt-3">13</div>
+                    <div class="font-['Outfit'] font-bold text-3xl ms-2.5 mt-3">
+                        <?php
+                            $OnDryOrders = Laundry::countOnDry();
+                            echo $OnDryOrders;
+                        ?>
+                    </div>
                 </div>
             </a>
             <a href="">
@@ -137,7 +171,12 @@
                         </div>
                         <span class="font-[Switzer] mr-10">On Fold</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-3xl ms-4 mt-3">6</div>
+                    <div class="font-['Outfit'] font-bold text-3xl ms-4 mt-3">
+                        <?php
+                            $OnFoldOrders = Laundry::countOnFold();
+                            echo $OnFoldOrders;
+                        ?>
+                    </div>
                 </div>
             </a>
             <a href="">
@@ -156,7 +195,12 @@
                         </div>
                         <span class="font-[Switzer] flex-shrink-0 break-words">Delivered</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-3xl ms-4 mt-3">6</div>
+                    <div class="font-['Outfit'] font-bold text-3xl ms-4 mt-3">
+                        <?php
+                            $DeliveredOrders = Laundry::countDelivered();
+                            echo $DeliveredOrders;
+                        ?>
+                    </div>
                 </div>
             </a>
         </div>
