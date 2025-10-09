@@ -1,5 +1,5 @@
- const fullNameInput = document.getElementById('fullName');
-const rushButton = document.getElementById('rushButton');
+ const fullNameInput = document.getElementById('fullname');
+const rushButton = document.getElementById('is_rushed');
 const rushCheckbox = document.getElementById('rushOrderCheckbox'); // New: Reference to checkbox
 // Function to update button state based on fullName input
 function updateButtonState() {
@@ -124,11 +124,11 @@ function updateSummary() {
 }
 
 // Update summary when input fields change
-document.getElementById('fullName').addEventListener('input', function (e) {
+document.getElementById('fullname').addEventListener('input', function (e) {
   document.getElementById('summary-name').textContent = e.target.value || '-';
 });
 
-document.getElementById('phoneNumber').addEventListener('input', function (e) {
+document.getElementById('phone_number').addEventListener('input', function (e) {
   document.getElementById('summary-phone').textContent = e.target.value || '-';
 });
 
@@ -165,8 +165,8 @@ function cancelOrder() {
 
 // Form validation before submitting
 document.getElementById('orderForm').addEventListener('submit', function(e) {
-  const fullName = document.getElementById('fullName').value.trim();
-  const phoneNumber = document.getElementById('phoneNumber').value.trim();
+  const fullName = document.getElementById('fullname').value.trim();
+  const phoneNumber = document.getElementById('phone_number').value.trim();
   const address = document.getElementById('address').value.trim();
 
   // Validation if empty
