@@ -11,7 +11,7 @@
 
     </div>
 
-    <form action="store.php" method="GET" id="orderForm">
+    <form action="store.php" method="POST" id="orderForm">
       <div class="flex gap-8">
         <!-- Left Side ng Form -->
         <div class="flex-1">
@@ -24,12 +24,12 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full Name</label>
-                    <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
+                    <input type="text" id="fullname" name="fullname" placeholder="Enter full name"
                       class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
                   </div>
                   <div>
                     <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
-                    <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number"
+                    <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number"
                       class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
                   </div>
                 </div>
@@ -42,7 +42,7 @@
               </div>
 
               <div class=" ms-4 mb-4 mt-7 col-span-1 flex items-stretch items-center">
-                <button id="rushButton" type="button" class="w-full bg-gray-500 hover:bg-gray-600 text-white px-2 py-2 rounded-xl text-xl text-center font-bold transition-colors duration-200">
+                <button id="is_rushed" type="button" class="w-full bg-gray-500 hover:bg-gray-600 text-white px-2 py-2 rounded-xl text-xl text-center font-bold transition-colors duration-200">
                   Rush Order
                 </button>
               </div>
