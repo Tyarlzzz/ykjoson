@@ -3,5 +3,8 @@
     <script src="../assets/js/jquery.min.js"></script>
     <script src="../assets/js/jquery.dataTables.min.js"></script>
     <script src="../assets/js/datatables.js"></script>
+    <script src="../assets/js/laundry_system_js/laundryAddOrder.js"></script>
+    <script src="../assets/js/gas_system_js/gasAddOrder.js"></script>
+
 </body>
 </html>
