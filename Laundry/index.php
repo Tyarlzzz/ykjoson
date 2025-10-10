@@ -80,7 +80,7 @@
                     <div class="font-[Switzer] text-sm text-white opacity-0 mt-1">.</div>
                 </div>
             </a>
-            <a href=""><!-- dito ilalagay link ng add order -->
+            <a href="create.php">
                 <div class="bg-gradient-to-br from-blue-600 via-blue-500 to-purple-300 to-purple-500 to-purple-400 rounded-2xl shadow-xl pt-9 pb-9">
                     <div class="flex items-center justify-center gap-3 p-3">
                         <div class="w-16 h-16 rounded-full items-center justify-center ">
