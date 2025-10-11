@@ -6,11 +6,9 @@
     <!-- Header --> <!-- DITO MAY CHANGES -->
     <div class="mb-8 flex justify-between items-center">
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Point of Sale System</h1>
-
         <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
-
+        
     </div>
-
     <form action="store.php" method="POST" id="orderForm">
       <div class="flex gap-8">
         <!-- Left Side ng Form -->
@@ -42,7 +40,7 @@
               </div>
 
               <div class=" ms-4 mb-4 mt-7 col-span-1 flex items-stretch items-center">
-                <button id="is_rushed" type="button" class="w-full bg-gray-500 hover:bg-gray-600 text-white px-2 py-2 rounded-xl text-xl text-center font-bold transition-colors duration-200">
+                <button id="is_rushed" type="button" class="w-full bg-gray-500 hover:bg-gray-600 text-white px-2 py-2 rounded-xl sm:text-xs md:text-md lg:text-xl text-center font-bold transition-colors duration-200">
                   Rush Order
                 </button>
               </div>
@@ -77,7 +75,7 @@
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('tops')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('tops')"
-                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-5 lg:w-8 lg:h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">−</button>
+                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-8 lg:h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">−</button>
                   <button type="button" onclick="increaseQty('tops')"
                     class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-8 lg:h-8 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">+</button>
                 </div>

@@ -1,35 +1,12 @@
- const fullNameInput = document.getElementById('fullname');
+const fullNameInput = document.getElementById('fullname');
 const rushButton = document.getElementById('is_rushed');
+const barongqty = document.getElementById('barong-qty');
+const gownsqty = document.getElementById('gowns-qty');
+const curtains = document.getElementById('curtains-qty');
+const comforter = document.getElementById('comforter-qty');
 const rushCheckbox = document.getElementById('rushOrderCheckbox'); // New: Reference to checkbox
-// Function to update button state based on fullName input
-function updateButtonState() {
-  const isNameEmpty = fullNameInput.value.trim() === '';
-  rushButton.disabled = isNameEmpty;
 
-  if (isNameEmpty) {
-    rushButton.classList.remove('bg-red-500', 'hover:bg-red-600');
-    rushButton.classList.add('bg-gray-500', 'hover:bg-gray-600');
-
-    rushCheckbox.checked = false;
-  }
-}
-
-updateButtonState();
-fullNameInput.addEventListener('input', updateButtonState);
-rushButton.addEventListener('click', function(e) {
-  e.preventDefault();
-  if (this.disabled) return; 
-
-  this.classList.toggle('bg-gray-500');
-  this.classList.toggle('bg-red-500');
-  this.classList.toggle('hover:bg-gray-600');
-  this.classList.toggle('hover:bg-red-600');
-  
-  const isRushActive = this.classList.contains('bg-red-500');
-  rushCheckbox.checked = isRushActive;
-});
-
-
+// Moved these to top so they're available for updateButtonState()
 const quantities = {
   tops: 0,
   bottoms: 0,
@@ -56,10 +33,47 @@ const ClothesLabels = {
   comforter: 'Comforter'
 };
 
+// Function to update button state based on fullName input
+function updateButtonState() {
+  const isNameEmpty = fullNameInput.value.trim() === '';
+  
+  const hasBarong = quantities.barong > 0 || quantities.gowns > 0 || quantities.curtains > 0 || quantities.comforter >0 ;
+  
+  const shouldDisable = isNameEmpty || hasBarong;
+  rushButton.disabled = shouldDisable;
+
+  if (shouldDisable) {
+    rushButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+    rushButton.classList.add('bg-gray-500', 'hover:bg-gray-600');
+
+    rushCheckbox.checked = false;
+  }
+}
+
+updateButtonState();
+fullNameInput.addEventListener('input', updateButtonState);
+rushButton.addEventListener('click', function(e) {
+  e.preventDefault();
+  if (this.disabled) return; 
+
+  this.classList.toggle('bg-gray-500');
+  this.classList.toggle('bg-red-500');
+  this.classList.toggle('hover:bg-gray-600');
+  this.classList.toggle('hover:bg-red-600');
+  
+  const isRushActive = this.classList.contains('bg-red-500');
+  rushCheckbox.checked = isRushActive;
+});
+
 function increaseQty(clothes) {
   quantities[clothes]++;
   updateDisplay(clothes);
   updateSummary();
+  updateButtonState();
+
+  if (clothes === 'barong') {
+    console.log('Barong qty increased to:', quantities.barong);
+  }
 }
 
 function decreaseQty(clothes) {
@@ -67,6 +81,7 @@ function decreaseQty(clothes) {
     quantities[clothes]--;
     updateDisplay(clothes);
     updateSummary();
+    updateButtonState();
   }
 }
 
@@ -78,6 +93,7 @@ function handleQtyChange(clothes) {
     if (newValue >= 0) {
       quantities[clothes] = newValue; 
       updateSummary(); 
+      updateButtonState();
     } else {
       // Revert to previous value if negative or invalid
       qtyElement.innerText = quantities[clothes];
