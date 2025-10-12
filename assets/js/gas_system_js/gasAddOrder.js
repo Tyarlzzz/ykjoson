@@ -92,6 +92,12 @@ function cancelOrder() {
     document.getElementById('summary-notes').classList.add('italic');
 
     updateSummary();
+    
+    // // Go previous page (kung ano mapili)
+    // window.history.back();
+
+    // Go index page
+    window.location.href = '../Gas/index.php';
   }
 }
 
