@@ -2,13 +2,18 @@
     require '../layout/header.php';
     require_once '../database/Database.php';
     require_once '../Models/Models.php';
+    require_once '../Models/Order.php';
     require_once '../Models/Laundry.php';
 
     $database = new Database();
     $conn = $database->getConnection();
     Model::setConnection($conn);
 
+    // Get all laundry orders
     $laundry = Laundry::all();
+
+    // Get today's orders with customer details
+    $todaysOrders = Laundry::getTodaysOrders();
 ?>
 
 <main class="flex-1 overflow-x-hidden">
@@ -17,7 +22,7 @@
     </div>
     <div class="flex flex-col md:flex-row max-w-full mx-auto pt-6 ps-6 pe-6 items-center">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 w-full">
-            <a href=""> <!-- dito ung link ng view of orderlist kasi clickable toh-->
+            <a href="">
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="customerCircle w-12 h-12 rounded-full flex items-center justify-center">
@@ -125,9 +130,6 @@
                                 <path d="m65.953 85.742c0.5625 0.16797 1.1367 0.24219 1.7109 0.24219 1 0 2-0.25781 2.8945-0.74219 1.4102-0.77344 2.4531-2.0625 2.8945-3.6211l3.8945-13.348c0.45312-1.5625 0.27344-3.1953-0.51562-4.6211-0.77344-1.4102-2.0469-2.4375-3.6055-2.8945-1.5469-0.45312-3.1836-0.27344-4.6055 0.5-1.4258 0.77344-2.4531 2.0625-2.9102 3.6055l-3.8945 13.348c-0.45312 1.5625-0.27344 3.1953 0.5 4.6055 0.80469 1.4414 2.0938 2.4727 3.6367 2.9258zm-1.332-6.6953 3.8945-13.363c0.24219-0.81641 0.77344-1.4844 1.5156-1.8945 0.46875-0.25781 0.98438-0.39453 1.5156-0.39453 0.30469 0 0.60547 0.046875 0.89453 0.13672 0.81641 0.24219 1.4844 0.77344 1.8789 1.5 0.41016 0.74219 0.5 1.6055 0.27344 2.4258l-3.8945 13.348c-0.24219 0.81641-0.77344 1.4844-1.5156 1.8945-0.74219 0.41016-1.5898 0.5-2.4102 0.25781-0.81641-0.24219-1.4844-0.77344-1.8945-1.5156-0.41016-0.73047-0.5-1.5781-0.25781-2.3945z"/>
                                 <path d="m22.621 68.273 3.8945 13.363c0.77344 2.6367 3.1953 4.3633 5.8164 4.3633 0.5625 0 1.1367-0.074219 1.6953-0.24219 3.1953-0.9375 5.0469-4.3047 4.1211-7.5156l-3.8945-13.363c-0.9375-3.1953-4.3047-5.0469-7.5156-4.1055-1.5625 0.45312-2.832 1.4844-3.6055 2.8945-0.78516 1.4062-0.96484 3.0586-0.51172 4.6055zm3.0312-3.2266c0.39453-0.72656 1.0742-1.2734 1.8789-1.5 1.668-0.48438 3.4375 0.46875 3.9258 2.1523l3.8945 13.363c0.48438 1.6836-0.46875 3.4375-2.1523 3.9258-1.668 0.48438-3.4375-0.46875-3.9258-2.1523l-3.8945-13.348c-0.22656-0.83594-0.13672-1.6992 0.27344-2.4414z"/>
                                 <path d="m92.59 36.59h-2.6211c-0.86328-3.332-3.4375-5.9531-6.7891-6.9375 0.28906-1.1055 0.4375-2.2578 0.4375-3.4102 0-7.8047-6.6055-14.152-14.711-14.152-2.1211 0-4.1836 0.42578-6.0742 1.2578-0.21094-5.1836-4.668-9.332-10.09-9.332-5.1211 0-9.3633 3.6953-10 8.4688-2.4258-1.5898-5.3047-2.4688-8.2891-2.4688-8.1211 0-14.711 6.3633-14.711 14.168 0 1.7578 0.33203 3.4844 0.98437 5.0898-4.168 0.45312-7.5898 3.3945-8.6055 7.3164h-4.7109c-2.8047 0-5.0742 2.2734-5.0742 5.0742v6.6523c0 2.8047 2.2734 5.0742 5.0742 5.0742h0.51562l7.8047 30.805c1.7578 6.9531 8 11.805 15.168 11.805h38.191c7.168 0 13.41-4.8477 15.168-11.805l7.8047-30.805h0.53125c2.8047 0 5.0742-2.2734 5.0742-5.0742v-6.6484c0.015625-2.7891-2.2734-5.0781-5.0781-5.0781zm-70.742-4.4844c0.34766 0 0.68359 0.03125 1.0312 0.074219 0.54688 0.074218 1.1055-0.18359 1.4102-0.65234 0.30469-0.46875 0.30469-1.0742 0-1.5469-1.1055-1.7422-1.6836-3.7422-1.6836-5.7891 0-6.2109 5.3047-11.273 11.832-11.273 3.3789 0 6.6055 1.3789 8.832 3.7891 0.45312 0.48438 1.168 0.60547 1.7422 0.28906s0.87891-0.98438 0.71094-1.6211c-0.13672-0.54688-0.19531-1.0898-0.19531-1.6211 0-3.7734 3.2266-6.8477 7.1953-6.8477s7.2109 3.0742 7.2109 6.8477c0 0.62109-0.089844 1.2422-0.27344 1.832-0.18359 0.58984 0.046875 1.2266 0.54688 1.5898s1.168 0.36328 1.668 0.015625c2.0469-1.4375 4.4688-2.1953 7.0156-2.1953 6.5156 0 11.816 5.0625 11.816 11.273 0 1.3633-0.25781 2.6953-0.75781 3.9688-0.16797 0.41016-0.12109 0.87891 0.10547 1.2734 0.22656 0.37891 0.62109 0.63672 1.0625 0.69531 2.6953 0.33203 4.9258 2.0625 5.832 4.4258l-71.844 0.003907c1.0156-2.6836 3.668-4.5312 6.7422-4.5312zm59.605 51.379c-1.4375 5.668-6.5156 9.6211-12.363 9.6211h-38.195c-5.8477 0-10.926-3.9531-12.363-9.6211l-7.6211-30.09h78.184zm13.336-35.168c0 1.2109-0.98437 2.1836-2.1953 2.1836h-1.6367-0.015625-81.895-0.015625-1.6211c-1.2109 0-2.1836-0.98438-2.1836-2.1836v-6.6484c0-1.2109 0.98438-2.1836 2.1836-2.1836h85.195c1.2109 0 2.1953 0.98438 2.1953 2.1836l0.003907 6.6484z"/>
-                                <path d="m55.742 16.711c-2.3945 0-4.332 1.9375-4.332 4.332s1.9375 4.332 4.332 4.332c2.3945 0 4.332-1.9375 4.332-4.332 0-2.3906-1.9375-4.332-4.332-4.332zm0 5.7734c-0.80469 0-1.4375-0.65234-1.4375-1.4375 0-0.78906 0.65234-1.4375 1.4375-1.4375 0.80469 0 1.4375 0.65234 1.4375 1.4375 0.003906 0.78516-0.63281 1.4375-1.4375 1.4375z"/>
-                                <path d="m40.59 25.805c-2.3945 0-4.332 1.9375-4.332 4.332s1.9375 4.332 4.332 4.332c2.3945 0 4.332-1.9375 4.332-4.332 0.003906-2.3945-1.9375-4.332-4.332-4.332zm0 5.7695c-0.80469 0-1.4375-0.65234-1.4375-1.4375 0-0.78906 0.65234-1.4375 1.4375-1.4375 0.80469 0 1.4375 0.65234 1.4375 1.4375 0.003906 0.78906-0.63281 1.4375-1.4375 1.4375z"/>
-                                <path d="m5.2109 14.168c0 3.1836 2.5898 5.7734 5.7734 5.7734s5.7734-2.5898 5.7734-5.7734c0-3.1836-2.5742-5.7891-5.7578-5.7891s-5.7891 2.5898-5.7891 5.7891zm5.7891-2.8945c1.5898 0 2.8945 1.3047 2.8945 2.8945 0 1.5898-1.3047 2.8945-2.8945 2.8945s-2.8945-1.3047-2.8945-2.8945c0-1.5938 1.2891-2.8945 2.8945-2.8945z"/>
                             </svg>
                         </div>
                             <span class="font-[Switzer] mr-10">On Wash</span>
@@ -217,7 +219,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                             d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z"/>
                     </svg>
-                    <input id="customSearch" type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-64"/>
+                    <input id="customSearch" type="text" placeholder="Search by name..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-64"/>
                 </div>
                 <select id="statusFilter" class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     <option value="">All Status</option>
@@ -227,132 +229,98 @@
                     <option value="On Wash">On Wash</option>
                     <option value="On Dry">On Dry</option>
                     <option value="On Fold">On Fold</option>
+                    <option value="Pending">Pending</option>
                 </select>
                 <div>
-                    <a href=""> <!-- eto ung maximize button kasi clickable toh-->
+                    <a href="">
                         <svg class="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none" x="0px" y="0px">
                             <path d="M40.2196 2C39.115 2 38.2196 2.89543 38.2196 4C38.2196 5.10457 39.115 6 40.2196 6H55.1716L27.5858 33.5858C26.8047 34.3668 26.8047 35.6332 27.5858 36.4142C28.3668 37.1953 29.6332 37.1953 30.4142 36.4142L58 8.82843V24C58 25.1046 58.8954 26 60 26C61.1046 26 62 25.1046 62 24V4C62 2.89543 61.1046 2 60 2H40.2196Z" fill="black"/>
                             <path d="M52 37C52 35.8954 51.1046 35 50 35C48.8954 35 48 35.8954 48 37V56C48 57.1046 47.1046 58 46 58H8C6.89543 58 6 57.1046 6 56L6 18C6 16.8954 6.89543 16 8 16L27 16C28.1046 16 29 15.1046 29 14C29 12.8954 28.1046 12 27 12L8 12C4.68629 12 2 14.6863 2 18L2 56C2 59.3137 4.68629 62 8 62H46C49.3137 62 52 59.3137 52 56V37Z" fill="black"/>
-                    </svg>
+                        </svg>
                     </a>
                 </div>
             </div>
         </div>
         <div class="overflow-x-auto overflow-y-auto" style="height: 370px;">
-        <table id="ordersTable" class="w-full">
-            <thead>
-                <!-- SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN -->
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Phone Number</th>
-                    <th>Qty</th>
-                    <th>Status</th> <!--NAKA AUTO CHANGE COLOR NARIN TOH KAYA WALA NA KAYO PROBLEMA -->
-                </tr>
-            </thead>
-            <tbody>
-                <!-- 
-                //SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN
-                //PAKI DELETE UNG IBANG TR KASI NDI NMN NA NEED KAPAG NAG FOR EACH NA 
-                -->
-                <tr>
-                    <td>1</td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
-                    <td>Erik Soliman</td>
-                    <td>Brgy. San Isidro, Gapan City, Nueva Ecija</td>
-                    <td>09123456789</td>
-                    <td>3</td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
-                                ung pinaka qty nya na kulay red tapos ung text ng number ay kulay white (reference: Figma Prototype) -->
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Charles Jerald Capulong Carpio</td>
-                    <td>Dorm 6, Room 69, CLSU Philippines</td>
-                    <td>09987654321</td>
-                    <td>7</td>
-                    <td>For Delivery</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Danielle Quiambao</td>
-                    <td>Kapitan Pepe, Cabanatuan City, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>12</td>
-                    <td>On Fold</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Eurrie Elepantine</td>
-                    <td>Bagong Sikat, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>28</td>
-                    <td>On Wash</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>Aj Castro</td>
-                    <td>Bukang Liwayway, Bantu, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>16</td>
-                    <td>On Hold</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>Jaztin Zuriel Supsuo</td>
-                    <td>Sapang Cawayan, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>On Dry</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                                <tr>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                                <tr>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                                <tr>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-            </tbody>
-        </table>
+            <table id="ordersTable" class="w-full">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Phone Number</th>
+                        <th>Qty</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($todaysOrders && count($todaysOrders) > 0): ?>
+                        <?php $counter = 1; ?>
+                        <?php foreach ($todaysOrders as $order): ?>
+                            <tr data-name="<?php echo $order['fullname']; ?>" data-status="<?php echo $order['status']; ?>">
+                                <td><?php echo $counter++; ?></td>
+                                <td><?php echo $order['fullname']; ?></td>
+                                <td><?php echo $order['address']; ?></td>
+                                <td><?php echo $order['phone_number']; ?></td>
+                                <td><?php echo $order['total_items']; ?></td>
+                                <td>
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold <?php echo Laundry::getStatusColorClass($order['status']); ?>">
+                                        <?php echo $order['status']; ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" class="text-center py-8 text-gray-500 italic">
+                                No laundry today
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
-
 </main>
 
+<script>
+// Search functionality
+document.getElementById('customSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#ordersTable tbody tr');
+    
+    rows.forEach(row => {
+        if (row.cells.length === 1) return; // Skip empty state row
+        
+        const name = row.getAttribute('data-name').toLowerCase();
+        
+        if (name.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+
+// Status filter functionality
+document.getElementById('statusFilter').addEventListener('change', function(e) {
+    const selectedStatus = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#ordersTable tbody tr');
+    
+    rows.forEach(row => {
+        if (row.cells.length === 1) return; // Skip empty state row
+        
+        const status = row.getAttribute('data-status').toLowerCase();
+        
+        if (selectedStatus === '' || status === selectedStatus) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
 
 <?php
     require '../layout/footer.php';
