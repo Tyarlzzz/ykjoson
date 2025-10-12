@@ -75,29 +75,7 @@ document.getElementById('note').addEventListener('input', function (e) {
 
 function cancelOrder() {
   if (confirm('Are you sure you want to cancel this order?')) {
-    // Reset form
-    document.getElementById('orderForm').reset();
-
-    // Reset quantities
-    Object.keys(quantities).forEach(key => {
-      quantities[key] = 0;
-      updateDisplay(key);
-    });
-
-    // Reset summary
-    document.getElementById('summary-name').textContent = '-';
-    document.getElementById('summary-phone').textContent = '-';
-    document.getElementById('summary-address').textContent = '-';
-    document.getElementById('summary-notes').textContent = 'No notes';
-    document.getElementById('summary-notes').classList.add('italic');
-
-    updateSummary();
-    
-    // // Go previous page (kung ano mapili)
-    // window.history.back();
-
-    // Go index page
-    window.location.href = '../Gas/index.php';
+    window.location.back(); // Go back to the previous page
   }
 }
 
@@ -120,17 +98,7 @@ document.getElementById('orderForm').addEventListener('submit', function (e) {
     alert('Please select at least one gas cylinder');
     return false;
   }
-
-  // Submit when form is valid
-  return true;
 });
 
 // Initialize summary on page load
 updateSummary();
-
-// Initialize summary fields with default values
-document.getElementById('summary-name').textContent = '-';
-document.getElementById('summary-phone').textContent = '-';
-document.getElementById('summary-address').textContent = '-';
-document.getElementById('summary-notes').textContent = 'No notes';
-document.getElementById('summary-notes').classList.add('italic');

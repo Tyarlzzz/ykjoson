@@ -75,7 +75,7 @@ document.getElementById('note').addEventListener('input', function (e) {
 
 function cancelEdit() {
   if (confirm('Are you sure you want to cancel editing? All changes will be lost.')) {
-    window.location.href = 'orderList.php';
+    window.location.back(); // Go back to the previous page
   }
 }
 
@@ -104,9 +104,6 @@ document.getElementById('orderForm').addEventListener('submit', function (e) {
     alert('Please select at least one gas cylinder');
     return false;
   }
-
-  // Submit when form is valid
-  return true;
 });
 
 // Initialize summary on page load

@@ -80,7 +80,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="petron-qty"
+                    <span id="econo-qty"
                       class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
                   </div>
                   <div class="flex items-center gap-2">
@@ -103,7 +103,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="petron-qty"
+                    <span id="seagas-qty"
                       class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
                   </div>
                   <div class="flex items-center gap-2">
