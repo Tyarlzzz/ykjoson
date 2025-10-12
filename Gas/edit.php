@@ -69,21 +69,21 @@ $orderData = [
               <h2 class="text-lg font-medium text-gray-700">Brand Selection</h2>
               <div class="flex-1 h-px bg-black ml-4"></div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
               <!-- Petron -->
               <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300 p-4 rounded-xl">
+                class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
                 <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">Petron</h3>
                 <div
-                  class="w-full aspect-square max-w-[120px] sm:max-w-[140px] md:max-w-[176px] mx-auto p-2 sm:p-3 md:p-4 my-2 sm:my-3 md:my-4 border-2 border-gray-200 bg-white shadow-sm rounded-2xl flex items-center justify-center">
-                  <img src="../assets/images/petron.png" alt="Petron"
-                    class="w-full h-full max-w-[80px] max-h-[80px] sm:max-w-[100px] sm:max-h-[100px] md:max-w-[128px] md:max-h-[128px] object-contain">
+                  class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center">
+                  <img src="../assets/images/petron.png" alt="Petron" class="w-4/5 h-4/5 object-contain">
                 </div>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
                     <span id="petron-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-2xl"><?php echo $orderData['petronQty']; ?></span>
+                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $orderData['petronQty']; ?>
+                    </span>
                   </div>
                   <div class="flex items-center gap-2">
                     <button type="button" onclick="decreaseQty('petron')"
@@ -96,18 +96,18 @@ $orderData = [
 
               <!-- Econo -->
               <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300 p-4 rounded-xl">
+                class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
                 <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">Econo</h3>
                 <div
-                  class="w-full aspect-square max-w-[120px] sm:max-w-[140px] md:max-w-[176px] mx-auto p-2 sm:p-3 md:p-4 my-2 sm:my-3 md:my-4 border-2 border-gray-200 bg-white shadow-sm rounded-2xl flex items-center justify-center">
-                  <img src="../assets/images/econo.png" alt="Econo"
-                    class="w-full h-full max-w-[80px] max-h-[80px] sm:max-w-[100px] sm:max-h-[100px] md:max-w-[128px] md:max-h-[128px] object-contain">
+                  class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center">
+                  <img src="../assets/images/econo.png" alt="Econo" class="w-4/5 h-4/5 object-contain">
                 </div>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
                     <span id="econo-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-2xl"><?php echo $orderData['econoQty']; ?></span>
+                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $orderData['econoQty']; ?>
+                    </span>
                   </div>
                   <div class="flex items-center gap-2">
                     <button type="button" onclick="decreaseQty('econo')"
@@ -120,24 +120,24 @@ $orderData = [
 
               <!-- SeaGas -->
               <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent hover:border-blue-300 p-4 rounded-xl">
+                class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
                 <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">SeaGas</h3>
                 <div
-                  class="w-full aspect-square max-w-[120px] sm:max-w-[140px] md:max-w-[176px] mx-auto p-2 sm:p-3 md:p-4 my-2 sm:my-3 md:my-4 border-2 border-gray-200 bg-white shadow-sm rounded-2xl flex items-center justify-center">
-                  <img src="../assets/images/seagas.png" alt="SeaGas"
-                    class="w-full h-full max-w-[80px] max-h-[80px] sm:max-w-[100px] sm:max-h-[100px] md:max-w-[128px] md:max-h-[128px] object-contain">
+                  class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center">
+                  <img src="../assets/images/seagas.png" alt="SeaGas" class="w-4/5 h-4/5 object-contain">
                 </div>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
                     <span id="seagas-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-2xl"><?php echo $orderData['seagasQty']; ?></span>
+                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $orderData['seagasQty']; ?>
+                    </span>
                   </div>
                   <div class="flex items-center gap-2">
                     <button type="button" onclick="decreaseQty('seagas')"
-                      class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
+                      class="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
                     <button type="button" onclick="increaseQty('seagas')"
-                      class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
+                      class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
                   </div>
                 </div>
               </div>
@@ -146,7 +146,7 @@ $orderData = [
         </div>
 
         <!-- Right Side - Order Summary -->
-        <div class="w-80">
+        <div class="w-1/3">
           <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
             <h2 class="border-b border-black text-xl font-bold text-gray-800 mb-6 pb-2">Order Summary</h2>
 
@@ -227,19 +227,8 @@ $orderData = [
 
 </div> <!-- Close the flex container from header.php -->
 
-<style>
-  .item-card {
-    transition: all 0.2s ease;
-  }
-
-  .item-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  }
-</style>
-
 <script>
-  // Pass PHP data to JavaScript
+  // Pass PHP data to JS to load in Order Summary
   window.initialOrderData = {
     id: <?php echo json_encode($orderData['id']); ?>,
     petronQty: <?php echo $orderData['petronQty']; ?>,
@@ -247,6 +236,7 @@ $orderData = [
     seagasQty: <?php echo $orderData['seagasQty']; ?>
   };
 </script>
+
 <script src="../assets/js/gas_system_js/gasEditOrder.js"></script>
 
 <?php require '../layout/footer.php' ?>

@@ -47,59 +47,71 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
               <!-- Petron -->
-              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-1">
-                <h3 class="font-bold text-gray-700 text-xl">Petron</h3>
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
+                <h3 class="font-bold text-gray-700 text-lg">Petron</h3>
                 <div
                   class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center cursor-pointer"
                   onclick="increaseQty('petron')">
                   <img src="../assets/images/petron.png" alt="petron" class="w-4/5 h-4/5 object-contain">
                 </div>
-                <div class="flex items-center justify-center gap-2">
-                  <div class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="petron-qty" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none">0</span>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                  <div
+                    class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="petron-qty"
+                      class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
                   </div>
-                  <button type="button" onclick="decreaseQty('petron')"
-                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-5 lg:w-9 lg:h-9 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">−</button>
-                  <button type="button" onclick="increaseQty('petron')"
-                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-9 lg:h-9 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">+</button>
+                  <div class="flex items-center gap-2">
+                    <button type="button" onclick="decreaseQty('petron')"
+                      class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
+                    <button type="button" onclick="increaseQty('petron')"
+                      class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
+                  </div>
                 </div>
               </div>
 
               <!-- Econo -->
-              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-1">
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
                 <h3 class="font-bold text-gray-700 text-lg">Econo</h3>
                 <div
                   class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center cursor-pointer"
                   onclick="increaseQty('econo')">
                   <img src="../assets/images/econo.png" alt="econo" class="w-4/5 h-4/5 object-contain">
                 </div>
-                <div class="flex items-center justify-center gap-2">
-                  <div class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="econo-qty" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none">0</span>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                  <div
+                    class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="petron-qty"
+                      class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
                   </div>
-                  <button type="button" onclick="decreaseQty('econo')"
-                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-5 lg:w-9 lg:h-9 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">−</button>
-                  <button type="button" onclick="increaseQty('econo')"
-                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-9 lg:h-9 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">+</button>
+                  <div class="flex items-center gap-2">
+                    <button type="button" onclick="decreaseQty('econo')"
+                      class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
+                    <button type="button" onclick="increaseQty('econo')"
+                      class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
+                  </div>
                 </div>
               </div>
 
               <!-- SeaGas -->
-              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-1">
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
                 <h3 class="font-bold text-gray-700 text-lg">SeaGas</h3>
                 <div
                   class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center cursor-pointer"
                   onclick="increaseQty('seagas')">
                   <img src="../assets/images/seagas.png" alt="seagas" class="w-4/5 h-4/5 object-contain">
                 </div>
-                <div class="flex items-center justify-center gap-2">
-                  <div class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="seagas-qty" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none">0</span>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                  <div
+                    class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
+                    <span id="petron-qty"
+                      class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
                   </div>
-                  <button type="button" onclick="decreaseQty('seagas')"
-                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-5 lg:w-9 lg:h-9 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">−</button>
-                  <button type="button" onclick="increaseQty('seagas')"
-                    class="w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-9 lg:h-9 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl aspect-square p-0">+</button>
+                  <div class="flex items-center gap-2">
+                    <button type="button" onclick="decreaseQty('seagas')"
+                      class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-xl">−</button>
+                    <button type="button" onclick="increaseQty('seagas')"
+                      class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">+</button>
+                  </div>
                 </div>
               </div>
             </div>
