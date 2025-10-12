@@ -75,7 +75,7 @@ document.getElementById('note').addEventListener('input', function (e) {
 
 function cancelOrder() {
   if (confirm('Are you sure you want to cancel this order?')) {
-    window.location.back(); // Go back to the previous page
+    window.history.back(); // Go back to the previous page
   }
 }
 

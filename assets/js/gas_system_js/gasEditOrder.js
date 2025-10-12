@@ -75,7 +75,7 @@ document.getElementById('note').addEventListener('input', function (e) {
 
 function cancelEdit() {
   if (confirm('Are you sure you want to cancel editing? All changes will be lost.')) {
-    window.location.back(); // Go back to the previous page
+    window.history.back(); // Go back to the previous page
   }
 }
 
