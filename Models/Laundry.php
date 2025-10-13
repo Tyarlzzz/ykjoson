@@ -126,5 +126,34 @@ class Laundry extends Order {
                 return 'bg-gray-100 text-gray-800';
         }
     }
+
+    public static function getAllLaundryWithDetails() {
+        try {
+            $sql = "SELECT 
+                        o.order_id,
+                        o.status,
+                        c.fullname,
+                        o.created_at,
+                        c.address,
+                        c.phone_number,
+                        COALESCE(SUM(loi.quantity), 0) as total_quantity
+                    FROM orders o
+                    INNER JOIN customer c ON o.customer_id = c.customer_id
+                    LEFT JOIN laundry_ordered_items loi ON o.order_id = loi.order_id
+                    WHERE o.business_type = 'Laundry System'
+                    GROUP BY o.order_id, o.status, o.created_at, c.fullname, c.address, c.phone_number
+                    ORDER BY o.created_at DESC";
+            
+            $stmt = self::$conn->prepare($sql);
+            $stmt->execute();
+            
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return count($results) > 0 ? $results : null;
+            
+        } catch (PDOException $e) {
+            die("Error fetching laundry orders: " . $e->getMessage());
+        }
+    }
 }
 ?>

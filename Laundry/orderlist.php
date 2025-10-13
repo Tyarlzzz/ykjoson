@@ -1,5 +1,15 @@
 <?php
     require '../layout/header.php';
+    require_once '../database/Database.php';
+    require_once '../Models/Models.php';
+    require_once '../Models/Order.php';
+    require_once '../Models/Laundry.php';
+
+    $database = new Database();
+    $conn = $database->getConnection();
+    Model::setConnection($conn);
+
+    $Laundry = Laundry::getAllLaundryWithDetails();
 ?>
 
 <main class="flex-1 overflow-x-hidden overflow-y-hidden h-screen flex flex-col">
@@ -69,129 +79,27 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- 
-                //SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN
-                //PAKI DELETE UNG IBANG TR KASI NDI NMN NA NEED KAPAG NAG FOR EACH NA 
-                -->
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>1</td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
-                    <td><a href="edit.php?id=1">Erik Soliman</a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
-                    <td><a href="edit.php?id=1">Brgy. San Isidro, Gapan City, Nueva Ecija</a></td>
-                    <td><a href="edit.php?id=1">09123456789</a></td>
-                    <td>3</td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
-                                ung pinaka qty nya na kulay red tapos ung text ng number ay kulay white (reference: Figma Prototype) -->
-                    <td>Delivered</td>
-                </tr>
-                <!-- extras lng ung mga susunod -->
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>2</td>
-                    <td>Charles Jerald Capulong Carpio</td>
-                    <td>Dorm 6, Room 69, CLSU Philippines</td>
-                    <td>09987654321</td>
-                    <td>7</td>
-                    <td>For Delivery</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>3</td>
-                    <td>Danielle Quiambao</td>
-                    <td>Kapitan Pepe, Cabanatuan City, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>12</td>
-                    <td>On Fold</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>4</td>
-                    <td>Eurrie Elepantine</td>
-                    <td>Bagong Sikat, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>28</td>
-                    <td>On Wash</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>5</td>
-                    <td>Aj Castro</td>
-                    <td>Bukang Liwayway, Bantu, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>16</td>
-                    <td>On Hold</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>6</td>
-                    <td>Jaztin Zuriel Supsuo</td>
-                    <td>Sapang Cawayan, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>On Dry</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
-                    <tr>
-                    <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
-                    <td>7</td>
-                    <td>Jose Val Eowyn Laurente</td>
-                    <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-                    <td>09987654321</td>
-                    <td>32</td>
-                    <td>Delivered</td>
-                </tr>
+                <?php if ($Laundry && count($Laundry) > 0): ?>
+                                <?php $counter = 1; ?>
+                                <?php foreach ($Laundry as $order): ?>
+                                    <tr>
+                                        <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
+                                        <td><?php echo $counter++; ?></td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
+                                        <td><a href="edit.php?id=1"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
+                                        <td><a href="edit.php?id=1"><?php echo $order['address']; ?></a></td>
+                                        <td><a href="edit.php?id=1"><?php echo $order['phone_number']; ?></a></td>
+                                        <td><?php echo $order['total_quantity']; ?></td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
+                                                    ung pinaka qty nya na kulay red tapos ung text ng number ay kulay white (reference: Figma Prototype) -->
+                                        <td><?php echo $order['status']; ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                <?php else: ?>
+                  <tr>
+                      <td colspan="8" class="text-center py-8 text-gray-500 italic">
+                          No Laundry Orders Found.
+                      </td>
+                  </tr>
+                <?php endif; ?>
             </tbody>
         </table>
         </div>
