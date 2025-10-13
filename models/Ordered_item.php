@@ -1,6 +1,4 @@
 <?php
-
-
     require_once 'Model.php';
 
     class Ordered_item extends Model{
@@ -97,7 +95,4 @@
         }
         
     }   
-
-
-
 ?>
