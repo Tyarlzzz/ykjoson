@@ -257,7 +257,7 @@
                     <?php if ($todaysOrders && count($todaysOrders) > 0): ?>
                         <?php $counter = 1; ?>
                         <?php foreach ($todaysOrders as $order): ?>
-                            <tr data-name="<?php echo $order['fullname']; ?>" data-status="<?php echo $order['status']; ?>">
+                            <tr>
                                 <td><?php echo $counter++; ?></td>
                                 <td><?php echo $order['fullname']; ?></td>
                                 <td><?php echo $order['address']; ?></td>
