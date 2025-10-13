@@ -1,4 +1,17 @@
-<?php include '../layout/header.php';?>
+<?php
+    require '../layout/header.php';
+    require_once '../database/Database.php';
+    require_once '../Models/Models.php';
+    require_once '../Models/Order.php';
+    require_once '../Models/GasCustomer.php';
+    require_once '../Models/GasOrder.php';
+
+    $database = new Database();
+    $conn = $database->getConnection();
+    Model::setConnection($conn);
+
+    $gasOrders = GasOrder::getAllOrdersWithDetails();
+?>
 
 <main class=" font-[Switzer] flex-1 p-8">
   <div class="w-full px-6">
@@ -29,7 +42,7 @@
           <button
             class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 hover:bg-red-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg">
+            xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
               </path>
@@ -76,67 +89,34 @@
               <th class="p-4 rounded-tr-lg">Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">001</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Erik S. Soliman</td>
-              <td class="p-4 text-sm text-gray-500">San Nicolas, Gapan City</td>
-              <td class="p-4 text-sm text-gray-500">09123456789</td>
-              <td class="p-4 text-sm text-gray-500">Petron</td>
-              <td class="p-4 text-sm text-gray-500">1</td>
-              <td class="p-4">
-                <span class="bg-status-returned text-sm px-3 py-1 rounded font-medium">Returned</span>
-              </td>
-            </tr>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">002</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Danielle Gonzales Quilambao</td>
-              <td class="p-4 text-sm text-gray-500">San Jose City</td>
-              <td class="p-4 text-sm text-gray-500">09123456789</td>
-              <td class="p-4 text-sm text-gray-500">Econo</td>
-              <td class="p-4 text-sm text-gray-500">2</td>
-              <td class="p-4">
-                <span class="bg-status-pending text-sm px-4 py-1 rounded font-medium">Pending</span>
-              </td>
-            </tr>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">003</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Jose Val Eowyn Laurente</td>
-              <td class="p-4 text-sm text-gray-500">Bulacan, San Miguel City</td>
-              <td class="p-4 text-sm text-gray-500">09837488827</td>
-              <td class="p-4 text-sm text-gray-500">SeaGas</td>
-              <td class="p-4 text-sm text-gray-500">1</td>
-              <td class="p-4">
-                <span class="bg-status-delivered text-sm px-3 py-1 rounded font-medium">Delivered</span>
-              </td>
-            </tr>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">004</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Evrri Elefante</td>
-              <td class="p-4 text-sm text-gray-500">Nueva Ecija, Gapan City</td>
-              <td class="p-4 text-sm text-gray-500">09123456789</td>
-              <td class="p-4 text-sm text-gray-500">Petron</td>
-              <td class="p-4 text-sm text-gray-500">3</td>
-              <td class="p-4">
-                <span class="bg-status-returned text-sm px-3 py-1 rounded font-medium">Returned</span>
-              </td>
-            </tr>
-            <tr class="border-b border-gray-200">
-              <td class="p-4"><input type="checkbox" class="w-4 h-4 rounded text-[#CF0000] focus:ring-[#CF0000]"></td>
-              <td class="p-4 text-sm font-medium text-gray-700">005</td>
-              <td class="p-4 text-sm font-medium text-gray-700">Jaztin Supsup</td>
-              <td class="p-4 text-sm text-gray-500">Bantug, Bukang Liwayway City</td>
-              <td class="p-4 text-sm text-gray-500">09827371738</td>
-              <td class="p-4 text-sm text-gray-500">SeaGas</td>
-              <td class="p-4 text-sm text-gray-500">1</td>
-              <td class="p-4">
-                <span class="bg-status-borrowed text-sm px-3 py-1 rounded font-medium">Borrowed</span>
-              </td>
-            </tr>
+            <tbody>
+              <?php if ($gasOrders && count($gasOrders) > 0): ?>
+                  <?php $counter = 1; ?>
+                  <?php foreach ($gasOrders as $order): ?>
+                      <tr>
+                          <td class="p-4">
+                              <input type="checkbox">
+                          </td>
+                          <td><?php echo $counter++; ?></td>
+                          <td><?php echo $order['fullname']; ?></td>
+                          <td><?php echo $order['address']; ?></td>
+                          <td><?php echo $order['phone_number']; ?></td>
+                          <td><?php echo $order['brands'] ?? 'N/A'; ?></td>
+                          <td><?php echo $order['total_quantity']; ?></td>
+                          <td class="p-4">
+                              <span class="text-sm px-3 py-1 rounded font-medium <?php echo GasOrder::getStatusColorClass($order['status']); ?>">
+                                  <?php echo $order['status']; ?>
+                              </span>
+                          </td>
+                      </tr>
+                  <?php endforeach; ?>
+              <?php else: ?>
+                  <tr>
+                      <td colspan="8" class="text-center py-8 text-gray-500 italic">
+                          No gas orders found
+                      </td>
+                  </tr>
+              <?php endif; ?>
           </tbody>
         </table>
       </div>
