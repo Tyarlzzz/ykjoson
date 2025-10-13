@@ -98,9 +98,9 @@
                               <input type="checkbox">
                           </td>
                           <td><?php echo $counter++; ?></td>
-                          <td><?php echo $order['fullname']; ?></td>
-                          <td><?php echo $order['address']; ?></td>
-                          <td><?php echo $order['phone_number']; ?></td>
+                          <td><a href="edit.php?id=1"><?php echo $order['fullname']; ?></a></td> <!-- dito mo ilalagay ung link para maedit ung order nung customer, hanggang phone number pwede ma edit -->
+                          <td><a href="edit.php?id=1"><?php echo $order['address']; ?></a></td>
+                          <td><a href="edit.php?id=1"><?php echo $order['phone_number']; ?></a></td>
                           <td><?php echo $order['brands'] ?? 'N/A'; ?></td>
                           <td><?php echo $order['total_quantity']; ?></td>
                           <td class="p-4">
