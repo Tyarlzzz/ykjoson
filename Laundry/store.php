@@ -14,7 +14,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
         $db->beginTransaction();
 
-        // 1. CREATE CUSTOMER
         $customerData = [
             'fullname' => $_POST['fullname'],
             'address' => $_POST['address'],
@@ -32,8 +31,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             throw new Exception("Failed to save customer");
         }
 
-        // 2. CREATE ORDER
-        $user_id = 1; // Hardcoded for now - update later with session
+        $user_id = 1; 
         $isRushed = isset($_POST['rushOrder']) && $_POST['rushOrder'] === 'on' ? 1 : 0;
 
         $orderSql = "INSERT INTO orders (business_type, customer_id, user_id, order_date, status, is_rushed, note, created_at) 
@@ -56,8 +54,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             throw new Exception("Failed to create order");
         }
 
-        // 3. CREATE ORDER ITEMS
-        // Map form input names to product_code_id from database
         $items = [
             'topsQty' => [
                 'qty' => intval($_POST['topsQty'] ?? 0),
@@ -126,10 +122,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                 $orderedItemStmt->execute([
                     ':order_id' => $order_id,
                     ':product_code_id' => $product_code_id,
-                    ':quantity' => $data['qty'],  // Store the actual quantity
-                    ':weight_kg' => 0,      // Will be updated later when weighed
-                    ':price_per_kg' => 0,   // Will be calculated later based on weight
-                    ':total' => 0           // Will be calculated later
+                    ':quantity' => $data['qty'],
+                    ':weight_kg' => 0, 
+                    ':price_per_kg' => 0, 
+                    ':total' => 0   
                 ]);
 
                 $itemsInserted = true;
