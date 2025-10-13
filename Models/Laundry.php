@@ -58,15 +58,73 @@ class Laundry extends Order {
         return $borrowedOrders ? count($borrowedOrders) : 0;
     }
 
-
-        public static function countOnFold() {
+    public static function countOnFold() {
         $borrowedOrders = self::where('status', '=', 'OnFold');
         return $borrowedOrders ? count($borrowedOrders) : 0;
     }
 
-            public static function countDelivered() {
+    public static function countDelivered() {
         $borrowedOrders = self::where('status', '=', 'Delivered');
         return $borrowedOrders ? count($borrowedOrders) : 0;
+    }
+
+    public static function getTodaysOrders() {
+        try {
+            $today = date('Y-m-d');
+            
+            $sql = "SELECT 
+                        o.order_id,
+                        o.status,
+                        o.is_rushed,
+                        o.created_at,
+                        c.fullname,
+                        c.address,
+                        c.phone_number,
+                        COALESCE((SELECT SUM(loi.quantity) 
+                        FROM laundry_ordered_items loi
+                        WHERE loi.order_id = o.order_id), 0) as total_items
+                    FROM orders o
+                    INNER JOIN customer c ON o.customer_id = c.customer_id
+                    WHERE o.business_type = 'Laundry System'
+                    AND DATE(o.created_at) = :today
+                    ORDER BY o.created_at DESC";
+            
+            $stmt = self::$conn->prepare($sql);
+            $stmt->bindParam(':today', $today);
+            $stmt->execute();
+            
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return count($results) > 0 ? $results : null;
+            
+        } catch (PDOException $e) {
+            die("Error fetching today's orders: " . $e->getMessage());
+        }
+    }
+
+    public static function getStatusColorClass($status) {
+        switch($status) {
+            case 'Pending':
+                return 'bg-yellow-100 text-yellow-800';
+            case 'On Hold':
+            case 'OnHold':
+                return 'bg-yellow-100 text-yellow-800';
+            case 'On Wash':
+            case 'OnWash':
+                return 'bg-blue-100 text-blue-800';
+            case 'On Dry':
+            case 'OnDry':
+                return 'bg-orange-100 text-orange-800';
+            case 'On Fold':
+            case 'OnFold':
+                return 'bg-pink-100 text-pink-800';
+            case 'Delivered':
+                return 'bg-green-100 text-green-800';
+            case 'For Delivery':
+                return 'bg-purple-100 text-purple-800';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
     }
 }
 ?>
