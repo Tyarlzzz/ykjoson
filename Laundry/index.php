@@ -263,11 +263,7 @@
                                 <td><?php echo $order['address']; ?></td>
                                 <td><?php echo $order['phone_number']; ?></td>
                                 <td><?php echo $order['total_items']; ?></td>
-                                <td>
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold <?php echo Laundry::getStatusColorClass($order['status']); ?>">
-                                        <?php echo $order['status']; ?>
-                                    </span>
-                                </td>
+                                <td><?php echo $order['status']; ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
