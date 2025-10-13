@@ -284,44 +284,6 @@
 
 </main>
 
-<script>
-// Search functionality
-document.getElementById('customSearch').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('#ordersTable tbody tr');
-    
-    rows.forEach(row => {
-        if (row.cells.length === 1) return; // Skip empty state row
-        
-        const name = row.getAttribute('data-name').toLowerCase();
-        
-        if (name.includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-
-// Status filter functionality
-document.getElementById('statusFilter').addEventListener('change', function(e) {
-    const selectedStatus = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('#ordersTable tbody tr');
-    
-    rows.forEach(row => {
-        if (row.cells.length === 1) return; // Skip empty state row
-        
-        const status = row.getAttribute('data-status').toLowerCase();
-        
-        if (selectedStatus === '' || status === selectedStatus) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-</script>
-
 <?php
     require '../layout/footer.php';
 ?>
