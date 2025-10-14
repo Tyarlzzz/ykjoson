@@ -6,8 +6,8 @@ const updateBrandImage = document.getElementById('updateBrandImage');
 const updateBrandName = document.getElementById('updateBrandName');
 const stockInput = document.getElementById('stockInput');
 const priceInput = document.getElementById('priceInput');
+const brandInput = document.getElementById('brandInput');
 const cancelBtn = document.getElementById('cancelBtn');
-const confirmBtn = document.getElementById('confirmBtn');
 
 let selectedCard = null;
 let selectedBrand = null;
@@ -34,6 +34,13 @@ const brandNames = {
     seagas: 'SeaGas'
 };
 
+// Low stock thresholds
+const lowStockThresholds = {
+    petron: 50,
+    econo: 50,
+    seagas: 15
+};
+
 // Card selection functionality
 gasCards.forEach(card => {
     card.addEventListener('click', function () {
@@ -53,6 +60,7 @@ gasCards.forEach(card => {
         updateBrandImage.src = brandImages[brand];
         updateBrandImage.alt = brandNames[brand];
         updateBrandName.textContent = brandNames[brand];
+        brandInput.value = brand;
         stockInput.value = currentStock;
         priceInput.value = currentPrice;
 
@@ -75,24 +83,6 @@ cancelBtn.addEventListener('click', function () {
     selectedBrand = null;
 });
 
-// Confirm button functionality
-confirmBtn.addEventListener('click', function () {
-    if (!selectedCard || !selectedBrand) return;
-
-    // Update stock and price in the card
-    const newStock = parseInt(stockInput.value);
-    const newPrice = parseInt(priceInput.value);
-
-    selectedCard.dataset.stock = newStock;
-    selectedCard.dataset.price = newPrice;
-
-    // Update displayed values
-    document.getElementById(`${selectedBrand}-stock`).textContent = newStock;
-    document.getElementById(`${selectedBrand}-price`).textContent = newPrice;
-
-    cancelBtn.click();
-});
-
 // Automatically converts negative inputs to zero
 priceInput.addEventListener('input', function () {
     if (this.value < 0) {
@@ -105,4 +95,28 @@ stockInput.addEventListener('input', function () {
     if (this.value < 0) {
         this.value = 0;
     }
+});
+
+// Function to update low stock warning
+function updateLowStockWarning(brand, stock) {
+    const card = document.querySelector(`.gas-card[data-brand="${brand}"]`);
+    const warningDiv = card.querySelector('.low-stock-warning');
+    
+    if (!warningDiv) return;   // If element doesn't exist, exit
+    
+    // Check stocks if is <= threshold
+    if (stock <= lowStockThresholds[brand]) {
+        warningDiv.classList.remove('hidden');
+    } else {
+        warningDiv.classList.add('hidden');
+    }
+}
+
+// Initialize low stock warnings on page load
+document.addEventListener('DOMContentLoaded', function() {
+    gasCards.forEach(card => {
+        const brand = card.dataset.brand;
+        const stock = parseInt(card.dataset.stock);
+        updateLowStockWarning(brand, stock);
+    });
 });
