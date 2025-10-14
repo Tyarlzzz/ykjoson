@@ -57,15 +57,15 @@ function updateSummary() {
 
 // Update summary when input fields change
 document.getElementById('fullname').addEventListener('input', function (e) {
-  document.getElementById('summary-name').textContent = e.target.value || '-';
+  document.getElementById('summary-name').textContent = e.target.value || '';
 });
 
 document.getElementById('phone_number').addEventListener('input', function (e) {
-  document.getElementById('summary-phone').textContent = e.target.value || '-';
+  document.getElementById('summary-phone').textContent = e.target.value || '';
 });
 
 document.getElementById('address').addEventListener('input', function (e) {
-  document.getElementById('summary-address').textContent = e.target.value || '-';
+  document.getElementById('summary-address').textContent = e.target.value || '';
 });
 
 document.getElementById('note').addEventListener('input', function (e) {
