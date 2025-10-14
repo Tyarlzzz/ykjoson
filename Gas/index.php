@@ -1,18 +1,16 @@
 <?php
-require_once '../database/Database.php';
-require_once '../Models/GasCustomer.php';
-require_once '../Models/GasOrder.php';
-require_once '../Models/Models.php';
+  require_once '../layout/header.php';
+  require_once '../database/Database.php';
+  require_once '../Models/GasCustomer.php';
+  require_once '../Models/GasOrder.php';
+  require_once '../Models/Models.php';
 
-$database = new Database();
-$conn = $database->getConnection();
-Model::setConnection($conn);
+  $database = new Database();
+  $conn = $database->getConnection();
+  Model::setConnection($conn);
 
-$gas = Gas::all();
-
+  $todaysOrders = Gas::getTodaysOrders();
 ?>
-
-<?php require '../layout/header.php' ?>
 
 <main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-6">
   <div class="w-full">
@@ -209,77 +207,35 @@ $gas = Gas::all();
       <div class="overflow-x-auto overflow-y-auto" style="height: 370px;">
         <table id="ordersTable" class="w-full">
           <thead>
-            <!-- SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN -->
             <tr>
               <th>#</th>
               <th>Name</th>
               <th>Location</th>
               <th>Phone Number</th>
               <th>Qty</th>
-              <th>Status</th> <!--NAKA AUTO CHANGE COLOR NARIN TOH KAYA WALA NA KAYO PROBLEMA -->
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            <!-- 
-                //SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN
-                //PAKI DELETE UNG IBANG TR KASI NDI NMN NA NEED KAPAG NAG FOR EACH NA 
-                -->
-            <tr>
-              <td>1</td>
-              <td>Erik Soliman</td>
-              <td>Brgy. San Isidro, Gapan City, Nueva Ecija</td>
-              <td>09123456789</td>
-              <td>3</td>
-              <td>Delivered</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Charles Jerald Capulong Carpio</td>
-              <td>Dorm 6, Room 69, CLSU Philippines</td>
-              <td>09987654321</td>
-              <td>7</td>
-              <td>Pending</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Danielle Quiambao</td>
-              <td>Kapitan Pepe, Cabanatuan City, Nueva Ecija</td>
-              <td>09987654321</td>
-              <td>12</td>
-              <td>Returned</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>Eurrie Elepantine</td>
-              <td>Bagong Sikat, Science City of Munoz, Nueva Ecija</td>
-              <td>09987654321</td>
-              <td>28</td>
-              <td>Returned</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>Aj Castro</td>
-              <td>Bukang Liwayway, Bantu, Science City of Munoz, Nueva Ecija</td>
-              <td>09987654321</td>
-              <td>16</td>
-              <td>Borrowed</td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>Jaztin Zuriel Supsuo</td>
-              <td>Sapang Cawayan, Bantug, Science City of Munoz, Nueva Ecija</td>
-              <td>09987654321</td>
-              <td>32</td>
-              <td>Borrowed</td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td>Jose Val Eowyn Laurente</td>
-              <td>Bukang Liwayway, Bantug, Science City of Munoz, Nueva Ecija</td>
-              <td>09987654321</td>
-              <td>32</td>
-              <td>Delivered</td>
-            </tr>
+            <?php if ($todaysOrders && count($todaysOrders) > 0): ?>
+              <?php $counter = 1; ?>
+              <?php foreach ($todaysOrders as $order): ?>
+                <tr>
+                  <td><?php echo $counter++; ?></td>
+                  <td><?php echo $order['fullname']; ?></td>
+                  <td><?php echo $order['address']; ?></td>
+                  <td><?php echo $order['phone_number']; ?></td>
+                  <td><?php echo $order['total_quantity']; ?></td>
+                  <td><?php echo $order['status']; ?></td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
+    <tr>
+        <td colspan="6" class="text-center py-8 text-gray-500 italic">
+            No Gas order today
+        </td>
+    </tr>
+<?php endif; ?>
           </tbody>
         </table>
       </div>
