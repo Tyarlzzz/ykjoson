@@ -12,12 +12,13 @@
       <a href="updateInventory.php"
         class="px-8 py-1 bg-red-600 text-white font-semibold rounded-t-2xl z-0">Inventory</a>
       <a href="salesReport.php"
-        class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Sales
-        Report</a>
+        class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Sales Report</a>
       <a href="manageRiders.php"
         class="px-10 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Riders</a>
       <a href="archived.php"
         class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Archived</a>
+      <a href="expenses.php"
+        class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Expenses</a>
     </div>
 
     <!-- Container -->
@@ -115,7 +116,7 @@
                   class="block text-sm font-medium text-gray-700 uppercase tracking-wider mb-1">Price</label>
                 <input type="number" id="priceInput"
                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-lg"
-                  placeholder="Enter price" min="0" step="0.01">
+                  placeholder="Enter price" min="0">
               </div>
             </div>
 
@@ -135,144 +136,5 @@
   </div>
 </main>
 
-<script>
-
-  // Gas card selection and update functionality
-  const gasCards = document.querySelectorAll('.gas-card');
-  const updateForm = document.getElementById('updateForm');
-  const chooseText = document.getElementById('chooseText');
-  const updateBrandImage = document.getElementById('updateBrandImage');
-  const updateBrandName = document.getElementById('updateBrandName');
-  const stockInput = document.getElementById('stockInput');
-  const priceInput = document.getElementById('priceInput');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const confirmBtn = document.getElementById('confirmBtn');
-
-  let selectedCard = null;
-  let selectedBrand = null;
-
-  // Brand images
-  const brandImages = {
-    petron: '../../assets/images/petron.png',
-    econo: '../../assets/images/econo.png',
-    seagas: '../../assets/images/seagas.png'
-  };
-
-  // Brand names
-  const brandNames = {
-    petron: 'Petron',
-    econo: 'Econo',
-    seagas: 'SeaGas'
-  };
-
-  // Card selection functionality
-  gasCards.forEach(card => {
-    card.addEventListener('click', function () {
-      const brand = this.dataset.brand;
-      const currentStock = this.dataset.stock;
-      const currentPrice = this.dataset.price;
-
-      // Reset all cards
-      gasCards.forEach(c => {
-        c.classList.remove('bg-red-100', 'border-red-300');
-        c.classList.add('border-gray-200');
-      });
-
-      // Highlight selected card
-      this.classList.add('bg-red-100', 'border-red-300');
-      this.classList.remove('border-gray-200');
-
-      // Update form
-      selectedCard = this;
-      selectedBrand = brand;
-      updateBrandImage.src = brandImages[brand];
-      updateBrandImage.alt = brandNames[brand];
-      updateBrandName.textContent = brandNames[brand];
-      stockInput.value = currentStock;
-      priceInput.value = currentPrice;
-
-      // Show form and hide instruction text
-      chooseText.classList.add('hidden');
-      updateForm.classList.remove('hidden');
-    });
-  });
-
-  // Cancel button
-  cancelBtn.addEventListener('click', function () {
-    // reset selection effects
-    gasCards.forEach(card => {
-      card.classList.remove('bg-red-100', 'border-red-300');
-      card.classList.add('border-gray-200');
-    });
-
-    // hide update form and text
-    updateForm.classList.add('hidden');
-    chooseText.classList.remove('hidden');
-
-    // reset variables
-    selectedCard = null;
-    selectedBrand = null;
-  });
-
-  // Confirm button functionality
-  confirmBtn.addEventListener('click', function () {
-    if (!selectedCard || !selectedBrand) return;
-
-    // Update stock and price in the card
-    const newStock = parseInt(stockInput.value);
-    const newPrice = parseFloat(priceInput.value).toFixed(2);
-
-    selectedCard.dataset.stock = newStock;
-    selectedCard.dataset.price = newPrice;
-
-    // Update displayed values
-    document.getElementById(`${selectedBrand}-stock`).textContent = newStock;
-    document.getElementById(`${selectedBrand}-price`).textContent = newPrice;
-
-    // reset the form
-    cancelBtn.click();
-
-  });
-
-  // Input validation and formatting
-  priceInput.addEventListener('input', function () {
-    let value = this.value;
-    if (value.includes('.')) {
-      const parts = value.split('.');
-      if (parts[1] && parts[1].length > 2) {
-        this.value = parts[0] + '.' + parts[1].substring(0, 2);
-      }
-    }
-  });
-
-  stockInput.addEventListener('input', function () {
-    if (this.value < 0) {
-      this.value = 0;
-    }
-  });
-
-  // Form validation feedback
-  function addInputValidation() {
-    [stockInput, priceInput].forEach(input => {
-      input.addEventListener('blur', function () {
-        if (this.value === '' || (this.type === 'number' && this.value < 0)) {
-          this.classList.add('border-red-500');
-          this.classList.remove('border-gray-300');
-        } else {
-          this.classList.remove('border-red-500');
-          this.classList.add('border-gray-300');
-        }
-      });
-
-      input.addEventListener('focus', function () {
-        this.classList.remove('border-red-500');
-        this.classList.add('border-red-500');
-      });
-    });
-  }
-
-  // Initialize input validation
-  addInputValidation();
-</script>
-
+<script src="../assets/js/gas_system_js/updateInventory.js"></script>
 <?php include '../layout/footer.php'; ?>
