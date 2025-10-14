@@ -84,7 +84,6 @@
               <th class="p-4">Name</th>
               <th class="p-4">Location</th>
               <th class="p-4">Phone Number</th>
-              <th class="p-4">Brand</th>
               <th class="p-4">Qty</th>
               <th class="p-4 rounded-tr-lg">Status</th>
             </tr>
@@ -101,7 +100,6 @@
                           <td><a href="edit.php?id=1"><?php echo $order['fullname']; ?></a></td> <!-- dito mo ilalagay ung link para maedit ung order nung customer, hanggang phone number pwede ma edit -->
                           <td><a href="edit.php?id=1"><?php echo $order['address']; ?></a></td>
                           <td><a href="edit.php?id=1"><?php echo $order['phone_number']; ?></a></td>
-                          <td><?php echo $order['brands'] ?? 'N/A'; ?></td>
                           <td><?php echo $order['total_quantity']; ?></td>
                           <td class="p-4">
                               <span class="text-sm px-3 py-1 rounded font-medium <?php echo GasOrder::getStatusColorClass($order['status']); ?>">
