@@ -1,6 +1,6 @@
 <?php
     require_once '../database/Database.php';
-    require_once '../Models/Gas.php';
+    require_once '../Models/GasCustomer.php';
     include '../layout/header.php';
 
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
