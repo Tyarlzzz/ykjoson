@@ -6,5 +6,6 @@
     <script src="../assets/js/laundry_system_js/laundryAddOrder.js"></script>
     <script src="../assets/js/gas_system_js/gasAddOrder.js"></script>
     <script src="../assets/js/orderlistDatatables.js"></script>
+    <script src="../assets/js/laundry_system_js/pricing.js"></script>
 </body>
 </html>
