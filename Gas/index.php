@@ -167,119 +167,68 @@
     </div>
 
     <!-- START NG TABLE -->
-    <div class="md:flex-row max-w-full mx-auto p-6 bg-white rounded-xl shadow-lg px-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span
-            class="font-[Switzer] text-sm"><?php echo date("F j, Y"); ?></span></h2>
-        <div class="flex items-center space-x-3">
-          <div class="relative">
-            <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
-            </svg>
-            <input id="customSearch" type="text" placeholder="Search..."
-              class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-64" />
-          </div>
-          <select id="statusFilter"
-            class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <option value="">All Status</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Pending">Pending</option>
-            <option value="Borrowed">Borrowed</option>
-            <option value="Returned">Returned</option>
-          </select>
-          <div>
-            <a href=""> <!-- eto ung maximize button kasi clickable toh-->
-              <svg class="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none"
-                x="0px" y="0px">
-                <path
-                  d="M40.2196 2C39.115 2 38.2196 2.89543 38.2196 4C38.2196 5.10457 39.115 6 40.2196 6H55.1716L27.5858 33.5858C26.8047 34.3668 26.8047 35.6332 27.5858 36.4142C28.3668 37.1953 29.6332 37.1953 30.4142 36.4142L58 8.82843V24C58 25.1046 58.8954 26 60 26C61.1046 26 62 25.1046 62 24V4C62 2.89543 61.1046 2 60 2H40.2196Z"
-                  fill="black" />
-                <path
-                  d="M52 37C52 35.8954 51.1046 35 50 35C48.8954 35 48 35.8954 48 37V56C48 57.1046 47.1046 58 46 58H8C6.89543 58 6 57.1046 6 56L6 18C6 16.8954 6.89543 16 8 16L27 16C28.1046 16 29 15.1046 29 14C29 12.8954 28.1046 12 27 12L8 12C4.68629 12 2 14.6863 2 18L2 56C2 59.3137 4.68629 62 8 62H46C49.3137 62 52 59.3137 52 56V37Z"
-                  fill="black" />
-              </svg>
-            </a>
-          </div>
+    <div class="md:flex-row max-w-full mx-auto p-6 bg-white rounded-xl shadow-lg ps-6 pe-6 mt-6 ms-6 me-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span class="font-[Switzer] text-sm"><?php echo date("F j, Y");?></span></h2>
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" 
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z"/>
+                    </svg>
+                    <input id="customSearch" type="text" placeholder="Search by name..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-64"/>
+                </div>
+                <select id="statusFilter" class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <option value="">All Status</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Borrowed">Borrowed</option>
+                    <option value="Returned">Returned</option>
+                </select>
+                <div>
+                    <a href="">
+                        <svg class="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none" x="0px" y="0px">
+                            <path d="M40.2196 2C39.115 2 38.2196 2.89543 38.2196 4C38.2196 5.10457 39.115 6 40.2196 6H55.1716L27.5858 33.5858C26.8047 34.3668 26.8047 35.6332 27.5858 36.4142C28.3668 37.1953 29.6332 37.1953 30.4142 36.4142L58 8.82843V24C58 25.1046 58.8954 26 60 26C61.1046 26 62 25.1046 62 24V4C62 2.89543 61.1046 2 60 2H40.2196Z" fill="black"/>
+                            <path d="M52 37C52 35.8954 51.1046 35 50 35C48.8954 35 48 35.8954 48 37V56C48 57.1046 47.1046 58 46 58H8C6.89543 58 6 57.1046 6 56L6 18C6 16.8954 6.89543 16 8 16L27 16C28.1046 16 29 15.1046 29 14C29 12.8954 28.1046 12 27 12L8 12C4.68629 12 2 14.6863 2 18L2 56C2 59.3137 4.68629 62 8 62H46C49.3137 62 52 59.3137 52 56V37Z" fill="black"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="overflow-x-auto overflow-y-auto" style="height: 370px;">
-        <table id="ordersTable" class="w-full">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Location</th>
-              <th>Phone Number</th>
-              <th>Qty</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php if ($todaysOrders && count($todaysOrders) > 0): ?>
-              <?php $counter = 1; ?>
-              <?php foreach ($todaysOrders as $order): ?>
-                <tr>
-                  <td><?php echo $counter++; ?></td>
-                  <td><?php echo $order['fullname']; ?></td>
-                  <td><?php echo $order['address']; ?></td>
-                  <td><?php echo $order['phone_number']; ?></td>
-                  <td><?php echo $order['total_quantity']; ?></td>
-                  <td><?php echo $order['status']; ?></td>
-                </tr>
-              <?php endforeach; ?>
-            <?php else: ?>
-    <tr>
-        <td colspan="6" class="text-center py-8 text-gray-500 italic">
-            No Gas order today
-        </td>
-    </tr>
-<?php endif; ?>
-          </tbody>
-        </table>
-      </div>
+        <div class="overflow-x-auto overflow-y-auto" style="height: 370px;">
+            <table id="ordersTable" class="w-full">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Phone Number</th>
+                        <th>Qty</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($todaysOrders && count($todaysOrders) > 0): ?>
+                        <?php $counter = 1; ?>
+                        <?php foreach ($todaysOrders as $order): ?>
+                            <tr>
+                                <td><?php echo $counter++; ?></td>
+                                <td><?php echo $order['fullname']; ?></td>
+                                <td><?php echo $order['address']; ?></td>
+                                <td><?php echo $order['phone_number']; ?></td>
+                                <td><?php echo $order['total_quantity']; ?></td>
+                                <td><?php echo $order['status']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
 </main>
 
-<!-- Chart.js Library (local file) -->
-<script src="../assets/js/chart.umd.min.js"></script>
-
-<script>
-  // Initialize Pie Chart
-  const ctx = document.getElementById('brandsPieChart').getContext('2d');
-  const brandsPieChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Petron', 'Econo', 'SeaGas'],
-      datasets: [{
-        data: [60, 25, 15],
-        backgroundColor: [
-          '#EF4444', // Red for Petron
-          '#3B82F6', // Blue for Econo
-          '#22C55E'  // Green for SeaGas
-        ],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: {
-          display: false // Hide default legend since we have custom legend
-        },
-        tooltip: {
-          callbacks: {
-            label: function (context) {
-              return context.label + ': ' + context.parsed + '%';
-            }
-          }
-        }
-      }
-    }
-  });
-</script>
+  <script src="../assets/js/chart.umd.min.js"></script>
 
 <?php require '../layout/footer.php' ?>

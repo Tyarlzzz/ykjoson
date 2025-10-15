@@ -7,5 +7,6 @@
     <script src="../assets/js/gas_system_js/gasAddOrder.js"></script>
     <script src="../assets/js/orderlistDatatables.js"></script>
     <script src="../assets/js/laundry_system_js/pricing.js"></script>
+    <script src="../assets/js/gas_system_js/gasPieChart.js"></script>
 </body>
 </html>

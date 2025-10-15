@@ -17,10 +17,27 @@
                     ]
                 });
 
+                var currentPath = window.location.pathname;
+                var isGasSystem = currentPath.includes('/Gas/');
+
+
                 $('#orderlistTable tbody tr').each(function() {
                     var statusBox = $(this).find('td:last');
-                    var statusText = statusBox.text().trim();
+                    var statusText = statusBox.text().trim().toLowerCase();
+                    var idBox = $(this).find('td:first');
 
+
+                if (isGasSystem) {
+                    if(statusText === 'delivered') {
+                        statusBox.addClass('bg-[#D1F7EA] text-[#17CF93] font-semibold font-[Outfit] rounded-lg p-4 text-center');
+                    } else if(statusText === 'pending') {
+                        statusBox.addClass('bg-[#F7F6D1] text-[#D3C30E] font-semibold font-[Outfit] rounded-lg p-4 text-center');
+                    } else if(statusText === 'borrowed') {
+                        statusBox.addClass('bg-[#F7DED1] text-[#D33F0E] font-semibold font-[Outfit] rounded-lg p-4 text-center');
+                    } else if(statusText === 'returned') {
+                        statusBox.addClass('bg-[#E6D1F7] text-[#C60ED3] font-semibold font-[Outfit] rounded-lg p-4 text-center');
+                    }
+                } else {
                     if(statusText === 'Delivered') {
                         statusBox.addClass('bg-[#D1F7EA] text-[#17CF93] font-semibold font-[Outfit] rounded-lg p-4 text-center');
                     } else if(statusText === 'For Delivery') {
@@ -34,8 +51,8 @@
                     } else if(statusText === 'On Fold') {
                         statusBox.addClass('bg-[#E6D1F7] text-[#C60ED3] font-semibold font-[Outfit] rounded-lg p-4 text-center');
                     }
-                })
-
+                }
+            })
                 var allSelected = false;
                 $('.select-btn').on('click', function() {
                     allSelected = !allSelected;
