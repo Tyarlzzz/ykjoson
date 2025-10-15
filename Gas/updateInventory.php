@@ -171,6 +171,7 @@
               </div>
             </div>
           </div>
+        </div>
 
         <!-- Select Brand -->
         <div class="text-center text-gray-600 text-lg" id="chooseText">
