@@ -1,7 +1,7 @@
 <?php
 
 
-    require_once 'Model.php';
+    require_once 'Models.php';
 
     class Item_allotment extends Model{
         protected static $table = "item_allotment"; //edit based sa pangalan ng table sa database

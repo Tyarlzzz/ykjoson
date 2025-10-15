@@ -1,7 +1,7 @@
 <?php
 
 
-    require_once 'Model.php';
+    require_once 'Models.php';
 
     class Assigned_Delivery extends Model{
         protected static $table = "assigned_deliveries"; //edit based sa pangalan ng table sa database

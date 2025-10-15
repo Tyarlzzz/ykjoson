@@ -1,5 +1,5 @@
 <?php
-    require_once 'Model.php';
+    require_once 'Models.php';
 
     class Ordered_item extends Model{
         protected static $table = "ordered_items"; //edit based sa pangalan ng table sa database
