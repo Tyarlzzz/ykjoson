@@ -57,7 +57,7 @@
                                 <path d="M21.586,67.414a2,2,0,0,0,2.828-2.828L22,62.172V58a2,2,0,0,0-4,0v5a2,2,0,0,0,.586,1.414Z"/>
                             </svg>
                         </div>
-                        <span class="font-[Switzer] mr-10">Pending Deliveries</span>
+                        <span class="font-[Switzer] mr-10">For Delivery</span>
                     </div>
                     <div class="font-['Outfit'] font-bold text-3xl ms-4 mb-[1.45rem]">
                         <?php

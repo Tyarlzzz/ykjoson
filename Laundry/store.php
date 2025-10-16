@@ -43,7 +43,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             ':customer_id' => $customer_id,
             ':user_id' => $user_id,
             ':order_date' => date('Y-m-d H:i:s'),
-            ':status' => 'Pending',
+            ':status' => 'On Hold',
             ':is_rushed' => $isRushed,
             ':note' => $_POST['note'] ?? ''
         ]);
