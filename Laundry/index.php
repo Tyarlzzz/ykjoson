@@ -38,13 +38,13 @@
                         </div>
                         <span class="font-[Switzer] mr-10">Total Customers</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-3xl ms-1">
-                        <?php
-                        $totalCustomers = count(Laundry::all());
-                        echo $totalCustomers;
-                        ?>
-                    </div>
-                    <div class="font-[Switzer] text-sm text-gray-500 mt-1">Today</div>
+                        <div class="font-['Outfit'] font-bold text-3xl ms-3">
+                            <?php
+                            $totalCustomers = count(Laundry::all());
+                            echo $totalCustomers;
+                            ?>
+                        </div>
+                    <div class="font-[Switzer] text-sm text-gray-500 mt-1 ms-1">Today</div>
                 </div>
             </a>
             <a href="">
