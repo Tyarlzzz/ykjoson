@@ -1,27 +1,27 @@
 <?php
-  require_once '../layout/header.php';
-  require_once '../database/Database.php';
-  require_once '../Models/GasCustomer.php';
-  require_once '../Models/GasOrder.php';
-  require_once '../Models/Models.php';
+require_once '../layout/header.php';
+require_once '../database/Database.php';
+require_once '../Models/GasCustomer.php';
+require_once '../Models/GasOrder.php';
+require_once '../Models/Models.php';
 
-  $database = new Database();
-  $conn = $database->getConnection();
-  Model::setConnection($conn);
+$database = new Database();
+$conn = $database->getConnection();
+Model::setConnection($conn);
 
-  $todaysOrders = Gas::getTodaysOrders();
+$todaysOrders = Gas::getTodaysOrders();
 ?>
 
 <main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-6">
   <div class="w-full">
     <!-- Header -->
-    <div class="mb-8 flex justify-between items-center">
+    <div class="mx-8 flex justify-between items-center">
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Point of Sale System</h1>
       <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
     </div>
 
     <!-- Statistics Cards Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.7fr_1.7fr_3fr_1fr] gap-5 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.7fr_1.7fr_3fr_1fr] gap-5 m-6">
       <!-- Left Column -->
       <div class="flex flex-col justify-between">
         <!-- Total Customer Card -->
@@ -35,8 +35,8 @@
           </div>
           <div class="text-3xl font-bold text-gray-900">
             <?php
-              $totalCustomers = count(Gas::all());
-              echo $totalCustomers;
+            $totalCustomers = count(Gas::all());
+            echo $totalCustomers;
             ?>
           </div>
           <div class="text-xs text-gray-500 mt-1">Today</div>
@@ -168,67 +168,73 @@
 
     <!-- START NG TABLE -->
     <div class="md:flex-row max-w-full mx-auto p-6 bg-white rounded-xl shadow-lg ps-6 pe-6 mt-6 ms-6 me-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span class="font-[Switzer] text-sm"><?php echo date("F j, Y");?></span></h2>
-            <div class="flex items-center space-x-3">
-                <div class="relative">
-                    <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" 
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z"/>
-                    </svg>
-                    <input id="customSearch" type="text" placeholder="Search by name..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-64"/>
-                </div>
-                <select id="statusFilter" class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option value="">All Status</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Borrowed">Borrowed</option>
-                    <option value="Returned">Returned</option>
-                </select>
-                <div>
-                    <a href="">
-                        <svg class="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none" x="0px" y="0px">
-                            <path d="M40.2196 2C39.115 2 38.2196 2.89543 38.2196 4C38.2196 5.10457 39.115 6 40.2196 6H55.1716L27.5858 33.5858C26.8047 34.3668 26.8047 35.6332 27.5858 36.4142C28.3668 37.1953 29.6332 37.1953 30.4142 36.4142L58 8.82843V24C58 25.1046 58.8954 26 60 26C61.1046 26 62 25.1046 62 24V4C62 2.89543 61.1046 2 60 2H40.2196Z" fill="black"/>
-                            <path d="M52 37C52 35.8954 51.1046 35 50 35C48.8954 35 48 35.8954 48 37V56C48 57.1046 47.1046 58 46 58H8C6.89543 58 6 57.1046 6 56L6 18C6 16.8954 6.89543 16 8 16L27 16C28.1046 16 29 15.1046 29 14C29 12.8954 28.1046 12 27 12L8 12C4.68629 12 2 14.6863 2 18L2 56C2 59.3137 4.68629 62 8 62H46C49.3137 62 52 59.3137 52 56V37Z" fill="black"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span
+            class="font-[Switzer] text-sm"><?php echo date("F j, Y"); ?></span></h2>
+        <div class="flex items-center space-x-3">
+          <div class="relative">
+            <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
+            </svg>
+            <input id="customSearch" type="text" placeholder="Search by name..."
+              class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-64" />
+          </div>
+          <select id="statusFilter"
+            class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">All Status</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Pending">Pending</option>
+            <option value="Borrowed">Borrowed</option>
+            <option value="Returned">Returned</option>
+          </select>
+          <div>
+            <a href="">
+              <svg class="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none"
+                x="0px" y="0px">
+                <path
+                  d="M40.2196 2C39.115 2 38.2196 2.89543 38.2196 4C38.2196 5.10457 39.115 6 40.2196 6H55.1716L27.5858 33.5858C26.8047 34.3668 26.8047 35.6332 27.5858 36.4142C28.3668 37.1953 29.6332 37.1953 30.4142 36.4142L58 8.82843V24C58 25.1046 58.8954 26 60 26C61.1046 26 62 25.1046 62 24V4C62 2.89543 61.1046 2 60 2H40.2196Z"
+                  fill="black" />
+                <path
+                  d="M52 37C52 35.8954 51.1046 35 50 35C48.8954 35 48 35.8954 48 37V56C48 57.1046 47.1046 58 46 58H8C6.89543 58 6 57.1046 6 56L6 18C6 16.8954 6.89543 16 8 16L27 16C28.1046 16 29 15.1046 29 14C29 12.8954 28.1046 12 27 12L8 12C4.68629 12 2 14.6863 2 18L2 56C2 59.3137 4.68629 62 8 62H46C49.3137 62 52 59.3137 52 56V37Z"
+                  fill="black" />
+              </svg>
+            </a>
+          </div>
         </div>
-        <div class="overflow-x-auto overflow-y-auto" style="height: 370px;">
-            <table id="ordersTable" class="w-full">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Location</th>
-                        <th>Phone Number</th>
-                        <th>Qty</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($todaysOrders && count($todaysOrders) > 0): ?>
-                        <?php $counter = 1; ?>
-                        <?php foreach ($todaysOrders as $order): ?>
-                            <tr>
-                                <td><?php echo $counter++; ?></td>
-                                <td><?php echo $order['fullname']; ?></td>
-                                <td><?php echo $order['address']; ?></td>
-                                <td><?php echo $order['phone_number']; ?></td>
-                                <td><?php echo $order['total_quantity']; ?></td>
-                                <td><?php echo $order['status']; ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+      </div>
+      <div class="overflow-x-auto overflow-y-auto" style="height: 370px;">
+        <table id="ordersTable" class="w-full">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Phone Number</th>
+              <th>Qty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if ($todaysOrders && count($todaysOrders) > 0): ?>
+              <?php $counter = 1; ?>
+              <?php foreach ($todaysOrders as $order): ?>
+                <tr>
+                  <td><?php echo $counter++; ?></td>
+                  <td><?php echo $order['fullname']; ?></td>
+                  <td><?php echo $order['address']; ?></td>
+                  <td><?php echo $order['phone_number']; ?></td>
+                  <td><?php echo $order['total_quantity']; ?></td>
+                  <td><?php echo $order['status']; ?></td>
+                </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
     </div>
 </main>
-
-  <script src="../assets/js/chart.umd.min.js"></script>
 
 <?php require '../layout/footer.php' ?>

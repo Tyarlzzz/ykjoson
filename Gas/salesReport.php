@@ -24,7 +24,73 @@
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
       <div class="p-8">
-        <p>Inventory hahahah ge</p>
+
+        <!-- Header -->
+        <div class="mb-5 flex">
+          <h2 class="text-3xl font-bold text-gray-800 mb-2">This Week's Summary</h2>
+          <div class="flex items-center justify-between">
+            <span class="ms-3 ps-1 border-l border-gray-900 text-md">September 1 - September 8</span>
+          </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-4 gap-6 mb-8 justify-left">
+          <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
+            <span class="text-lg font-semibold">Sales</span>
+            <span class="text-5xl font-bold mt-2">₱ 3,450</span>
+          </div>
+          <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
+            <span class="text-lg font-semibold">Customers</span>
+            <span class="text-5xl font-bold mt-2">27</span>
+          </div>
+          <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
+            <span class="text-lg font-semibold">Delivered</span>
+            <span class="text-5xl font-bold mt-2">26</span>
+          </div>
+          <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
+            <span class="text-lg font-semibold">Net Worth</span>
+            <span class="text-5xl font-bold mt-2">₱ 9,109</span>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex items-center gap-4 mb-6">
+          <label class="font-medium">Filter By</label>
+          <select class="border-2 border-black rounded-md px-2 py-1">
+            <option>Week</option>
+            <option>Month</option>
+          </select>
+          <label class="font-medium">Month</label>
+          <select class="border-2 border-black rounded-md px-2 py-1">
+            <option>October</option>
+          </select>
+        </div>
+
+        <!-- Chart Area -->
+        <div class="bg-gray-100 border rounded-lg p-6 mb-6">
+          <h2 class="text-xl font-bold mb-4">October Sales Summary</h2>
+          <canvas id="salesChart" height="100"></canvas>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex items-center gap-4 mb-6">
+          <label class="font-medium">Filter By</label>
+          <select class="border-2 border-black rounded-md px-2 py-1">
+            <option>Week</option>
+            <option>Month</option>
+          </select>
+          <label class="font-medium">Month</label>
+          <select class="border-2 border-black rounded-md px-2 py-1">
+            <option>October</option>
+          </select>
+        </div>
+
+        <!-- Chart Area -->
+        <div class="bg-gray-100 border rounded-lg p-6">
+          <h2 class="text-xl font-bold mb-4">October Number of Customers</h2>
+          <canvas id="numCustomer" height="100"></canvas>
+        </div>
+
       </div>
     </div>
   </div>
