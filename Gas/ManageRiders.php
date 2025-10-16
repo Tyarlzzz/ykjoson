@@ -24,66 +24,107 @@
 
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
-      <div class="p-8">
-        <div class="w-full">
-          <div class="flex gap-6 mb-6">
-            <div class="flex-1">
-              <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full Name</label>
-              <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
-                class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-gray-800 font-medium">
-            </div>
-            <div class="flex-1">
-              <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
-              <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number"
-                class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-gray-800 font-medium">
-            </div>
-          </div>
-
+      <form action="store.php" method="GET" id="orderForm">
+        <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
           <div class="mb-6">
-            <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Home Address</label>
-            <input type="text" id="address" name="address" placeholder="Enter home address"
-              class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-gray-800 font-medium">
-          </div>
-        </div>
-
-        <div class="flex justify-end my-4">
-          <button type="submit"
-            class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
-            <div class="bg-white rounded-full p-1 flex items-center justify-center">
-              <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-              </svg>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full
+                  Name</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
+                  class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number"
+                  class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+              </div>
             </div>
-            <span>Add Rider</span>
-        </div>
+            <div class="mb-4">
+              <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                Address</label>
+              <input type="text" id="address" name="address" placeholder="Enter address"
+                class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+            </div>
 
-        <div class="bg-white rounded-lg shadow-md px-8 py-4 border border-gray-200">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-gray-800">Rider's List</h2>
-            <div class="relative flex items-center">
-              <input type="text" placeholder="Search"
-                class="border border-gray-300 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-500">
-              <svg class="w-5 h-5 absolute left-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
+            <div class="flex item-end mt-6">
+              <button type="submit"
+                class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition">
+                <span class="text-xl">+</span>
+                <span>Add Rider</span>
+              </button>
             </div>
           </div>
-          <div>
-            <table class="w-full table-auto">
+
+          <div class="flex items-center mt-6">
+            <h2 class="text-lg font-bold text-gray-700">Rider Lists</h2>
+            <div class="flex-1 h-px bg-black ml-4"></div>
+          </div>
+
+          <div class="mt-4 max-h-64 overflow-y-auto overflow-x-auto">
+            <table class="w-full table-auto border-collapse">
               <thead>
-                <tr>
-                  <th class="px-4 py-2">#</th>
-                  <th class="px-4 py-2">Name</th>
-                  <th class="px-4 py-2">Phone Number</th>
-                  <th class="px-4 py-2">Action</th>
+                <tr class="bg-gray-200">
+                  <th class="px-4 py-2 border-b border-gray-300 text-left">#</th>
+                  <th class="px-4 py-2 border-b border-gray-300 text-left">Name</th>
+                  <th class="px-4 py-2 border-b border-gray-300 text-left">Phone Number</th>
+                  <th class="px-4 py-2 border-b border-gray-300 text-left">Address</th>
+                  <th class="px-4 py-2 border-b border-gray-300 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody id="ridersTable">
+              <tbody>
+                <?php
+                // Example riders (replace with DB query) - added more data for testing
+                $riders = [
+                  ['id' => 1, 'name' => 'Erik Soliman', 'phone' => '09171234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
+                  ['id' => 2, 'name' => 'Jane Cruz', 'phone' => '09181234567', 'address' => '243 Caanawan, San Jose City'],
+                  ['id' => 3, 'name' => 'Rommel Cruz', 'phone' => '09191234567', 'address' => '243 Caanawan, San Jose City'],
+                  ['id' => 4, 'name' => 'Rouelyn Joson', 'phone' => '09201234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
+                  ['id' => 5, 'name' => 'Aj Castro ', 'phone' => '09211234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
+                  ['id' => 6, 'name' => 'Danielle Quiambao', 'phone' => '09221234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
+                  ['id' => 7, 'name' => 'Charles Carpio', 'phone' => '09231234567', 'address' => '142 CLSU Village'],
+                  ['id' => 8, 'name' => 'Jose Eowyn', 'phone' => '09241234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
+                  ['id' => 9, 'name' => 'Eurri Martinez', 'phone' => '09251234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
+                ];
+                foreach ($riders as $rider): ?>
+                  <tr class="hover:bg-gray-100">
+                    <td class="px-4 py-2 border-b border-gray-300">
+                      <?= htmlspecialchars($rider['id']) ?>
+                    </td>
+                    <td class="px-4 py-2 border-b border-gray-300">
+                      <?= htmlspecialchars($rider['name']) ?>
+                    </td>
+                    <td class="px-4 py-2 border-b border-gray-300">
+                      <?= htmlspecialchars($rider['phone']) ?>
+                    </td>
+                    <td
+                      class="px-4 py-2 border-b border-gray-300 truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
+                      <?= htmlspecialchars($rider['address']) ?>
+                    </td>
+                    <td class="px-4 py-2 border-b border-gray-300 text-center">
+                      <a
+                        href="rideredit.php?id=<?= $rider['id'] ?>&name=<?= urlencode($rider['name']) ?>&phone=<?= urlencode($rider['phone']) ?>&address=<?= urlencode($rider['address']) ?>">
+                        <!-- icons dito -->
+                        <button type="button"
+                          class="bg-yellow-400 text-white px-3 py-1 rounded-lg font-semibold transition">
+                          Edit
+                        </button>
+                      </a>
+                      <a href="deleterider.php?id=<?= $rider['id'] ?>"
+                        onclick="return confirm('Are you sure you want to delete this rider?');">
+                        <!-- icons dito -->
+                        <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg font-semibold transition">
+                          Delete
+                        </button>
+                      </a>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+
           </div>
-        </div>
-      </div>
+      </form>
     </div>
   </div>
 </main>
