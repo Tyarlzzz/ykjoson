@@ -27,7 +27,7 @@
 
         <!-- Header -->
         <div class="mb-5 flex">
-          <h2 class="text-3xl font-bold text-gray-800 mb-2">This Week's Summary</h2>
+          <h2 class="font-[Outfit] text-3xl font-bold text-gray-800 mb-2">This Week's Summary</h2>
           <div class="flex items-center justify-between">
             <span class="ms-3 ps-1 border-l border-gray-900 text-md">September 1 - September 8</span>
           </div>
