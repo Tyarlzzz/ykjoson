@@ -73,7 +73,7 @@
                     <th>Location</th>
                     <th>Phone Number</th>
                     <th>Qty</th>
-                    <th>Status</th> <!--NAKA AUTO CHANGE COLOR NARIN TOH KAYA WALA NA KAYO PROBLEMA -->
+                    <th style="text-align: center !important;">Status</th> <!--NAKA AUTO CHANGE COLOR NARIN TOH KAYA WALA NA KAYO PROBLEMA -->
                 </tr>
             </thead>
             <tbody>

@@ -250,7 +250,7 @@
                         <th>Location</th>
                         <th>Phone Number</th>
                         <th>Qty</th>
-                        <th>Status</th>
+                        <th style="text-align: center !important;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
