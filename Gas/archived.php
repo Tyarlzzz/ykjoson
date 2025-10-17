@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto rounded-xl border border-gray-500">
+      <div class="overflow-x-auto rounded-md border border-gray-500">
         <table id="ordersTable" class="w-full text-left table-auto ">
           <thead class="bg-gray-50">
             <tr class="text-sm text-black-500 uppercase">
@@ -58,6 +58,15 @@
                   <td>0001</td>
                   <td>August 1, 2025</td> 
                   <td>Jaztin Zuriel</td>
+                  <td>09359232950</td>
+                  <td>4</td>
+                  <td>P100</td>
+              </tr>
+
+              <tr>
+                  <td>0002</td>
+                  <td>August 1, 2025</td> 
+                  <td>Jose Val</td>
                   <td>09359232950</td>
                   <td>4</td>
                   <td>P100</td>
