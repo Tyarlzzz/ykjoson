@@ -16,7 +16,7 @@
 <main class="flex-1 overflow-x-hidden overflow-y-hidden h-screen flex flex-col">
     <div class="justify-between flex">
         <button class="bg-[#41D72A] font-[Outfit] text-white font-bold text-xl rounded-xl shadow-lg p-4 ms-6 mt-5">Change Status</button>
-        <a href="">
+        <a href="create.php">
             <div class="bg-gradient-to-br from-red-600 via-red-500 to-red-300 to-white-500 to-white-400 rounded-2xl shadow-xl mt-5 me-6">
                 <div class="flex gap-3 p-3">
                     <div class="w-10 h-10 rounded-full">
@@ -86,9 +86,13 @@
                                         <td><a href="edit.php?id=1"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
                                         <td><a href="edit.php?id=1"><?php echo $order['address']; ?></a></td>
                                         <td><a href="edit.php?id=1"><?php echo $order['phone_number']; ?></a></td>
-                                        <td><?php echo $order['total_quantity']; ?></td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
+                                        <td><a href="edit.php?id=1"><?php echo $order['total_quantity']; ?></a></td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
                                                     ung pinaka qty nya na kulay red tapos ung text ng number ay kulay white (reference: Figma Prototype) -->
-                                        <td><?php echo $order['status']; ?></td>
+                                        <td>
+                                            <button class="openStatusModal">
+                                                <?php echo $order['status']; ?>
+                                            </button>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                 <?php else: ?>
@@ -102,6 +106,31 @@
         </table>
         </div>
     </div>
+
+    <!-- Modal -->
+<div id="statusModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+  <div class="bg-white rounded-xl shadow-lg p-6 w-80">
+    <h2 class="text-lg font-semibold mb-3">Update Order Status</h2>
+    <div class="space-y-2">
+      <button class="font-[Outfit] status-option w-full bg-[#F7F6D1] text-[#D3C30E] py-2 rounded-md" data-status="Pending">
+        Pending
+      </button>
+      <button class="font-[Outfit] status-option w-full bg-[#D1F7EA] text-[#17CF93] py-2 rounded-md" data-status="Delivered">
+        Delivered
+      </button>
+      <button class="font-[Outfit] status-option w-full bg-[#E6D1F7] text-[#C60ED3] py-2 rounded-md" data-status="Returned">
+        Returned
+      </button>
+      <button class="font-[Outfit] status-option w-full bg-[#F7DED1] text-[#D33F0E] py-2 rounded-md" data-status="Borrowed" >
+        Borrowed
+      </button>
+    </div>
+    <button id="closeModal" class="mt-4 w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600">
+      Cancel
+    </button>
+  </div>
+</div>
+
 </main>
 
 <?php include '../layout/footer.php' ?>
