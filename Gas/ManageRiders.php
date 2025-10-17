@@ -103,7 +103,7 @@
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300 text-center">
                       <a
-                        href="rideredit.php?id=<?= $rider->rider_id ?>&name=<?= urlencode($rider->fullname) ?>&phone=<?= urlencode($rider->phone_number) ?>&address=<?= urlencode($rider->address) ?>">
+                        href="editRider.php?id=<?= $rider->rider_id ?>&name=<?= urlencode($rider->fullname) ?>&phone=<?= urlencode($rider->phone_number) ?>&address=<?= urlencode($rider->address) ?>">
                         <!-- icons dito -->
                         <button type="button"
                           class="bg-yellow-400 text-white px-3 py-1 rounded-lg font-semibold transition">
@@ -150,7 +150,7 @@
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = `deleterider.php?id=${riderId}`;
+            window.location.href = `deleteRider.php?id=${riderId}`;
           }
         });
       });
