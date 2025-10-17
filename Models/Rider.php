@@ -85,5 +85,18 @@ class Rider extends Model {
         $result = parent::where($column, $operation, $value);
         return $result ? array_map(fn($data) => new self($data), $result) : null;
     }
+
+    public static function deleteByRiderId($id) {
+        try {
+            $sql = "DELETE FROM " . static::$table . " WHERE rider_id = :rider_id";
+            $stmt = self::$conn->prepare($sql);
+            $stmt->bindParam(':rider_id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            die("Error deleting rider: " . $e->getMessage());
+        }
+    }
+
 }
 ?>

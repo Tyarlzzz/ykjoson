@@ -110,13 +110,9 @@
                           Edit
                         </button>
                       </a>
-                      <a href="deleterider.php?id=<?= $rider->rider_id ?>"
-                        onclick="return confirm('Are you sure you want to delete this rider?');">
-                        <!-- icons dito -->
-                        <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg font-semibold transition">
-                          Delete
-                        </button>
-                      </a>
+                      <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg font-semibold transition delete-btn" data-id="<?= $rider->rider_id ?>">
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -134,6 +130,33 @@
     </div>
   </div>
 </main>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const riderId = this.dataset.id;
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "This action cannot be undone.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `deleterider.php?id=${riderId}`;
+          }
+        });
+      });
+    });
+  });
+  </script>
 
 <script src="../assets/js/gas_system_js/gasManageRiders.js"></script>
 

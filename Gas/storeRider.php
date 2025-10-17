@@ -3,49 +3,43 @@
     require_once '../Models/Rider.php';
     include '../layout/header.php';
 
-    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
-
             $database = new Database();
             $db = $database->getConnection();
             Rider::setConnection($db);
 
-            $db->beginTransaction();
+            $sql = "INSERT INTO riders (fullname, address, phone_number, petty_cash, created_at)
+                    VALUES (:fullname, :address, :phone_number, :petty_cash, NOW())";
+            $stmt = $db->prepare($sql);
 
-            $riderData = [
-                'fullname' => $_POST['fullname'],
-                'address' => $_POST['address'],
-                'phone_number' => $_POST['phone_number']
-            ];
+            $stmt->execute([
+                ':fullname' => $_POST['fullname'],
+                ':address' => $_POST['address'],
+                ':phone_number' => $_POST['phone_number'],
+                ':petty_cash' => 0
+            ]);
 
-            $custSql = "INSERT INTO riders (fullname, address, phone_number, created_at) 
-                        VALUES (:fullname, :address, :phone_number, NOW())";
-            $custStmt = $db->prepare($custSql);
-            $custStmt->execute($riderData);
-            
-            $db->commit();
-   
-            echo '<script>
+            echo '
+                <script>
                     Swal.fire({
                         title: "Good job!",
-                        text: "You Successfully Created an Order!",
+                        text: "Rider successfully added!",
                         icon: "success"
-                    }).then(function() {
-                        window.location = "index.php";
+                    }).then(() => {
+                        window.location = "manageRiders.php";
                     });
                 </script>';
 
         } catch (Exception $e) {
-            
-            $db->rollBack();
-            
-            echo '<script>
+            echo '
+                <script>
                     Swal.fire({
                         title: "Error!",
                         text: "' . addslashes($e->getMessage()) . '",
                         icon: "error"
-                    }).then(function() {
-                        window.location = "create.php";
+                    }).then(() => {
+                        window.location = "manageRiders.php";
                     });
                 </script>';
         }
