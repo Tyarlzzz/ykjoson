@@ -36,7 +36,7 @@
 <main class="flex-1 overflow-x-hidden overflow-y-hidden h-screen flex flex-col">
     <div class="justify-between flex">
         <button class="bg-[#41D72A] font-[Outfit] text-white font-bold text-xl rounded-xl shadow-lg p-4 ms-6 mt-5">Change Status</button>
-        <a href="">
+        <a href="create.php">
             <div class="bg-gradient-to-br from-red-600 via-red-500 to-red-300 to-white-500 to-white-400 rounded-2xl shadow-xl mt-5 me-6">
                 <div class="flex gap-3 p-3">
                     <div class="w-10 h-10 rounded-full">

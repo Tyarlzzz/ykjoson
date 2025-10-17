@@ -280,7 +280,7 @@
   function confirmDeleteOrder(orderId) {
     Swal.fire({
       title: 'Are you sure?',
-      text: "This will permanently delete this order and restore inventory! This action cannot be undone.",
+      text: "This action cannot be undone.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
