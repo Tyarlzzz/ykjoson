@@ -201,5 +201,63 @@
         public function isLowStock($threshold = 50) {
             return $this->stocks < $threshold;
         }
+
+        /**
+         * Adjust inventory stock by adding or subtracting quantity
+         * Positive quantity = add to stock (return)
+         * Negative quantity = subtract from stock (use)
+         */
+        public static function adjustStock($item_id, $quantity_change) {
+            try {
+                // Get current stock
+                $sql = "SELECT stocks FROM `item inventory` WHERE item_id = :item_id";
+                $stmt = self::$conn->prepare($sql);
+                $stmt->execute([':item_id' => $item_id]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$result) {
+                    throw new Exception("Item not found");
+                }
+                
+                $current_stock = $result['stocks'];
+                $new_stock = $current_stock + $quantity_change;
+                
+                // Prevent negative stock
+                if ($new_stock < 0) {
+                    throw new Exception("Insufficient stock. Cannot reduce below 0.");
+                }
+                
+                // Update stock
+                $sql = "UPDATE `item inventory` 
+                        SET stocks = :stocks, 
+                            updated_at = NOW() 
+                        WHERE item_id = :item_id";
+                
+                $stmt = self::$conn->prepare($sql);
+                return $stmt->execute([
+                    ':stocks' => $new_stock,
+                    ':item_id' => $item_id
+                ]);
+                
+            } catch (PDOException $e) {
+                die("Error adjusting stock: " . $e->getMessage());
+            } catch (Exception $e) {
+                die("Error: " . $e->getMessage());
+            }
+        }
+
+        public static function getCurrentStock($item_id) {
+            try {
+                $sql = "SELECT stocks FROM `item inventory` WHERE item_id = :item_id";
+                $stmt = self::$conn->prepare($sql);
+                $stmt->execute([':item_id' => $item_id]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                return $result ? $result['stocks'] : null;
+                
+            } catch (PDOException $e) {
+                die("Error fetching stock: " . $e->getMessage());
+            }
+        }
     }   
 ?>

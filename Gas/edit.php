@@ -1,20 +1,56 @@
-<?php require '../layout/header.php' ?>
+<?php 
+  require_once '../database/Database.php';
+  require_once '../Models/Models.php';
+  require_once '../Models/GasOrder.php';
 
-<?php
-// Get order ID from URL
-$orderId = isset($_GET['id']) ? $_GET['id'] : null;
+  $database = new Database();
+  $conn = $database->getConnection();
+  Model::setConnection($conn);
 
-// Mock data to form fill, replace with actual DB data later.
-$orderData = [
-  'id' => $orderId,
-  'fullName' => 'Erik S. Soliman',
-  'phoneNumber' => '09123456789',
-  'address' => 'San Nicolas, Gapan City',
-  'note' => 'Pabilisan lang po wala ng pangluto.',
-  'petronQty' => 1,
-  'econoQty' => 0,
-  'seagasQty' => 0
-];
+  $orderId = isset($_GET['id']) ? intval($_GET['id']) : null;
+
+  if (!$orderId) {
+      header('Location: orderlist.php?error=Invalid order ID');
+      exit();
+  }
+
+  $orderData = GasOrder::getOrderWithDetails($orderId);
+
+  if (!$orderData) {
+      header('Location: orderlist.php?error=Order not found');
+      exit();
+  }
+
+  $orderItems = GasOrder::getOrderItems($orderId);
+
+  $petronQty = 0;
+  $econoQty = 0;
+  $seagasQty = 0;
+
+  if ($orderItems) {
+      foreach ($orderItems as $item) {
+          $brandLower = strtolower($item['item_name']);
+          if ($brandLower === 'petron') {
+              $petronQty = $item['quantity'];
+          } elseif ($brandLower === 'econo') {
+              $econoQty = $item['quantity'];
+          } elseif ($brandLower === 'seagas') {
+              $seagasQty = $item['quantity'];
+          }
+      }
+  }
+
+  require '../layout/header.php';
+
+  if (isset($_GET['error'])) {
+      echo '<script>
+              Swal.fire({
+                  title: "Error!",
+                  text: "' . addslashes($_GET['error']) . '",
+                  icon: "error"
+              });
+          </script>';
+  }
 ?>
 
 <!-- Main Content Area -->
@@ -26,8 +62,9 @@ $orderData = [
       <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
     </div>
 
-    <form action="update.php" method="GET" id="orderForm">
-      <input type="hidden" name="orderId" value="<?php echo htmlspecialchars($orderData['id']); ?>">
+    <form action="update.php" method="POST" id="orderForm">
+      <input type="hidden" name="orderId" value="<?php echo htmlspecialchars($orderData['order_id']); ?>">
+      <input type="hidden" name="customerId" value="<?php echo htmlspecialchars($orderData['customer_id']); ?>">
 
       <div class="flex gap-8">
         <!-- Left Side ng Form -->
@@ -38,28 +75,30 @@ $orderData = [
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full
                   Name</label>
-                <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
-                  value="<?php echo htmlspecialchars($orderData['fullName']); ?>"
+                <input type="text" id="fullName" name="fullName" placeholder="Enter full name" required
+                  value="<?php echo htmlspecialchars($orderData['fullname']); ?>"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
-                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number"
-                  value="<?php echo htmlspecialchars($orderData['phoneNumber']); ?>"
+                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number" required
+                  value="<?php echo htmlspecialchars($orderData['phone_number']); ?>"
+                  pattern="[0-9]{10,11}"
+                  title="Please enter 10-11 digit phone number"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
             </div>
             <div class="mb-4">
               <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Delivery
                 Address</label>
-              <input type="text" id="address" name="address" placeholder="Enter delivery address"
+              <input type="text" id="address" name="address" placeholder="Enter delivery address" required
                 value="<?php echo htmlspecialchars($orderData['address']); ?>"
                 class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Note</label>
               <textarea id="note" name="note" rows="3" placeholder="Add any special notes..."
-                class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 resize-none text-gray-800 font-medium"><?php echo htmlspecialchars($orderData['note']); ?></textarea>
+                class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 resize-none text-gray-800 font-medium"><?php echo htmlspecialchars($orderData['note'] ?? ''); ?></textarea>
             </div>
           </div>
 
@@ -82,7 +121,7 @@ $orderData = [
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
                     <span id="petron-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $orderData['petronQty']; ?>
+                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $petronQty; ?>
                     </span>
                   </div>
                   <div class="flex items-center gap-2">
@@ -106,7 +145,7 @@ $orderData = [
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
                     <span id="econo-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $orderData['econoQty']; ?>
+                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $econoQty; ?>
                     </span>
                   </div>
                   <div class="flex items-center gap-2">
@@ -130,7 +169,7 @@ $orderData = [
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
                     <span id="seagas-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $orderData['seagasQty']; ?>
+                      class="w-12 text-center font-bold text-gray-700 text-xl"><?php echo $seagasQty; ?>
                     </span>
                   </div>
                   <div class="flex items-center gap-2">
@@ -155,7 +194,7 @@ $orderData = [
                 <span class="text-gray-600 flex-shrink-0">Name:</span>
                 <div class="flex-1 min-w-0 ml-2 break-words text-right">
                   <span id="summary-name" class="font-semibold text-gray-800 block">
-                    <?php echo htmlspecialchars($orderData['fullName']); ?>
+                    <?php echo htmlspecialchars($orderData['fullname']); ?>
                   </span>
                 </div>
               </div>
@@ -163,7 +202,7 @@ $orderData = [
                 <span class="text-gray-600 flex-shrink-0">Phone Number:</span>
                 <div class="flex-1 min-w-0 ml-2 break-words text-right">
                   <span id="summary-phone" class="font-semibold text-gray-800 block">
-                    <?php echo htmlspecialchars($orderData['phoneNumber']); ?>
+                    <?php echo htmlspecialchars($orderData['phone_number']); ?>
                   </span>
                 </div>
               </div>
@@ -188,19 +227,19 @@ $orderData = [
             <div class="border-t pt-4">
               <div class="flex justify-between items-center mb-2">
                 <span class="font-bold text-gray-700">Total Items:</span>
-                <span id="total-items" class="font-bold text-xl text-gray-800">3</span>
+                <span id="total-items" class="font-bold text-xl text-gray-800"><?php echo ($petronQty + $econoQty + $seagasQty); ?></span>
               </div>
               <div class="text-sm text-gray-600">
                 <span class="font-semibold">Notes:</span>
                 <p id="summary-notes" class="mt-1 text-gray-500 break-words max-w-full">
-                  <?php echo !empty($orderData['note']) ? htmlspecialchars($orderData['note']) : ''; ?>
+                  <?php echo !empty($orderData['note']) ? htmlspecialchars($orderData['note']) : 'No notes'; ?>
+                </p>
               </div>
             </div>
           </div>
 
-          <!-- Action Buttons Outside Container -->
           <div class="flex gap-3 mt-6">
-            <button type="button" onclick="cancelEdit()"
+            <button type="button" onclick="window.location.href='orderlist.php'"
               class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl font-semibold transition">
               Cancel
             </button>
@@ -210,31 +249,62 @@ $orderData = [
             </button>
           </div>
 
-          <!-- Delete Button -->
-          <button type="button" onclick="deleteOrder()"
+          <button type="button" onclick="confirmDeleteOrder(<?php echo $orderId; ?>)"
             class="w-full mt-3 border-2 border-red-500 text-red-500 hover:bg-red-50 py-3 rounded-2xl font-semibold transition">
             Delete Order
           </button>
         </div>
       </div>
 
-      <input type="hidden" id="petron-qty-input" name="petronQty" value="<?php echo $orderData['petronQty']; ?>">
-      <input type="hidden" id="econo-qty-input" name="econoQty" value="<?php echo $orderData['econoQty']; ?>">
-      <input type="hidden" id="seagas-qty-input" name="seagasQty" value="<?php echo $orderData['seagasQty']; ?>">
+      <input type="hidden" id="petron-qty-input" name="petronQty" value="<?php echo $petronQty; ?>">
+      <input type="hidden" id="econo-qty-input" name="econoQty" value="<?php echo $econoQty; ?>">
+      <input type="hidden" id="seagas-qty-input" name="seagasQty" value="<?php echo $seagasQty; ?>">
+      
+      <input type="hidden" name="originalPetronQty" value="<?php echo $petronQty; ?>">
+      <input type="hidden" name="originalEconoQty" value="<?php echo $econoQty; ?>">
+      <input type="hidden" name="originalSeagasQty" value="<?php echo $seagasQty; ?>">
     </form>
   </div>
 </main>
 
-</div> <!-- Close the flex container from header.php -->
+</div> 
 
 <script>
-  // Pass PHP data to JS to load in Order Summary
   window.initialOrderData = {
-    id: <?php echo json_encode($orderData['id']); ?>,
-    petronQty: <?php echo $orderData['petronQty']; ?>,
-    econoQty: <?php echo $orderData['econoQty']; ?>,
-    seagasQty: <?php echo $orderData['seagasQty']; ?>
+    id: <?php echo json_encode($orderData['order_id']); ?>,
+    petronQty: <?php echo $petronQty; ?>,
+    econoQty: <?php echo $econoQty; ?>,
+    seagasQty: <?php echo $seagasQty; ?>
   };
+
+  function confirmDeleteOrder(orderId) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This will permanently delete this order and restore inventory! This action cannot be undone.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+      focusCancel: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Deleting...',
+          text: 'Please wait while we delete the order',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        window.location.href = `destroy.php?id=${orderId}&confirm=yes`;
+      }
+    });
+  }
 </script>
 
 <script src="../assets/js/gas_system_js/gasEditOrder.js"></script>
