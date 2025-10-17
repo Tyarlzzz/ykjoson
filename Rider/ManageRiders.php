@@ -9,6 +9,26 @@
     Model::setConnection($conn);
 
     $Riders = Rider::all();
+
+    if (isset($_GET['success'])) {
+        echo '<script>
+                Swal.fire({
+                    title: "Success!",
+                    text: "You have successfully updated the rider.",
+                    icon: "success"
+                });
+            </script>';
+    }
+
+    if (isset($_GET['error'])) {
+        echo '<script>
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to update the rider.",
+                    icon: "error"
+                });
+            </script>';
+    }
 ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
@@ -40,19 +60,21 @@
           <div class="mb-6">
             <div class="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">fullname</label>
-                <input type="text" id="fullname" name="fullname" placeholder="Enter full name"
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full Name</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">phone_number</label>
-                <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number"
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Phone Number</label>
+                <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number" required
+                  pattern="[0-9]{10,11}"
+                  title="Please enter 10-11 digit phone number"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
             </div>
             <div class="mb-4">
               <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Address</label>
-              <input type="text" id="address" name="address" placeholder="Enter address"
+              <input type="text" id="address" name="address" placeholder="Enter address" required
                 class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
             </div>
 
@@ -97,20 +119,17 @@
                     <td class="px-4 py-2 border-b border-gray-300">
                       <?= htmlspecialchars($rider->phone_number) ?>
                     </td>
-                    <td
-                      class="px-4 py-2 border-b border-gray-300 truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
+                    <td class="px-4 py-2 border-b border-gray-300 truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
                       <?= htmlspecialchars($rider->address) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300 text-center">
-                      <a
-                        href="Edit.php?id=<?= $rider->rider_id ?>&name=<?= urlencode($rider->fullname) ?>&phone=<?= urlencode($rider->phone_number) ?>&address=<?= urlencode($rider->address) ?>">
-                        <!-- icons dito -->
+                      <a href="Edit.php?id=<?= $rider->rider_id ?>">
                         <button type="button"
-                          class="bg-yellow-400 text-white px-3 py-1 rounded-lg font-semibold transition">
+                          class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg font-semibold transition">
                           Edit
                         </button>
                       </a>
-                      <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg font-semibold transition delete-btn" data-id="<?= $rider->rider_id ?>">
+                      <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg font-semibold transition delete-btn" data-id="<?= $rider->rider_id ?>">
                         Delete
                       </button>
                     </td>
@@ -126,11 +145,11 @@
               </tbody>
             </table>
           </div>
+        </div>
       </form>
     </div>
   </div>
 </main>
-
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -156,7 +175,7 @@
       });
     });
   });
-  </script>
+</script>
 
 <script src="../assets/js/gas_system_js/gasManageRiders.js"></script>
 
