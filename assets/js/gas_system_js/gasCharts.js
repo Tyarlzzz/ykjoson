@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize Brands Pie Chart
   const brandsPieCtx = document.getElementById('brandsPieChart');
   if (brandsPieCtx) {
-    const brandsPieChart = new Chart(brandsPieCtx.getContext('2d'), {
+    window.brandsPieChart = new Chart(brandsPieCtx.getContext('2d'), {
       type: 'doughnut',
       data: {
         labels: ['Petron', 'Econo', 'SeaGas'],
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize Sales Line Chart
   const salesCtx = document.getElementById('salesChart');
   if (salesCtx) {
-    const salesChart = new Chart(salesCtx.getContext('2d'), {
+    window.salesChart = new Chart(salesCtx.getContext('2d'), {
       type: 'line',
       data: {
         labels: [
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize Customer Bar Chart
   const customerCtx = document.getElementById('numCustomer');
   if (customerCtx) {
-    const customerChart = new Chart(customerCtx.getContext('2d'), {
+    window.customerChart = new Chart(customerCtx.getContext('2d'), {
       type: 'bar',
       data: {
         labels: [
