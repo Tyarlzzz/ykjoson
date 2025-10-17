@@ -15,15 +15,13 @@
 
 <main class="flex-1 overflow-x-hidden overflow-y-hidden h-screen flex flex-col">
     <div class="justify-between flex">
-        <button class="bg-[#41D72A] font-[Outfit] text-white font-bold text-xl rounded-xl shadow-lg p-4 ms-6 mt-5">Change Status</button>
+        <button class="openStatusModal bg-[#41D72A] font-[Outfit] text-white font-bold text-xl rounded-xl shadow-lg p-4 ms-6 mt-5">Change Status</button>
         <a href="create.php">
             <div class="bg-gradient-to-br from-red-600 via-red-500 to-red-300 to-white-500 to-white-400 rounded-2xl shadow-xl mt-5 me-6">
-                <div class="flex gap-3 p-3">
-                    <div class="w-10 h-10 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-5.0 -10.0 110.0 135.0">
+                <div class="flex justify-between items-center gap-3 p-3">
+                        <svg class="w-10 h-10 mt-2 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-5.0 -10.0 110.0 135.0">
                             <path d="m83.602 16.398c-18.5-18.5-48.699-18.5-67.199 0s-18.5 48.699 0 67.199 48.699 18.5 67.199 0c18.5-18.496 18.5-48.699 0-67.199zm-9.1016 37.801h-20.398v20.398h-8.3984v-20.398h-20.301v-8.3984h20.301l-0.003906-20.301h8.3984v20.301h20.301z" fill="white"/>
                         </svg>
-                    </div>
                     <span class="font-[Switzer] text-white font-bold text-2xl mt-1">Add Order</span>
                 </div>
             </div>
@@ -81,12 +79,12 @@
                                 <?php $counter = 1; ?>
                                 <?php foreach ($gasOrders as $order): ?>
                                     <tr>
-                                        <td><input type="checkbox" class="appearance-none peer rounded-md border-1 checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
+                                        <td><input type="checkbox" class="appearance-none peer rounded-md border border-black checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
                                         <td><?php echo $counter++; ?></td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
-                                        <td><a href="edit.php?id=1"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
-                                        <td><a href="edit.php?id=1"><?php echo $order['address']; ?></a></td>
-                                        <td><a href="edit.php?id=1"><?php echo $order['phone_number']; ?></a></td>
-                                        <td><a href="edit.php?id=1"><?php echo $order['total_quantity']; ?></a></td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
+                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
+                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['address']; ?></a></td>
+                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['phone_number']; ?></a></td>
+                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['total_quantity']; ?></a></td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
                                                     ung pinaka qty nya na kulay red tapos ung text ng number ay kulay white (reference: Figma Prototype) -->
                                         <td>
                                             <button class="openStatusModal">
