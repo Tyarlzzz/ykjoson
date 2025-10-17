@@ -7,11 +7,22 @@ $database = new Database();
 $conn = $database->getConnection();
 Model::setConnection($conn);
 
-// pang kuha ng id sa url
+// Get order ID from URL
 $orderId = isset($_GET['id']) ? intval($_GET['id']) : null;
+$confirmed = isset($_GET['confirm']) && $_GET['confirm'] === 'yes';
+
+if (!$orderId) {
+    header('Location: orderlist.php?error=' . urlencode('Invalid order ID'));
+    exit();
+}
+
+if (!$confirmed) {
+    header('Location: orderlist.php?error=' . urlencode('Deletion not confirmed'));
+    exit();
+}
 
 try {
-    // Delete order and ma r restore ung nasa inventory
+    // Delete order (this will also restore inventory)
     $deleted = GasOrder::deleteOrder($orderId);
     
     if ($deleted) {
