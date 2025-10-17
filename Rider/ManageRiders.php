@@ -35,7 +35,7 @@
 
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
-      <form action="storeRider.php" method="POST" id="orderForm">
+      <form action="store.php" method="POST" id="orderForm">
         <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
           <div class="mb-6">
             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -103,7 +103,7 @@
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300 text-center">
                       <a
-                        href="editRider.php?id=<?= $rider->rider_id ?>&name=<?= urlencode($rider->fullname) ?>&phone=<?= urlencode($rider->phone_number) ?>&address=<?= urlencode($rider->address) ?>">
+                        href="Edit.php?id=<?= $rider->rider_id ?>&name=<?= urlencode($rider->fullname) ?>&phone=<?= urlencode($rider->phone_number) ?>&address=<?= urlencode($rider->address) ?>">
                         <!-- icons dito -->
                         <button type="button"
                           class="bg-yellow-400 text-white px-3 py-1 rounded-lg font-semibold transition">
@@ -150,7 +150,7 @@
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = `deleteRider.php?id=${riderId}`;
+            window.location.href = `Destroy.php?id=${riderId}`;
           }
         });
       });
