@@ -66,7 +66,6 @@
         <div class="overflow-x-auto overflow-y-auto flex-1">
         <table id="orderlistTable" class="w-full">
             <thead>
-                <!-- SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN -->
                 <tr>
                     <th></th>
                     <th>#</th>
@@ -74,7 +73,7 @@
                     <th>Location</th>
                     <th>Phone Number</th>
                     <th>Qty</th>
-                    <th>Status</th> <!--NAKA AUTO CHANGE COLOR NARIN TOH KAYA WALA NA KAYO PROBLEMA -->
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
