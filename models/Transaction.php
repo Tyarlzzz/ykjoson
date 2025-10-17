@@ -9,7 +9,7 @@
         //mga gusto maretrieve sa users na table, kung ano pangalan ng column sa users na table, dapat EXACTLY pareho sa column name sa table
         public $transaction_id;
         public $order_id;
-         public $customer_id;
+        public $customer_id;
         public $user_id;
         public $transaction_date;
         public $payment_status;

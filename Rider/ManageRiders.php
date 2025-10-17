@@ -9,10 +9,30 @@
     Model::setConnection($conn);
 
     $Riders = Rider::all();
+
+    if (isset($_GET['success'])) {
+        echo '<script>
+                Swal.fire({
+                    title: "Success!",
+                    text: "You have successfully updated the rider.",
+                    icon: "success"
+                });
+            </script>';
+    }
+
+    if (isset($_GET['error'])) {
+        echo '<script>
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to update the rider.",
+                    icon: "error"
+                });
+            </script>';
+    }
 ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
-  <div class="w-full px-8">
+  <div class="w-full">
     <div class="mb-6 flex justify-between items-center">
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
       <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
@@ -22,12 +42,12 @@
     <div class="flex mb-0">
       <a href="updateInventory.php"
         class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold rounded-t-2xl z-0">Inventory</a>
-      <a href="salesReport.php"
+      <a href="../Gas/salesReport.php"
         class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Sales
         Report</a>
       <a href="manageRiders.php"
         class="px-10 py-1 bg-red-600 text-white font-semibold rounded-t-2xl -ml-3 z-0">Riders</a>
-      <a href="archived.php"
+      <a href="../Gas/archived.php"
         class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Archived</a>
       <a href="expenses.php"
         class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Expenses</a>
@@ -35,24 +55,26 @@
 
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
-      <form action="storeRider.php" method="POST" id="orderForm">
+      <form action="store.php" method="POST" id="orderForm">
         <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
           <div class="mb-6">
             <div class="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">fullname</label>
-                <input type="text" id="fullname" name="fullname" placeholder="Enter full name"
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full Name</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">phone_number</label>
-                <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number"
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Phone Number</label>
+                <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number" required
+                  pattern="[0-9]{10,11}"
+                  title="Please enter 10-11 digit phone number"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
             </div>
             <div class="mb-4">
               <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Address</label>
-              <input type="text" id="address" name="address" placeholder="Enter address"
+              <input type="text" id="address" name="address" placeholder="Enter address" required
                 class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
             </div>
 
@@ -97,20 +119,17 @@
                     <td class="px-4 py-2 border-b border-gray-300">
                       <?= htmlspecialchars($rider->phone_number) ?>
                     </td>
-                    <td
-                      class="px-4 py-2 border-b border-gray-300 truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
+                    <td class="px-4 py-2 border-b border-gray-300 truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
                       <?= htmlspecialchars($rider->address) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300 text-center">
-                      <a
-                        href="editRider.php?id=<?= $rider->rider_id ?>&name=<?= urlencode($rider->fullname) ?>&phone=<?= urlencode($rider->phone_number) ?>&address=<?= urlencode($rider->address) ?>">
-                        <!-- icons dito -->
+                      <a href="Edit.php?id=<?= $rider->rider_id ?>">
                         <button type="button"
-                          class="bg-yellow-400 text-white px-3 py-1 rounded-lg font-semibold transition">
+                          class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg font-semibold transition">
                           Edit
                         </button>
                       </a>
-                      <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg font-semibold transition delete-btn" data-id="<?= $rider->rider_id ?>">
+                      <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg font-semibold transition delete-btn" data-id="<?= $rider->rider_id ?>">
                         Delete
                       </button>
                     </td>
@@ -126,11 +145,11 @@
               </tbody>
             </table>
           </div>
+        </div>
       </form>
     </div>
   </div>
 </main>
-
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -150,13 +169,13 @@
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = `deleteRider.php?id=${riderId}`;
+            window.location.href = `Destroy.php?id=${riderId}`;
           }
         });
       });
     });
   });
-  </script>
+</script>
 
 <script src="../assets/js/gas_system_js/gasManageRiders.js"></script>
 

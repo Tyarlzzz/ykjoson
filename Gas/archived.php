@@ -1,7 +1,7 @@
 <?php require '../layout/header.php' ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
-  <div class="w-full px-8">
+  <div class="w-full">
     <div class="mb-6 flex justify-between items-center">
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Archived Transactions</h1>
       <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
@@ -14,7 +14,7 @@
       <a href="salesReport.php"
         class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Sales
         Report</a>
-      <a href="manageRiders.php"
+      <a href="../Rider/manageRiders.php"
         class="px-10 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Riders</a>
       <a href="archived.php"
         class="px-8 py-1 bg-red-600 text-white font-semibold border-gray-400 rounded-t-2xl -ml-3 z-10">Archived</a>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto rounded-xl border border-gray-500">
+      <div class="overflow-x-auto rounded-md border border-gray-500">
         <table id="ordersTable" class="w-full text-left table-auto ">
           <thead class="bg-gray-50">
             <tr class="text-sm text-black-500 uppercase">
@@ -58,6 +58,15 @@
                   <td>0001</td>
                   <td>August 1, 2025</td> 
                   <td>Jaztin Zuriel</td>
+                  <td>09359232950</td>
+                  <td>4</td>
+                  <td>P100</td>
+              </tr>
+
+              <tr>
+                  <td>0002</td>
+                  <td>August 1, 2025</td> 
+                  <td>Jose Val</td>
                   <td>09359232950</td>
                   <td>4</td>
                   <td>P100</td>

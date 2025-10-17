@@ -9,7 +9,7 @@
         //mga gusto maretrieve sa users na table, kung ano pangalan ng column sa users na table, dapat EXACTLY pareho sa column name sa table
         public $user_id;
         public $first_name;
-         public $last_name;
+        public $last_name;
         public $email;
         public $password;
         public $role;

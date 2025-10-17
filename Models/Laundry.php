@@ -102,31 +102,6 @@ class Laundry extends Order {
         }
     }
 
-    public static function getStatusColorClass($status) {
-        switch($status) {
-            case 'Pending':
-                return 'bg-yellow-100 text-yellow-800';
-            case 'On Hold':
-            case 'OnHold':
-                return 'bg-yellow-100 text-yellow-800';
-            case 'On Wash':
-            case 'OnWash':
-                return 'bg-blue-100 text-blue-800';
-            case 'On Dry':
-            case 'OnDry':
-                return 'bg-orange-100 text-orange-800';
-            case 'On Fold':
-            case 'OnFold':
-                return 'bg-pink-100 text-pink-800';
-            case 'Delivered':
-                return 'bg-green-100 text-green-800';
-            case 'For Delivery':
-                return 'bg-purple-100 text-purple-800';
-            default:
-                return 'bg-gray-100 text-gray-800';
-        }
-    }
-
     public static function getAllLaundryWithDetails() {
         try {
             $sql = "SELECT 
