@@ -10,25 +10,52 @@
             <p class="text-gray-500 text-base" id="currentDate"></p>
         </div>
 
-        <div class="flex space-x-2">
-            <button class="px-4 bg-red-600 text-white font-semibold rounded-t-lg">Rider 1</button>
-            <button class="px-4 bg-gray-200 text-gray-700 font-semibold rounded-t-lg">Rider 2</button>
+        <?php
+        // Example riders (replace with DB query)
+        $riders = [
+            ['id' => 1, 'name' => 'Erik Soliman'],
+            ['id' => 2, 'name' => 'Jane Cruz'],
+            ['id' => 3, 'name' => 'Rommel Cruz'],
+        ];
+
+        // Get active rider from URL param, default to 1
+        $active_rider_id = isset($_GET['rider_id']) ? (int)$_GET['rider_id'] : 1;
+        $selected_rider = null;
+        foreach ($riders as $rider) {
+            if ($rider['id'] == $active_rider_id) {
+                $selected_rider = $rider;
+                break;
+            }
+        }
+        if (!$selected_rider) {
+            $selected_rider = $riders[0]; // Fallback to first
+            $active_rider_id = 1;
+        }
+        ?>
+
+        <!-- Rider Tabs -->
+        <div class="mb-1 flex gap-2">
+            <?php foreach ($riders as $index => $rider): ?>
+                <?php $is_active = ($rider['id'] == $active_rider_id); ?>
+                <a href="?rider_id=<?= $rider['id'] ?>"
+                   class="rider-tab px-4 py-2 rounded-xl font-semibold text-white <?= $is_active ? 'bg-blue-600' : 'bg-gray-400' ?>">
+                    Rider <?= $index + 1 ?>
+                </a>
+            <?php endforeach; ?>
         </div>
 
         <!-- Two-column layout -->
-
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-20">
             <!-- Left Section (Calculator) -->
-
             <div class="lg:col-span-3 bg-white shadow-md rounded-xl p-6 self-start">
                 <!-- Input Screen -->
                 <div class="bg-gray-100 rounded-xl flex justify-between items-center p-8 mb-6 shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]">
                     <span class="text-6xl font-bold">₱</span>
-                    <input type="text" class="flex-1 ml-2 bg-transparent outline-none text-4xl font-bold text-gray-700 pt-4" id="amountInput" readonly>
+                    <input type="text" class="flex-1 ml-2 bg-transparent outline-none text-4xl font-bold text-gray-700 pt-4 text-end" id="amountInput" readonly>
                 </div>
 
                 <div class="flex justify-end mb-4" id="ClearButton">
-                    <button onclick="clearInput()"class="clear-btn">X</button>
+                    <button onclick="clearInput()" class="clear-btn">X</button>
                 </div>
 
                 <!-- Number Pad -->
@@ -38,10 +65,11 @@
                         foreach ($numbers as $num) {
                             // For JS: if number is a string, wrap it in quotes
                             $jsNum = is_numeric($num) ? $num : "'$num'";
-                            echo "<button onclick='appendNumber($jsNum)' class='bg-gray-200 text-5xl shadow-md text-shadow font-extrabold py-2 rounded-xl hover:bg-gray-300 transition'>$num</button>";
+                            echo "<button onclick='appendNumber($jsNum)' class='bg-gray-200 text-5xl shadow-md font-extrabold py-2 rounded-xl '>$num</button>";
                         }
                     ?>
-                    <button type="button" onclick="submitAmount()" class="bg-blue-600 text-2xl font-semibold text-white py-4 rounded-xl hover:bg-blue-400 transition">Submit</button>
+                    <button type="button" onclick="submitAmount()" class="bg-blue-600 text-2xl font-semibold text-white py-4 rounded-xl">Submit</button>
+                    
                 </div>
             </div>
 
@@ -49,7 +77,7 @@
             <div class="bg-white shadow-md rounded-xl p-6 lg:col-span-2 self-start">
                 <h2 class="font-bold text-lg text-center">PETTY CASH</h2>
                 <p class="text-black-500 text-base border-b-2 border-gray-500 text-center" id="receiptDate"></p>
-                <p class="text-md text-black-800 font-semibold mb-4 text-left">Name: Jose Eowyn Laurente</p>
+                <p class="text-md text-black-800 font-semibold mb-4 text-left">Name: <?= htmlspecialchars($selected_rider['name']) ?></p>
 
                 <div class="space-y-4 mt-4">
                     <div class="flex justify-between items-center">
@@ -61,7 +89,7 @@
                     </div>
 
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Today’s Total Sales</span>
+                        <span class="text-gray-600">Today’s Total Sales for Laundry and Gasul</span>
                     </div>
 
                     <div class="flex justify-end items-center">
@@ -78,17 +106,17 @@
 
                 <!-- Buttons -->
                 <div class="mt-6 flex gap-4">
-                    <button class="flex-1 bg-red-500 text-white py-2 rounded-md font-semibold hover:bg-red-600">Delete</button>
-                    <button class="flex-1 bg-green-500 text-white py-2 rounded-md font-semibold hover:bg-green-600">Confirm</button>
+                    <button onclick="deletePettyCash()" class="flex-1 bg-red-500 text-white py-2 rounded-md font-semibold">Delete</button>
+                    <button onclick="confirmPettyCash()" class="flex-1 bg-green-500 text-white py-2 rounded-md font-semibold">Confirm</button>
                 </div>
             </div>
-
         </div>
     </div>
 </main>
 
-<script src="../assets/js/gas_system_js/gasPettyCash.js"></script>
+</div>
 
 <?php
     require '../layout/footer.php';
 ?>
+
