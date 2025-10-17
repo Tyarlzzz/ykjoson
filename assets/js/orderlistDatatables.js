@@ -26,13 +26,13 @@ $(document).ready(function() {
             var statusText = statusBox.text().trim();
 
             if (isGasSystem) {
-                if(statusText === 'delivered') {
+                if(statusText === 'Delivered') {
                     statusBox.addClass('bg-[#D1F7EA] text-[#17CF93] font-semibold font-[Outfit] rounded-lg p-4 text-center');
-                } else if(statusText === 'pending') {
+                } else if(statusText === 'Pending') {
                     statusBox.addClass('bg-[#F7F6D1] text-[#D3C30E] font-semibold font-[Outfit] rounded-lg p-4 text-center');
-                } else if(statusText === 'borrowed') {
+                } else if(statusText === 'Borrowed') {
                     statusBox.addClass('bg-[#F7DED1] text-[#D33F0E] font-semibold font-[Outfit] rounded-lg p-4 text-center');
-                } else if(statusText === 'returned') {
+                } else if(statusText === 'Returned') {
                     statusBox.addClass('bg-[#E6D1F7] text-[#C60ED3] font-semibold font-[Outfit] rounded-lg p-4 text-center');
                 }
             } else {
