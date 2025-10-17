@@ -20,14 +20,12 @@ function resetCardStyles() {
     });
 }
 
-// Brand images
 const brandImages = {
     petron: '../assets/images/petron.png',
     econo: '../assets/images/econo.png',
     seagas: '../assets/images/seagas.png'
 };
 
-// Brand names
 const brandNames = {
     petron: 'Petron',
     econo: 'Econo',
@@ -41,14 +39,13 @@ const lowStockThresholds = {
     seagas: 15
 };
 
-// Card selection functionality
+// Card selection handler
 gasCards.forEach(card => {
     card.addEventListener('click', function () {
         const brand = this.dataset.brand;
         const currentStock = this.dataset.stock;
         const currentPrice = this.dataset.price;
 
-        // Reset all cards styles
         resetCardStyles();
 
         // Highlight selected card
@@ -70,7 +67,6 @@ gasCards.forEach(card => {
     });
 });
 
-// Cancel button
 cancelBtn.addEventListener('click', function () {
     
     resetCardStyles();
