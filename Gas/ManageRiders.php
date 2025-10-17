@@ -1,4 +1,15 @@
-<?php include '../layout/header.php'; ?>
+<?php
+    require_once '../layout/header.php';
+    require_once '../database/Database.php';
+    require_once '../Models/Models.php';
+    require_once '../Models/Rider.php';
+
+    $database = new Database();
+    $conn = $database->getConnection();
+    Model::setConnection($conn);
+
+    $Riders = Rider::all();
+?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
   <div class="w-full px-8">
@@ -73,29 +84,20 @@
                 </tr>
               </thead>
               <tbody>
-                <?php
-                // Example riders (replace with DB query) - added more data for testing
-                $riders = [
-                  ['id' => 1, 'name' => 'Erik Soliman', 'phone' => '09171234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 2, 'name' => 'Jane Cruz', 'phone' => '09181234567', 'address' => '243 Caanawan, San Jose City'],
-                  ['id' => 3, 'name' => 'Rommel Cruz', 'phone' => '09191234567', 'address' => '243 Caanawan, San Jose City'],
-                  ['id' => 4, 'name' => 'Rouelyn Joson', 'phone' => '09201234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 5, 'name' => 'Aj Castro ', 'phone' => '09211234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 6, 'name' => 'Danielle Quiambao', 'phone' => '09221234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 7, 'name' => 'Charles Carpio', 'phone' => '09231234567', 'address' => '142 CLSU Village'],
-                  ['id' => 8, 'name' => 'Jose Eowyn', 'phone' => '09241234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 9, 'name' => 'Eurri Martinez', 'phone' => '09251234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                ];
-                foreach ($riders as $rider): ?>
+                <?php   
+                  $counter = 1;
+                  if (!empty($Riders)):
+                ?>
+                <?php foreach ($Riders as $rider): ?>
                   <tr class="hover:bg-gray-100">
                     <td class="px-4 py-2 border-b border-gray-300">
-                      <?= htmlspecialchars($rider['id']) ?>
+                      <?= htmlspecialchars($counter++) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300">
-                      <?= htmlspecialchars($rider['name']) ?>
+                      <?= htmlspecialchars($rider['fullname']) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300">
-                      <?= htmlspecialchars($rider['phone']) ?>
+                      <?= htmlspecialchars($rider['phone_number']) ?>
                     </td>
                     <td
                       class="px-4 py-2 border-b border-gray-300 truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
@@ -103,14 +105,14 @@
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300 text-center">
                       <a
-                        href="rideredit.php?id=<?= $rider['id'] ?>&name=<?= urlencode($rider['name']) ?>&phone=<?= urlencode($rider['phone']) ?>&address=<?= urlencode($rider['address']) ?>">
+                        href="rideredit.php?id=<?= $rider['rider_id'] ?>&name=<?= urlencode($rider['fullname']) ?>&phone=<?= urlencode($rider['phone_number']) ?>&address=<?= urlencode($rider['address']) ?>">
                         <!-- icons dito -->
                         <button type="button"
                           class="bg-yellow-400 text-white px-3 py-1 rounded-lg font-semibold transition">
                           Edit
                         </button>
                       </a>
-                      <a href="deleterider.php?id=<?= $rider['id'] ?>"
+                      <a href="deleterider.php?id=<?= $rider['rider_id'] ?>"
                         onclick="return confirm('Are you sure you want to delete this rider?');">
                         <!-- icons dito -->
                         <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg font-semibold transition">
@@ -120,9 +122,15 @@
                     </td>
                   </tr>
                 <?php endforeach; ?>
+                <?php else: ?>
+                  <tr>
+                    <td colspan="5" class="text-center py-4 text-gray-500">
+                      No riders found.
+                    </td>
+                  </tr>
+                <?php endif; ?>
               </tbody>
             </table>
-
           </div>
       </form>
     </div>
