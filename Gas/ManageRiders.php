@@ -35,25 +35,23 @@
 
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
-      <form action="store.php" method="POST" id="orderForm">
+      <form action="storeRider.php" method="POST" id="orderForm">
         <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
           <div class="mb-6">
             <div class="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full
-                  Name</label>
-                <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">fullname</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Enter full name"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
-                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number"
+                <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">phone_number</label>
+                <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
             </div>
             <div class="mb-4">
-              <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">
-                Address</label>
+              <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Address</label>
               <input type="text" id="address" name="address" placeholder="Enter address"
                 class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
             </div>
@@ -94,25 +92,25 @@
                       <?= htmlspecialchars($counter++) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300">
-                      <?= htmlspecialchars($rider['fullname']) ?>
+                      <?= htmlspecialchars($rider->fullname) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300">
-                      <?= htmlspecialchars($rider['phone_number']) ?>
+                      <?= htmlspecialchars($rider->phone_number) ?>
                     </td>
                     <td
                       class="px-4 py-2 border-b border-gray-300 truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
-                      <?= htmlspecialchars($rider['address']) ?>
+                      <?= htmlspecialchars($rider->address) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300 text-center">
                       <a
-                        href="rideredit.php?id=<?= $rider['rider_id'] ?>&name=<?= urlencode($rider['fullname']) ?>&phone=<?= urlencode($rider['phone_number']) ?>&address=<?= urlencode($rider['address']) ?>">
+                        href="rideredit.php?id=<?= $rider->rider_id ?>&name=<?= urlencode($rider->fullname) ?>&phone=<?= urlencode($rider->phone_number) ?>&address=<?= urlencode($rider->address) ?>">
                         <!-- icons dito -->
                         <button type="button"
                           class="bg-yellow-400 text-white px-3 py-1 rounded-lg font-semibold transition">
                           Edit
                         </button>
                       </a>
-                      <a href="deleterider.php?id=<?= $rider['rider_id'] ?>"
+                      <a href="deleterider.php?id=<?= $rider->rider_id ?>"
                         onclick="return confirm('Are you sure you want to delete this rider?');">
                         <!-- icons dito -->
                         <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg font-semibold transition">
