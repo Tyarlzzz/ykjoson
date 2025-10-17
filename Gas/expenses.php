@@ -1,7 +1,7 @@
 <?php require '../layout/header.php' ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
-  <div class="w-full px-8">
+  <div class="w-full">
     <div class="mb-6 flex justify-between items-center">
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report
       </h1>
