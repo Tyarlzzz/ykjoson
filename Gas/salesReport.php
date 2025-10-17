@@ -9,7 +9,7 @@
 
     <!-- Navigation Tabs -->
     <div class="flex mb-0">
-      <a href="../Rider/updateInventory.php"
+      <a href="updateInventory.php"
         class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold rounded-t-2xl z-0">Inventory</a>
       <a href="salesReport.php" class="px-5 py-1 bg-red-600 text-white font-semibold rounded-t-2xl -ml-3 z-0">Sales
         Report</a>
