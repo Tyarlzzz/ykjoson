@@ -35,7 +35,7 @@
 
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
-      <form action="store.php" method="GET" id="orderForm">
+      <form action="store.php" method="POST" id="orderForm">
         <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
           <div class="mb-6">
             <div class="grid grid-cols-2 gap-4 mb-4">
