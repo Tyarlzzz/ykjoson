@@ -235,5 +235,5 @@ $todaysOrders = Gas::getTodaysOrders();
       </div>
     </div>
 </main>
-
+   
 <?php require '../layout/footer.php' ?>
