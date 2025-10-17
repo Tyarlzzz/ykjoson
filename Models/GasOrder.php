@@ -3,7 +3,6 @@
 
     class GasOrder extends Order {
         public static function all() {
-            // Get all orders and filter by business_type = 'Gas System'
             $allOrders = parent::all();
             if (!$allOrders) return null;
 
@@ -31,7 +30,6 @@
         }
 
         public static function create(array $data) {
-            // Ensure business_type is set to 'Gas System' for gas orders
             $data['business_type'] = 'Gas System';
             return parent::create($data);
         }
@@ -261,6 +259,57 @@
             } catch (PDOException $e) {
                 self::$conn->rollBack();
                 die("Error deleting order: " . $e->getMessage());
+            }
+        }
+
+        public static function createAllotment($item_id, $quantity, $total_cost) {
+            try {
+                $sql = "INSERT INTO `item allotment` (item_id, quantity, total_cost, created_at) 
+                        VALUES (:item_id, :quantity, :total_cost, NOW())";
+                
+                $stmt = self::$conn->prepare($sql);
+                $stmt->execute([
+                    ':item_id' => $item_id,
+                    ':quantity' => $quantity,
+                    ':total_cost' => $total_cost
+                ]);
+                
+                return self::$conn->lastInsertId();
+                
+            } catch (PDOException $e) {
+                die("Error creating allotment: " . $e->getMessage());
+            }
+        }
+
+        public static function createOrderItem($order_id, $product_code_id, $allotment_id, $quantity, $unit_price, $total) {
+            try {
+                $sql = "INSERT INTO gas_ordered_items 
+                        (order_id, product_code_id, allotment_id, quantity, unit_price, total, created_at) 
+                        VALUES (:order_id, :product_code_id, :allotment_id, :quantity, :unit_price, :total, NOW())";
+                
+                $stmt = self::$conn->prepare($sql);
+                return $stmt->execute([
+                    ':order_id' => $order_id,
+                    ':product_code_id' => $product_code_id,
+                    ':allotment_id' => $allotment_id,
+                    ':quantity' => $quantity,
+                    ':unit_price' => $unit_price,
+                    ':total' => $total
+                ]);
+                
+            } catch (PDOException $e) {
+                die("Error creating order item: " . $e->getMessage());
+            }
+        }
+
+        public static function deleteOrderItem($item_order_id) {
+            try {
+                $sql = "DELETE FROM gas_ordered_items WHERE item_order_id = :item_order_id";
+                $stmt = self::$conn->prepare($sql);
+                return $stmt->execute([':item_order_id' => $item_order_id]);
+                
+            } catch (PDOException $e) {
+                die("Error deleting order item: " . $e->getMessage());
             }
         }
     }
