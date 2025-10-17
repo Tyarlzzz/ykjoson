@@ -1,11 +1,75 @@
-<?php include '../layout/header.php'; ?>
-
 <?php
-// Get rider details 
-$riderId = isset($_GET['id']) ? trim($_GET['id']) : '';
-$riderName = isset($_GET['name']) ? trim($_GET['name']) : '';
-$riderPhone = isset($_GET['phone']) ? trim($_GET['phone']) : '';
-$riderAddress = isset($_GET['address']) ? trim($_GET['address']) : '';
+  require_once '../layout/header.php';
+  require_once '../database/Database.php';
+  require_once '../Models/Models.php';
+  require_once '../Models/Rider.php';
+
+  $database = new Database();
+  $conn = $database->getConnection();
+  Model::setConnection($conn);
+
+  $Riders = Rider::getRider();
+
+  $rider_id = null;
+  $fullname = '';
+  $phone_number = '';
+  $address = '';
+
+  if (isset($_GET['id'])) {
+      $rider = Rider::find($_GET['id']);
+      if ($rider) {
+          $rider_id = $rider->rider_id;
+          $fullname = $rider->fullname;
+          $phone_number = $rider->phone_number;
+          $address = $rider->address;
+      } else {
+          // Handle rider not found, perhaps redirect or show error
+          echo '<script>Swal.fire("Error!", "Rider not found.", "error");</script>';
+      }
+  }
+
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      try {
+          $fullname = $_POST['fullname'];
+          $phone_number = $_POST['phone_number'];
+          $address = $_POST['address'];
+          $rider_id = $_POST['rider_id'];
+
+          $rider = Rider::find($rider_id);
+          if (!$rider) {
+              throw new Exception('Rider not found');
+          }
+
+          $success = $rider->update([
+              'fullname' => $fullname,
+              'phone_number' => $phone_number,
+              'address' => $address
+          ]);
+
+          if ($success) {
+              echo '<script>
+                      Swal.fire({
+                          title: "Success!",
+                          text: "Rider updated successfully!",
+                          icon: "success"
+                      }).then(function() {
+                          window.location = "ManageRiders.php";
+                      });
+                  </script>';
+          } else {
+              throw new Exception('Failed to update rider');
+          }
+
+      } catch (Exception $e) {
+          echo '<script>
+                  Swal.fire({
+                      title: "Error!",
+                      text: "' . addslashes($e->getMessage()) . '",
+                      icon: "error"
+                  });
+              </script>';
+      }
+  }
 ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
@@ -32,21 +96,21 @@ $riderAddress = isset($_GET['address']) ? trim($_GET['address']) : '';
 
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
-      <form action="updateRider.php" method="POST" id="orderForm">
+      <form action="Edit.php" method="POST" id="orderForm">
         <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
           <div class="mb-6">
             <div class="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full
                   Name</label>
-                <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
-                  value="<?= htmlspecialchars($riderName) ?>"
+                <input type="text" id="fullname" name="fullname" placeholder="Enter full name"
+                  value="<?= htmlspecialchars($fullname) ?>"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
-                <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number"
-                  value="<?= htmlspecialchars($riderPhone) ?>"
+                <input type="text" id="phone_number" name="phone_number" placeholder="Enter phone number"
+                  value="<?= htmlspecialchars($phone_number) ?>"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
             </div>
@@ -54,13 +118,13 @@ $riderAddress = isset($_GET['address']) ? trim($_GET['address']) : '';
               <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">
                 Address</label>
               <input type="text" id="address" name="address" placeholder="Enter address"
-                value="<?= htmlspecialchars($riderAddress) ?>"
+                value="<?= htmlspecialchars($address) ?>"
                 class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
             </div>
 
             <div class="flex items-end mt-6 justify-end gap-3">
-              <?php if ($riderId !== ''): ?>
-                <input type="hidden" name="id" value="<?= htmlspecialchars($riderId) ?>">
+              <?php if (isset($rider_id)): ?>
+                <input type="hidden" name="rider_id" value="<?= htmlspecialchars($rider_id) ?>">
               <?php endif; ?>
 
               <button type="button" onclick="window.location.href='manageRiders.php'"
@@ -98,50 +162,45 @@ $riderAddress = isset($_GET['address']) ? trim($_GET['address']) : '';
               </thead>
               <tbody>
                 <?php
-                // Example riders (replace with DB query) - added more data for testing
-                $riders = [
-                  ['id' => 1, 'name' => 'Erik Soliman', 'phone' => '09171234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 2, 'name' => 'Jane Cruz', 'phone' => '09181234567', 'address' => '243 Caanawan, San Jose City'],
-                  ['id' => 3, 'name' => 'Rommel Cruz', 'phone' => '09191234567', 'address' => '243 Caanawan, San Jose City'],
-                  ['id' => 4, 'name' => 'Rouelyn Joson', 'phone' => '09201234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 5, 'name' => 'Aj Castro ', 'phone' => '09211234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 6, 'name' => 'Danielle Quiambao', 'phone' => '09221234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 7, 'name' => 'Charles Carpio', 'phone' => '09231234567', 'address' => '142 CLSU Village'],
-                  ['id' => 8, 'name' => 'Jose Eowyn', 'phone' => '09241234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                  ['id' => 9, 'name' => 'Eurri Martinez', 'phone' => '09251234567', 'address' => '123 Bagong Sikat, Science City of Munoz'],
-                ];
-                foreach ($riders as $rider): ?>
+                  $counter = 1;
+                  if (!empty($Riders)):
+                ?>
+                <?php foreach ($Riders as $rider): ?>
                   <tr class="hover:bg-gray-100">
                     <td class="px-4 py-2 border-b border-gray-300">
-                      <?= htmlspecialchars($rider['id']) ?>
+                      <?= htmlspecialchars($counter++) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300">
-                      <?= htmlspecialchars($rider['name']) ?>
+                      <?= htmlspecialchars($rider->fullname) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300">
-                      <?= htmlspecialchars($rider['phone']) ?>
+                      <?= htmlspecialchars($rider->phone_number) ?>
                     </td>
                     <td
                       class="px-4 py-2 border-b border-gray-300 truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
-                      <?= htmlspecialchars($rider['address']) ?>
+                      <?= htmlspecialchars($rider->address) ?>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-300 text-center">
                       <a
-                        href="editRider.php?id=<?= $rider['id'] ?>&name=<?= urlencode($rider['name']) ?>&phone=<?= urlencode($rider['phone']) ?>&address=<?= urlencode($rider['address']) ?>">
+                        href="Edit.php?id=<?= $rider->rider_id ?>&name=<?= urlencode($rider->fullname) ?>&phone=<?= urlencode($rider->phone_number) ?>&address=<?= urlencode($rider->address) ?>">
                         <button type="button"
                           class="bg-yellow-400 text-white px-3 py-1 rounded-lg transition">
                           Edit
                         </button>
                       </a>
-                      <a href="deleteRider.php?id=<?= $rider['id'] ?>"
-                        onclick="return confirm('Are you sure you want to delete this rider?');">
-                        <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg transition">
-                          Delete
-                        </button>
-                      </a>
+                      <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-lg transition delete-btn" data-id="<?= $rider->rider_id ?>">
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 <?php endforeach; ?>
+                <?php else: ?>
+                  <tr>
+                    <td colspan="5" class="text-center py-4 text-gray-500">
+                      No riders found.
+                    </td>
+                  </tr>
+                <?php endif; ?>
               </tbody>
             </table>
 
@@ -152,5 +211,31 @@ $riderAddress = isset($_GET['address']) ? trim($_GET['address']) : '';
 </main>
 
 <script src="../assets/js/gas_system_js/gasManageRiders.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const rider_id = this.dataset.id;
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "This action cannot be undone.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `Destroy.php?id=${rider_id}`;
+          }
+        });
+      });
+    });
+  });
+</script>
 
 <?php include '../layout/footer.php'; ?>

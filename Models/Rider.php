@@ -98,5 +98,22 @@ class Rider extends Model {
         }
     }
 
+    public static function getRider() {
+        try {
+            $sql = "SELECT * FROM `riders`
+                    ORDER BY fullname ASC";
+            
+            $stmt = self::$conn->prepare($sql);
+            $stmt->execute();
+            
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return $results ? array_map(fn($data) => new self($data), $results) : null;
+            
+        } catch (PDOException $e) {
+            die("Error fetching rider: " . $e->getMessage());
+        }
+    }
+
 }
 ?>
