@@ -83,9 +83,9 @@
                                     <tr>
                                         <td><input type="checkbox" class="appearance-none peer rounded-md border border-black checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
                                         <td><?php echo $counter++; ?></td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
-                                        <td><a href="edit.php?id=1"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
-                                        <td><a href="edit.php?id=1"><?php echo $order['address']; ?></a></td>
-                                        <td><a href="edit.php?id=1"><?php echo $order['phone_number']; ?></a></td>
+                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
+                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['address']; ?></a></td>
+                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['phone_number']; ?></a></td>
                                         <td><?php echo $order['total_quantity']; ?></td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
                                                     ung pinaka qty nya na kulay red tapos ung text ng number ay kulay white (reference: Figma Prototype) -->
                                         <td><?php echo $order['status']; ?></td>
