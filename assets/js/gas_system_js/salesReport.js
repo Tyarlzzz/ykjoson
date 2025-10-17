@@ -9,7 +9,7 @@ const salesData = {
         { week: 4, sales: 1200, customers: 15, delivered: 23 },
         { week: 5, sales: 7600, customers: 24, delivered: 23 }
       ],
-      monthly: { sales: 11600, customers: 91, delivered: 87 }
+      monthly: { sales: 11600, customers: 111, delivered: 87 }
     },
     October: {
       weeks: [
@@ -19,27 +19,27 @@ const salesData = {
         { week: 4, sales: 900, customers: 31, delivered: 30 },
         { week: 5, sales: 8029, customers: 24, delivered: 23 }
       ],
-      monthly: { sales: 15550, customers: 119, delivered: 114 }
+      monthly: { sales: 15550, customers: 143, delivered: 114 }
     },
     November: {
       weeks: [
         { week: 1, sales: 3900, customers: 30, delivered: 29 },
-        { week: 2, sales: 4500, customers: 35, delivered: 33 },
+        { week: 2, sales: 4500, customers: 15, delivered: 33 },
         { week: 3, sales: 4100, customers: 31, delivered: 30 },
-        { week: 4, sales: 4300, customers: 33, delivered: 32 },
+        { week: 4, sales: 4300, customers: 50, delivered: 32 },
         { week: 5, sales: 3100, customers: 24, delivered: 23 }
       ],
-      monthly: { sales: 16800, customers: 129, delivered: 124 }
+      monthly: { sales: 16800, customers: 150, delivered: 124 }
     },
     December: {
       weeks: [
         { week: 1, sales: 100, customers: 15, delivered: 38 },
         { week: 2, sales: 9000, customers: 45, delivered: 43 },
-        { week: 3, sales: 6000, customers: 42, delivered: 40 },
-        { week: 4, sales: 15000, customers: 43, delivered: 41 },
+        { week: 3, sales: 6000, customers: 20, delivered: 40 },
+        { week: 4, sales: 15000, customers: 13, delivered: 41 },
         { week: 5, sales: 3100, customers: 24, delivered: 23 }
       ],
-      monthly: { sales: 22000, customers: 170, delivered: 162 }
+      monthly: { sales: 22000, customers: 117, delivered: 162 }
     }
   }
 };
