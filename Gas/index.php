@@ -185,7 +185,6 @@ $todaysOrders = Gas::getTodaysOrders();
             class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
             <option value="">All Status</option>
             <option value="Delivered">Delivered</option>
-            <option value="Delivered">Delivered</option>
             <option value="Pending">Pending</option>
             <option value="Borrowed">Borrowed</option>
             <option value="Returned">Returned</option>
