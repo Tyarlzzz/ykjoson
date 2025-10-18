@@ -29,16 +29,16 @@
   }
 ?>
 
-<main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-8">
+<main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto">
   <div class="w-full">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Point of Sale System</h1>
-      <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+    <div class="flex justify-between items-center">   
+        <h1 class="font-['Outfit'] font-bold text-3xl py-3 pl-2">&nbsp;&nbsp;|&nbsp;&nbsp;Point of Sale System</h1>
+        <p class="text-gray-500 text-base pr-6"><?php echo date('F j, Y'); ?></p>
     </div>
 
     <!-- Statistics Cards Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.7fr_1.7fr_3fr_1fr] gap-5 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.7fr_1.7fr_3fr_1fr] gap-5 mb-6 ps-6 pt-6 pe-6">
       <!-- Left Column -->
       <div class="flex flex-col justify-between">
         <!-- Total Customer Card -->
@@ -50,13 +50,13 @@
             </div>
             <span class="text-sm font-semibold text-gray-700">Total Customer</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">
+          <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
             <?php
             $totalCustomers = count(GasOrder::all());
             echo $totalCustomers;
             ?>
           </div>
-          <div class="text-xs text-gray-500 mt-1">Today</div>
+          <div class="text-xs text-gray-500 mt-1 ms-2">Today</div>
         </div>
 
         <!-- Pending Order Card -->
@@ -64,17 +64,17 @@
           <div class="flex items-center gap-3 mb-1">
             <div
               class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-300 flex items-center justify-center">
-              <img class="w-8 h-8" src="../assets/images/pending.png" alt="pendingOrderIcon">
+              <img class="w-8 h-8 ms-2" src="../assets/images/pending.png" alt="pendingOrderIcon">
             </div>
             <span class="text-sm font-semibold text-gray-700">Pending Order</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">
+          <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
             <?php
             $pendingOrders = GasOrder::countPending();
             echo $pendingOrders;
             ?>
           </div>
-          <div class="text-xs text-gray-500 mt-1">Today</div>
+          <div class="text-xs text-gray-500 mt-1 ms-2">Today</div>
         </div>
       </div>
 
@@ -89,7 +89,7 @@
             </div>
             <span class="text-sm font-semibold text-gray-700">Borrowed Tanks</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">
+          <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
             <?php
             $borrowedOrders = GasOrder::countBorrowed();
             echo $borrowedOrders;
@@ -107,7 +107,7 @@
             </div>
             <span class="text-sm font-semibold text-gray-700">Returned Tanks</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900">
+          <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
             <?php
             $deliveredOrders = GasOrder::countDelivered();
             echo $deliveredOrders;
@@ -173,7 +173,7 @@
             </svg>
             <span class="text-lg font-semibold">Delivered</span>
           </div>
-          <span class="text-3xl font-bold mt-1">
+          <span class="text-3xl font-bold mt-1 ms-4">
             <?php
             $deliveredOrders = GasOrder::countDelivered();
             echo $deliveredOrders;
@@ -184,7 +184,7 @@
     </div>
 
     <!-- START NG TABLE -->
-    <div class="md:flex-row max-w-full mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <div class="md:flex-row max-w-full mx-auto p-6 bg-white rounded-xl shadow-lg ps-6 pe-6 mt-6 ms-6 me-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span
             class="font-[Switzer] text-sm"><?php echo date("F j, Y"); ?></span></h2>

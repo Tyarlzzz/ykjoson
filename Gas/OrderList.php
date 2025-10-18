@@ -53,7 +53,7 @@ if (isset($_GET['error'])) {
   </div>
   <div class="p-6 bg-white rounded-xl shadow-xl m-8 flex-1 flex flex-col min-h-0">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span
+      <h2 class="text-xl font-[Outfit] space-x-2">Order List&nbsp;&nbsp;<span
           class="font-[Switzer] text-sm"><?php echo date("F j, Y"); ?></span></h2>
       <div class="flex items-center space-x-3">
         <div class="relative ms-2">
