@@ -144,7 +144,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     text: "Order created successfully for ' . addslashes($_POST['fullname']) . '!",
                     icon: "success"
                 }).then(function() {
-                    window.location = "index.php";
+                    window.location = "create.php";
                 });
             </script>';
 

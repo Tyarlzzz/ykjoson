@@ -261,7 +261,7 @@
                         <?php $counter = 1; ?>
                         <?php foreach ($todaysOrders as $order): ?>
                             <tr>
-                                <td class="<?php echo $order['is_rushed'] ? 'font-bold text-red-600' : 'font-bold' ?>"><?php echo $counter++; ?></td>
+                                <td class="<?php echo $order['is_rushed'] ? 'font-bold text-red-600' : '' ?>"><?php echo $counter++; ?></td>
                                 <td><?php echo $order['fullname']; ?></td>
                                 <td><?php echo $order['address']; ?></td>
                                 <td><?php echo $order['phone_number']; ?></td>

@@ -1,3 +1,4 @@
+// statusUpdate.js - Handles order status updates with weight input for delivery
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('laundryStatusModal');
     const closeBtn = document.getElementById('closeLaundryModal');
@@ -27,7 +28,146 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Function to update order status
+    // Function to show weight input modal
+    function showWeightInputModal(orderId, customerName, customerAddress, customerPhone, total_quantity) {
+        Swal.fire({
+            title: 'Order Number: ' + orderId,
+            html: `
+                <div>
+                    <div class="flex flex-row justify-between mb-4">
+                        <p class="text-xl font-['Switzer'] text-gray-700"><strong class="font-['Outfit']">Name:</strong> ${customerName}</p>
+                        <p class="text-xl font-['Switzer'] text-gray-700"><strong class="font-['Outfit']">Phone:</strong> ${customerPhone}</p>
+                    </div>
+                    <p class="text-xl mb-4 text-start font-['Switzer'] text-gray-700"><strong class="font-['Outfit']">Address:</strong> ${customerAddress}</p>
+                    <p class="text-xl text-end mb-4 font-['Switzer'] text-gray-700"><strong class="font-['Outfit']">Total Pcs:</strong> ${total_quantity}</p>
+                    
+                    <div class="flex">
+                        <p class="text-lg font-['Switzer'] text-gray-700 mb-4">Weights (kg)</p>
+                    </div>
+
+                    <div>
+                        <label class="text-start text-lg font-medium text-gray-700 mb-1 font-['Switzer']">Clothes Weight (kg)</label>
+                        <input type="number" id="clothesWeight" step="0.01" min="0" value="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            placeholder="0.00">
+                    </div>
+                    
+                    <div>
+                        <label class="text-start text-lg font-medium text-gray-700 mb-1 font-['Switzer']">Comforter/Curtains Weight (kg)</label>
+                        <input type="number" id="comforter_curtainsWeight" step="0.01" min="0" value="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            placeholder="0.00">
+                    </div>
+                </div>
+            `,
+            width: '600px',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#19B900',
+            cancelButtonColor: '#FF1D21',
+            preConfirm: () => {
+                const clothesWeight = parseFloat(document.getElementById('clothesWeight').value) || 0;
+                const comforter_curtainsWeight = parseFloat(document.getElementById('comforter_curtainsWeight').value) || 0;
+                
+                const totalWeight = clothesWeight + comforter_curtainsWeight;
+                
+                if (totalWeight === 0) {
+                    Swal.showValidationMessage('Please enter at least one weight value');
+                    return false;
+                }
+                
+                return {
+                    clothesWeight: clothesWeight,
+                    comforter_curtainsWeight: comforter_curtainsWeight,
+                    totalWeight: totalWeight
+                };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Update status with weight data
+                updateOrderStatusWithWeights(orderId, 'For Delivery', result.value);
+            } else {
+                // If cancelled, close the status modal
+                modal.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Function to update order status with weight data
+    function updateOrderStatusWithWeights(orderId, newStatus, weights) {
+        Swal.fire({
+            title: 'Updating...',
+            text: 'Please wait while we update the order status and weights',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        fetch('updateStatusWithWeights.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                order_id: parseInt(orderId),
+                status: newStatus,
+                clothes_weight: weights.clothesWeight,
+                comforter_curtains_weight: weights.comforter_curtainsWeight,
+                total_weight: weights.totalWeight
+            })
+        })
+        .then(response => {
+            return response.text().then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    return data;
+                } catch (e) {
+                    throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+                }
+            });
+        })
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    html: `
+                        <div class="text-left">
+                            <p class="mb-2">Order status updated to <strong>For Delivery</strong></p>
+                            <div class="bg-gray-50 p-3 rounded-lg text-sm">
+                                <p><strong>Clothes:</strong> ${weights.clothesWeight} kg</p>
+                                <p><strong>Comforter:</strong> ${weights.comforter_curtainsWeight} kg</p>
+                                <p class="mt-2 font-bold border-t pt-2"><strong>Total Weight:</strong> ${weights.totalWeight} kg</p>
+                            </div>
+                        </div>
+                    `,
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    modal.classList.add('hidden');
+                    location.reload();
+                });
+            } else {
+                throw new Error(data.message || 'Failed to update status');
+            }
+        })
+        .catch(error => {
+            console.error('Update error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: error.message || 'Failed to update order status',
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            });
+        });
+    }
+    
+    // Function to update order status (without weights)
     function updateOrderStatus(orderId, newStatus) {
         Swal.fire({
             title: 'Updating...',
@@ -52,12 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         })
         .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-
             return response.text().then(text => {
-                console.log('Raw response:', text);
-                
                 try {
                     const data = JSON.parse(text);
                     return data;
@@ -98,6 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const currentStatus = this.getAttribute('data-current-status');
             const orderId = this.getAttribute('data-order-id');
+            const customerName = this.getAttribute('data-customer-name');
+            const customerAddress = this.getAttribute('data-customer-address');
+            const customerPhone = this.getAttribute('data-customer-phone');
             
             // Clear previous options
             statusContainer.innerHTML = '';
@@ -135,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     modal.classList.remove('hidden');
                     return;
                 default:
-                    // Show error message for unknown status
                     const errorMessage = document.createElement('div');
                     errorMessage.className = 'text-center py-6';
                     errorMessage.innerHTML = `
@@ -150,7 +287,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
             }
             
-            // Create buttons for available statuses
             availableStatuses.forEach(status => {
                 const statusInfo = allStatuses[status];
                 const button = document.createElement('button');
@@ -161,23 +297,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Add click event to update status
                 button.addEventListener('click', function() {
-                    updateOrderStatus(orderId, status);
+                    // Check if status is "For Delivery" - show weight input modal
+                    if (status === 'For Delivery') {
+                        modal.classList.add('hidden'); // Close status modal first
+                        showWeightInputModal(orderId, customerName, customerAddress, customerPhone);
+                    } else {
+                        // Regular status update for other statuses
+                        updateOrderStatus(orderId, status);
+                    }
                 });
                 
                 statusContainer.appendChild(button);
             });
             
-            // Show modal
             modal.classList.remove('hidden');
         });
     });
     
-    // Close modal
     closeBtn.addEventListener('click', function() {
         modal.classList.add('hidden');
     });
     
-    // Close modal when clicking outside
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.classList.add('hidden');

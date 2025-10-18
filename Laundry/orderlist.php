@@ -75,7 +75,7 @@
                     <?php $counter = 1; ?>
                     <?php foreach ($Laundry as $order): ?>
                     <tr>
-                        <td class="<?php echo $order['is_rushed'] ? 'font-bold text-red-600' : 'font-bold' ?>"><?php echo $counter++; ?></td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
+                        <td class="<?php echo $order['is_rushed'] ? 'font-bold text-red-600' : '' ?>"><?php echo $counter++; ?></td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
                         <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
                         <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['address']; ?></a></td>
                         <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['phone_number']; ?></a></td>
@@ -91,7 +91,13 @@
                             <?php endif; ?>
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <button class="openLaundryStatusModal" data-current-status="<?php echo $order['status']; ?>" data-order-id="<?php echo $order['order_id']; ?>">
+                            <button class="openLaundryStatusModal" 
+                                data-current-status="<?php echo $order['status']; ?>" 
+                                data-order-id="<?php echo $order['order_id']; ?>"
+                                data-customer-name="<?php echo $order['fullname']; ?>"
+                                data-customer-address="<?php echo $order['address']; ?>"
+                                data-customer-phone="<?php echo $order['phone_number']; ?>"
+                                data-quantity="<?php echo $order['total_quantity']; ?>">
                                 <?php echo $order['status']; ?>
                             </button>
                         </td>
