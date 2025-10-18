@@ -67,7 +67,7 @@
                     </div>
                 </div>
             </a>
-            <a href="">
+            <a href="orderlist.php?is_rushed=1">
                 <div class="bg-gradient-to-br from-red-600 via-red-500 to-red-400 rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">

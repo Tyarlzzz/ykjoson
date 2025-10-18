@@ -25,7 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
         'Delivered': {
             bgColor: 'bg-[#D1F7EA]',
             textColor: 'text-[#17CF93]'
-        }
+        },
+        'Paid': {
+            bgColor: 'bg-green-600',
+            textColor: 'text-white'
+        },
     };
     
     // Function to show weight input modal
@@ -260,13 +264,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     availableStatuses = ['Delivered'];
                     break;
                 case 'Delivered':
+                    const confirmMessage = document.createElement('div');
+                    confirmMessage.className = 'text-center py-6';
+                    confirmMessage.innerHTML = `
+                        <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Confirm payment?</p>
+                        <p class="font-[Outfit] text-gray-600 mt-2">Are you sure you want to confirm payment for this order?</p>
+                    `;
+                    statusContainer.appendChild(confirmMessage);
+                    availableStatuses = ['Paid'];
+                    break;
+                case 'Paid':
                     const successMessage = document.createElement('div');
                     successMessage.className = 'text-center py-6';
                     successMessage.innerHTML = `
                         <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Delivery Successful!</p>
+                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Order already paid!</p>
                         <p class="font-[Outfit] text-gray-600 mt-2">This order has been successfully delivered.</p>
                     `;
                     statusContainer.appendChild(successMessage);
