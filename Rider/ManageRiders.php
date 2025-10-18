@@ -10,6 +10,14 @@ Model::setConnection($conn);
 
 $Riders = Rider::all();
 
+$previousURL = $_SERVER['HTTP_REFERER'] ?? null;
+
+if (strpos($previousURL, 'Laundry') !== false) { 
+  $systemBase = '../Laundry/'; 
+} else { 
+  $systemBase = '../Gas/'; 
+}
+
 if (isset($_GET['success'])) {
   echo '<script>
                 Swal.fire({
@@ -40,18 +48,23 @@ if (isset($_GET['error'])) {
 
     <!-- Navigation Tabs -->
     <div class="flex mb-0">
-      <a href="expenses.php"
-        class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl">Expenses</a>
-      <a href="../Gas/salesReport.php"
-        class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Sales
-        Report</a>
-      <a href="updateInventory.php"
-        class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Inventory</a>
-      <a href="manageRiders.php"
-        class="px-10 py-1 bg-red-600 text-white font-base rounded-t-2xl -ml-3 z-0">Riders</a>
-      <a href="../Gas/archived.php"
-        class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Archived</a>
-
+        <a href="<?php echo $systemBase; ?>expenses.php"
+          class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl">Expenses</a>
+        <a href="<?php echo $systemBase; ?>salesReport.php"
+          class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Sales
+          Report</a>
+        <?php if (strpos($previousURL, 'Laundry') !== false) { ?>
+          <a href="<?php echo $systemBase; ?>pricing.php"
+          class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Pricing</a>
+        <?php } ?>
+          <?php if (strpos($previousURL, 'Gas') !== false) { ?>
+          <a href="updateInventory.php"
+            class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Inventory</a>
+        <?php } ?>
+        <a href="manageRiders.php"
+          class="px-10 py-1<?php if (strpos($previousURL, 'Gas') !== false) { ?> bg-red-600<?php } else { ?> bg-blue-600<?php } ?> text-white font-base rounded-t-2xl -ml-3 z-0">Riders</a>
+        <a href="<?php echo $systemBase; ?>archived.php"
+          class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Archived</a>
     </div>
 
     <!-- Container -->
