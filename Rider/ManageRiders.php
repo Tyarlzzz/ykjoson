@@ -58,7 +58,7 @@ if (isset($_GET['error'])) {
           class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Pricing</a>
         <?php } ?>
           <?php if (strpos($previousURL, 'Gas') !== false) { ?>
-          <a href="updateInventory.php"
+          <a href="<?php echo $systemBase; ?>updateInventory.php"
             class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Inventory</a>
         <?php } ?>
         <a href="manageRiders.php"
