@@ -1,10 +1,75 @@
 const fullNameInput = document.getElementById('fullname');
+const phoneInput = document.getElementById('phone_number');
+const addressInput = document.getElementById('address');
 const rushButton = document.getElementById('is_rushed');
 const barongqty = document.getElementById('barong-qty');
 const gownsqty = document.getElementById('gowns-qty');
 const curtains = document.getElementById('curtains-qty');
 const comforter = document.getElementById('comforter-qty');
 const rushCheckbox = document.getElementById('rushOrderCheckbox');
+
+// Suggestion dropdown
+const suggestionBox = document.createElement('div');
+suggestionBox.classList.add('absolute', 'bg-white', 'border', 'rounded', 'shadow', 'mt-1');
+suggestionBox.style.zIndex = "1000";
+fullNameInput.parentNode.style.position = "relative";
+fullNameInput.parentNode.appendChild(suggestionBox);
+
+fullNameInput.addEventListener('input', function() {
+    const query = this.value.trim();
+    if (query.length < 2) {
+        suggestionBox.innerHTML = '';
+        return;
+    }
+
+    fetch(`search_customer.php?term=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            suggestionBox.innerHTML = '';
+            data.forEach(customer => {
+                const item = document.createElement('div');
+                item.classList.add('p-2', 'cursor-pointer', 'hover:bg-gray-200');
+                item.textContent = customer.fullname;
+
+                item.addEventListener('click', () => {
+                      console.log("Selected customer:", customer);
+
+                      // Fill the inputs
+                      fullNameInput.value = customer.fullname;
+                      phoneInput.value = customer.phone_number;
+                      addressInput.value = customer.address;
+
+                      // 👇 PUT THEM HERE - Update the summary directly
+                      document.getElementById('summary-name').textContent = customer.fullname;
+                      document.getElementById('summary-phone').textContent = customer.phone_number;
+                      document.getElementById('summary-address').textContent = customer.address;
+
+                      // Trigger input events so summary updates
+                      fullNameInput.dispatchEvent(new Event('input'));
+                      phoneInput.dispatchEvent(new Event('input'));
+                      addressInput.dispatchEvent(new Event('input'));
+
+                      // Add hidden customer_id
+                      let hiddenId = document.getElementById('customer_id');
+                      if (!hiddenId) {
+                          hiddenId = document.createElement('input');
+                          hiddenId.type = 'hidden';
+                          hiddenId.name = 'customer_id';
+                          hiddenId.id = 'customer_id';
+                          fullNameInput.form.appendChild(hiddenId);
+                      }
+                      hiddenId.value = customer.customer_id;
+
+                      // Collapse suggestion box
+                      suggestionBox.innerHTML = '';
+                      suggestionBox.style.display = 'none';
+                  });
+
+                suggestionBox.appendChild(item);
+            });
+        });
+});
+
 
 // Smart initialization: Read from DOM if values exist (edit mode), otherwise start at 0 (add mode)
 function getInitialQuantity(itemName) {

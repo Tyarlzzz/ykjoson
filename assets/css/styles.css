@@ -1,3 +1,22 @@
+@font-face {
+    font-family: 'Switzer';
+    src: url('../fonts/Switzer-Light.woff2') format('woff2'),
+         url('../fonts/Switzer-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Outfit Font - SemiBold (600) */
+@font-face {
+    font-family: 'Outfit';
+    src: url('../fonts/Outfit-SemiBold.woff2') format('woff2'),
+         url('../fonts/Outfit-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
     font-family: 'Switzer', sans-serif;
     background-color: #F8F8F8;
