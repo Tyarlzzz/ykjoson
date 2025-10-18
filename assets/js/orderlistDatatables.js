@@ -14,9 +14,15 @@ $(document).ready(function() {
             autoWidth: false,
             columnDefs: [
                 {
+                    targets: 1, // make name column searchable by visible text
+                    render: function (data, type, row) {
+                        return type === 'filter' || type === 'search' ? $(data).text() : data;
+                    }
+                },
+                {
                     targets: 1,
                     orderable: false,
-                    searchable: false
+                    searchable: true
                 }
             ]
         });
@@ -58,6 +64,22 @@ $(document).ready(function() {
         });
     }
 
+    function applyFilters() {
+    table.columns().search('').draw();
+    
+    // Apply search to columns 1 (Name), 2 (Location), 3 (Phone)
+    if (currentSearchTerm) {
+        table.columns([1, 2, 3]).search(currentSearchTerm, true, false).draw();
+    }
+    
+    // Apply status filter to column 5
+    if (currentStatusFilter) {
+        table.column(5).search('^' + currentStatusFilter + '$', true, false).draw();
+    }
+    
+    applyStatusColors();
+    }
+
     applyStatusColors();
 
     // Check for status parameter in URL and apply filter
@@ -77,7 +99,7 @@ $(document).ready(function() {
 
     $('#statusFilter').on('change', function() {
         var selectedStatus = this.value;
-        table.column(6).search(selectedStatus).draw();
+        table.column(5).search(selectedStatus).draw();
         applyStatusColors();
         
         // Update URL without page reload

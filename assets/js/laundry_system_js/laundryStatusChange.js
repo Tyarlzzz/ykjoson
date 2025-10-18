@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     availableStatuses = ['Delivered'];
                     break;
                 case 'Delivered':
-                    // Show success message for delivered orders
                     const successMessage = document.createElement('div');
                     successMessage.className = 'text-center py-6';
                     successMessage.innerHTML = `
