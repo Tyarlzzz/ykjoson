@@ -72,22 +72,31 @@
             </thead>
             <tbody>
                 <?php if ($Laundry && count($Laundry) > 0): ?>
-                                <?php $counter = 1; ?>
-                                <?php foreach ($Laundry as $order): ?>
-                                    <tr>
-                                        <td><?php echo $counter++; ?></td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
-                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
-                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['address']; ?></a></td>
-                                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['phone_number']; ?></a></td>
-                                        <td><?php echo $order['total_quantity']; ?></td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
-                                                    ung pinaka qty nya na kulay red tapos ung text ng number ay kulay white (reference: Figma Prototype) -->
-                                        <td>
-                                            <button class="openLaundryStatusModal" data-current-status="<?php echo $order['status']; ?>" data-order-id="<?php echo $order['order_id']; ?>">
-                                                <?php echo $order['status']; ?>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
+                    <?php $counter = 1; ?>
+                    <?php foreach ($Laundry as $order): ?>
+                    <tr>
+                        <td><?php echo $counter++; ?></td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
+                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
+                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['address']; ?></a></td>
+                        <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['phone_number']; ?></a></td>
+                        <td class="px-4 py-3">
+                            <?php if ($order['is_rushed']): ?>
+                                <span class="bg-red-600 text-white rounded-lg font-bold px-3 py-1 inline-block">
+                                    <?php echo $order['total_quantity']; ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="px-3 py-1 font-bold">
+                                    <?php echo $order['total_quantity']; ?>
+                                </span>           
+                            <?php endif; ?>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button class="openLaundryStatusModal" data-current-status="<?php echo $order['status']; ?>" data-order-id="<?php echo $order['order_id']; ?>">
+                                <?php echo $order['status']; ?>
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
                 <?php else: ?>
                   <tr>
                       <td colspan="6" class="text-center py-8 text-gray-500 italic">

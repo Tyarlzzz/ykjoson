@@ -265,8 +265,20 @@
                                 <td><?php echo $order['fullname']; ?></td>
                                 <td><?php echo $order['address']; ?></td>
                                 <td><?php echo $order['phone_number']; ?></td>
-                                <td><?php echo $order['total_items']; ?></td>
-                                <td><?php echo $order['status']; ?></td>
+                                <td class="px-4 py-3">
+                                    <?php if ($order['is_rushed']): ?>
+                                        <span class="bg-red-600 text-white rounded-lg font-bold px-3 py-1 inline-block">
+                                            <?php echo $order['total_items']; ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="px-3 py-1 font-bold">
+                                            <?php echo $order['total_items']; ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <?php echo $order['status']; ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

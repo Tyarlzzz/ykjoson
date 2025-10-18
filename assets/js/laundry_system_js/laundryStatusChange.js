@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     availableStatuses = ['On Wash', 'On Fold'];
                     break;
                 case 'On Fold':
-                    availableStatuses = ['For Delivery', 'Delivered'];
+                    availableStatuses = ['For Delivery'];
                     break;
                 case 'For Delivery':
                     availableStatuses = ['Delivered'];

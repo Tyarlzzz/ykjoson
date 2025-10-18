@@ -129,6 +129,7 @@ class Laundry extends Order {
             $sql = "SELECT 
                         o.order_id,
                         o.status,
+                        o.is_rushed,
                         c.fullname,
                         o.created_at,
                         c.address,
@@ -138,7 +139,7 @@ class Laundry extends Order {
                     INNER JOIN customer c ON o.customer_id = c.customer_id
                     LEFT JOIN laundry_ordered_items loi ON o.order_id = loi.order_id
                     WHERE o.business_type = 'Laundry System'
-                    GROUP BY o.order_id, o.status, o.created_at, c.fullname, c.address, c.phone_number
+                    GROUP BY o.order_id, o.status, o.is_rushed, o.created_at, c.fullname, c.address, c.phone_number
                     ORDER BY o.created_at DESC";
             
             $stmt = self::$conn->prepare($sql);
