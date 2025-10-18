@@ -188,6 +188,7 @@ $todaysOrders = Gas::getTodaysOrders();
             <option value="Pending">Pending</option>
             <option value="Borrowed">Borrowed</option>
             <option value="Returned">Returned</option>
+            <option value="Paid">Paid</option>
           </select>
           <div>
             <a href="OrderList.php">
@@ -226,7 +227,10 @@ $todaysOrders = Gas::getTodaysOrders();
                   <td><?php echo $order['address']; ?></td>
                   <td><?php echo $order['phone_number']; ?></td>
                   <td><?php echo $order['total_quantity']; ?></td>
-                  <td><?php echo $order['status']; ?></td>
+                  <td
+                    class="px-4 py-3 text-center <?php echo $order['status'] == "Paid" ? 'bg-[#D1F0F7] text-[#0E8AD3] font-semibold font-[Outfit] rounded-lg p-4 text-center' : '' ?>">
+                    <?php echo $order['status']; ?>
+                  </td>
                 </tr>
               <?php endforeach; ?>
             <?php endif; ?>
@@ -235,5 +239,5 @@ $todaysOrders = Gas::getTodaysOrders();
       </div>
     </div>
 </main>
-   
+
 <?php require '../layout/footer.php' ?>

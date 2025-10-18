@@ -1,44 +1,44 @@
 <?php
-  require_once '../layout/header.php';
-  require_once '../database/Database.php';
-  require_once '../Models/Models.php';
-  require_once '../Models/Item_inventory.php';
+require_once '../layout/header.php';
+require_once '../database/Database.php';
+require_once '../Models/Models.php';
+require_once '../Models/Item_inventory.php';
 
-  $database = new Database();
-  $conn = $database->getConnection();
-  Model::setConnection($conn);
+$database = new Database();
+$conn = $database->getConnection();
+Model::setConnection($conn);
 
-  // Get all gas inventory
-  $gasInventory = Item_inventory::getGasInventory();
+// Get all gas inventory
+$gasInventory = Item_inventory::getGasInventory();
 
-  // Create associative array for easy access
-  $inventory = [];
-  if ($gasInventory) {
-      foreach ($gasInventory as $item) {
-          $inventory[strtolower($item->item_name)] = $item;
-      }
+// Create associative array for easy access
+$inventory = [];
+if ($gasInventory) {
+  foreach ($gasInventory as $item) {
+    $inventory[strtolower($item->item_name)] = $item;
   }
+}
 
-  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      try {
-          $brand = $_POST['brand'];
-          $stock = $_POST['stock'];
-          $price = $_POST['price'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  try {
+    $brand = $_POST['brand'];
+    $stock = $_POST['stock'];
+    $price = $_POST['price'];
 
-          if (empty($brand) || $stock < 0 || $price < 0) {
-              throw new Exception('Invalid input data');
-          }
+    if (empty($brand) || $stock < 0 || $price < 0) {
+      throw new Exception('Invalid input data');
+    }
 
-          $item = Item_inventory::getByItemName($brand);
+    $item = Item_inventory::getByItemName($brand);
 
-          if (!$item) {
-              throw new Exception('Item not found');
-          }
+    if (!$item) {
+      throw new Exception('Item not found');
+    }
 
-          $success = Item_inventory::updateStockAndPrice($item->item_id, $stock, $price);
+    $success = Item_inventory::updateStockAndPrice($item->item_id, $stock, $price);
 
-          if ($success) {
-              echo '<script>
+    if ($success) {
+      echo '<script>
                       Swal.fire({
                           title: "Success!",
                           text: "' . ucfirst($brand) . ' inventory updated successfully!",
@@ -47,20 +47,20 @@
                           window.location = "updateInventory.php";
                       });
                   </script>';
-          } else {
-              throw new Exception('Failed to update inventory');
-          }
+    } else {
+      throw new Exception('Failed to update inventory');
+    }
 
-      } catch (Exception $e) {
-          echo '<script>
+  } catch (Exception $e) {
+    echo '<script>
                   Swal.fire({
                       title: "Error!",
                       text: "' . addslashes($e->getMessage()) . '",
                       icon: "error"
                   });
               </script>';
-      }
   }
+}
 ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
@@ -72,17 +72,17 @@
 
     <!-- Navigation Tabs -->
     <div class="flex mb-0">
-      <a href="updateInventory.php"
-        class="px-8 py-1 bg-red-600 text-white font-semibold rounded-t-2xl z-0">Inventory</a>
+      <a href="expenses.php"
+        class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl">Expenses</a>
       <a href="salesReport.php"
         class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Sales
         Report</a>
+      <a href="updateInventory.php"
+        class="px-8 py-1 bg-red-600 text-white font-base rounded-t-2xl -ml-3 z-0">Inventory</a>
       <a href="../Rider/manageRiders.php"
         class="px-10 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Riders</a>
       <a href="archived.php"
         class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Archived</a>
-      <a href="expenses.php"
-        class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Expenses</a>
     </div>
 
     <!-- Container -->
@@ -92,26 +92,28 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
           <!-- Petron Card -->
-          <div class="gas-card bg-white border-2 border-gray-200 rounded-2xl p-6 cursor-pointer" 
-              data-brand="petron"
-              data-stock="<?php echo $inventory['petron']->stocks; ?>" 
-              data-price="<?php echo $inventory['petron']->cost; ?>">
+          <div class="gas-card bg-white border-2 border-gray-200 rounded-2xl p-6 cursor-pointer" data-brand="petron"
+            data-stock="<?php echo $inventory['petron']->stocks; ?>"
+            data-price="<?php echo $inventory['petron']->cost; ?>">
             <div class="flex flex-col items-center">
               <img src="../assets/images/petron.png" alt="Petron" class="w-3/5 h-3/5 mb-4">
               <h3 class="text-xl font-bold text-gray-800 mb-2">Petron</h3>
               <div class="text-center space-y-1">
                 <p class="text-gray-600">Stock: <span class="font-semibold text-gray-800" id="petron-stock">
-                  <?php echo $inventory['petron']->stocks; ?>
-                </span></p>
+                    <?php echo $inventory['petron']->stocks; ?>
+                  </span></p>
                 <p class="text-gray-600">Price: <span class="font-semibold text-gray-800">₱<span id="petron-price">
-                  <?php echo isset($inventory['petron']) ? number_format($inventory['petron']->cost, 2) : '0.00'; ?>
-                </span></span></p>
+                      <?php echo isset($inventory['petron']) ? number_format($inventory['petron']->cost, 2) : '0.00'; ?>
+                    </span></span></p>
               </div>
 
               <!-- Low Stock Warning -->
-              <div class="low-stock-warning <?php echo (isset($inventory['petron']) && $inventory['petron']->isLowStock()) ? '' : 'hidden'; ?> mt-3 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-1 rounded-full text-sm flex items-center">
+              <div
+                class="low-stock-warning <?php echo (isset($inventory['petron']) && $inventory['petron']->isLowStock()) ? '' : 'hidden'; ?> mt-3 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-1 rounded-full text-sm flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"></path>
                 </svg>
                 Stock is currently low
               </div>
@@ -119,26 +121,28 @@
           </div>
 
           <!-- Econo Card -->
-          <div class="gas-card bg-white border-2 border-gray-200 rounded-2xl p-6 cursor-pointer" 
-              data-brand="econo"
-              data-stock="<?php echo $inventory['econo']->stocks; ?>" 
-              data-price="<?php echo $inventory['econo']->cost; ?>">
+          <div class="gas-card bg-white border-2 border-gray-200 rounded-2xl p-6 cursor-pointer" data-brand="econo"
+            data-stock="<?php echo $inventory['econo']->stocks; ?>"
+            data-price="<?php echo $inventory['econo']->cost; ?>">
             <div class="flex flex-col items-center">
               <img src="../assets/images/econo.png" alt="Econo" class="w-3/5 h-3/5 mb-4">
               <h3 class="text-xl font-bold text-gray-800 mb-2">Econo</h3>
               <div class="text-center space-y-1">
                 <p class="text-gray-600">Stock: <span class="font-semibold text-gray-800" id="econo-stock">
-                  <?php echo $inventory['econo']->stocks; ?>
-                </span></p>
+                    <?php echo $inventory['econo']->stocks; ?>
+                  </span></p>
                 <p class="text-gray-600">Price: <span class="font-semibold text-gray-800">₱<span id="econo-price">
-                  <?php echo isset($inventory['econo']) ? number_format($inventory['econo']->cost, 2) : '0.00'; ?>
-                </span></span></p>
+                      <?php echo isset($inventory['econo']) ? number_format($inventory['econo']->cost, 2) : '0.00'; ?>
+                    </span></span></p>
               </div>
 
               <!-- Low Stock Warning -->
-              <div class="low-stock-warning <?php echo (isset($inventory['econo']) && $inventory['econo']->isLowStock()) ? '' : 'hidden'; ?> mt-3 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-1 rounded-full text-sm flex items-center">
+              <div
+                class="low-stock-warning <?php echo (isset($inventory['econo']) && $inventory['econo']->isLowStock()) ? '' : 'hidden'; ?> mt-3 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-1 rounded-full text-sm flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"></path>
                 </svg>
                 Stock is currently low
               </div>
@@ -146,26 +150,28 @@
           </div>
 
           <!-- SeaGas Card -->
-          <div class="gas-card bg-white border-2 border-gray-200 rounded-2xl p-6 cursor-pointer" 
-              data-brand="seagas"
-              data-stock="<?php echo $inventory['seagas']->stocks; ?>" 
-              data-price="<?php echo $inventory['seagas']->cost; ?>">
+          <div class="gas-card bg-white border-2 border-gray-200 rounded-2xl p-6 cursor-pointer" data-brand="seagas"
+            data-stock="<?php echo $inventory['seagas']->stocks; ?>"
+            data-price="<?php echo $inventory['seagas']->cost; ?>">
             <div class="flex flex-col items-center">
               <img src="../assets/images/seagas.png" alt="SeaGas" class="w-3/5 h-3/5 mb-4">
               <h3 class="text-xl font-bold text-gray-800 mb-2">SeaGas</h3>
               <div class="text-center space-y-1">
                 <p class="text-gray-600">Stock: <span class="font-semibold text-gray-800" id="seagas-stock">
-                  <?php echo $inventory['seagas']->stocks; ?>
-                </span></p>
+                    <?php echo $inventory['seagas']->stocks; ?>
+                  </span></p>
                 <p class="text-gray-600">Price: <span class="font-semibold text-gray-800">₱<span id="seagas-price">
-                  <?php echo isset($inventory['seagas']) ? number_format($inventory['seagas']->cost, 2) : '0.00'; ?>
-                </span></span></p>
+                      <?php echo isset($inventory['seagas']) ? number_format($inventory['seagas']->cost, 2) : '0.00'; ?>
+                    </span></span></p>
               </div>
 
               <!-- Low Stock Warning -->
-              <div class="low-stock-warning <?php echo (isset($inventory['seagas']) && $inventory['seagas']->isLowStock()) ? '' : 'hidden'; ?> mt-3 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-1 rounded-full text-sm flex items-center">
+              <div
+                class="low-stock-warning <?php echo (isset($inventory['seagas']) && $inventory['seagas']->isLowStock()) ? '' : 'hidden'; ?> mt-3 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-1 rounded-full text-sm flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"></path>
                 </svg>
                 Stock is currently low
               </div>

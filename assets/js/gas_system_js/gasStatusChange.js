@@ -20,12 +20,16 @@ document.addEventListener('DOMContentLoaded', function () {
         'Delivered': {
             bgColor: 'bg-[#D1F7EA]',
             textColor: 'text-[#17CF93]'
+        },
+        'Paid': {
+            bgColor: 'bg-[#D1F0F7]',
+            textColor: 'text-[#0E8AD3]'
         }
     };
 
     // Status transitions for gas orders
     const statusTransitions = {
-        'Pending': ['Borrowed', 'Delivered'],
+        'Pending': ['Borrowed', 'Delivered', 'Paid'],
         'Borrowed': ['Returned'],
         'Returned': [],
         'Delivered': []

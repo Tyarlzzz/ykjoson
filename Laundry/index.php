@@ -67,7 +67,7 @@
                     </div>
                 </div>
             </a>
-            <a href="">
+            <a href="orderlist.php?is_rushed=1">
                 <div class="bg-gradient-to-br from-red-600 via-red-500 to-red-400 rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
@@ -233,6 +233,7 @@
                     <option value="On Wash">On Wash</option>
                     <option value="On Dry">On Dry</option>
                     <option value="On Fold">On Fold</option>
+                    <option value="Paid">Paid</option>
                 </select>
                 <div>
                     <a href="orderlist.php">
@@ -276,7 +277,7 @@
                                         </span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="px-4 py-3 text-center">
+                                <td class="px-4 py-3 text-center <?php echo $order['status'] == "Paid" ? 'bg-green-600 text-white font-semibold font-[Outfit] rounded-lg p-4 text-center' : '' ?>">
                                     <?php echo $order['status']; ?>
                                 </td>
                             </tr>
