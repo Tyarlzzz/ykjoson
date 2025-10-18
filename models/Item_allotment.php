@@ -1,6 +1,4 @@
 <?php
-
-
     require_once 'Models.php';
 
     class Item_allotment extends Model{
@@ -9,7 +7,7 @@
         //mga gusto maretrieve sa users na table, kung ano pangalan ng column sa users na table, dapat EXACTLY pareho sa column name sa table
         public $allotment_id;
         public $item_id;
-         public $quantity;
+        public $quantity;
         public $total_cost;
         public $created_at;
         public $updated_at;
