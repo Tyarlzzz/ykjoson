@@ -440,7 +440,7 @@ try {
             </div>
 
             <div class="flex gap-3 mt-6">
-              <button type="button" onclick="cancelOrder()"
+              <button type="button" onclick="window.location.href='orderlist.php';"
                 class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold transition">
                 Cancel
               </button>

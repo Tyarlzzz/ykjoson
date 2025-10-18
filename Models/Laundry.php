@@ -71,6 +71,24 @@ class Laundry extends Order {
         $deliveredOrders = self::where('status', '=', 'Delivered');
         return $deliveredOrders ? count($deliveredOrders) : 0;
     }
+    public static function countRushedOrders() {
+        try {
+            $sql = "SELECT COUNT(*) as count
+                    FROM orders
+                    WHERE business_type = 'Laundry System'
+                    AND is_rushed = 1
+                    AND status != 'Delivered'";
+            
+            $stmt = self::$conn->prepare($sql);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['count'] ?? 0;
+            
+        } catch (PDOException $e) {
+            die("Error counting rushed orders: " . $e->getMessage());
+        }
+    }
 
     public static function getTodaysOrders() {
         try {
