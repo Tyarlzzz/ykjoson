@@ -34,23 +34,19 @@ if (isset($_GET['error'])) {
 ?>
 
 <main class="flex-1 overflow-x-hidden overflow-y-hidden h-screen flex flex-col">
-  <div class="justify-between flex">
-
-    <div class="mx-8 flex justify-between items-center">
-      <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Order List</h1>
-    </div>
-
-    <a href="create.php">
-      <div class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 rounded-2xl shadow-xl mt-5 me-6">
-        <div class="flex gap-3 p-3">
-          <div class="w-10 h-10 rounded-full">
+  <div class="flex items-center justify-between px-8 pt-4">
+    <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Order List</h1>
+    <a href="create.php" class="flex items-center">
+      <div class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 rounded-2xl shadow-xl">
+        <div class="flex gap-3 p-3 items-center">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-5.0 -10.0 110.0 135.0">
               <path
                 d="m83.602 16.398c-18.5-18.5-48.699-18.5-67.199 0s-18.5 48.699 0 67.199 48.699 18.5 67.199 0c18.5-18.496 18.5-48.699 0-67.199zm-9.1016 37.801h-20.398v20.398h-8.3984v-20.398h-20.301v-8.3984h20.301l-0.003906-20.301h8.3984v20.301h20.301z"
                 fill="white" />
             </svg>
           </div>
-          <span class="font-[Switzer] text-white font-bold text-2xl mt-1">Add Order</span>
+          <span class="font-[Switzer] text-white font-bold text-2xl">Add Order</span>
         </div>
       </div>
     </a>
