@@ -81,7 +81,7 @@
                         </div>
                         <span class="font-[Switzer] text-white font-bold">Rushed Order</span>
                     </div>
-                    <div class="font-['Outfit'] font-bold text-white text-3xl ms-5">
+                    <div class="font-['Outfit'] font-bold text-white text-3xl ms-5 mt-8">
                         <?php
                             $RushedOrders = Laundry::countRushedOrders();
                             echo $RushedOrders;
