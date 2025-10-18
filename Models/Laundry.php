@@ -33,7 +33,6 @@ class Laundry extends Order {
     }
 
     public static function create(array $data) {
-        // Ensure business_type is set to 'Laundry System' for gas orders
         $data['business_type'] = 'Laundry System';
         return parent::create($data);
     }
@@ -44,28 +43,33 @@ class Laundry extends Order {
     }
 
     public static function countOnHold() {
-        $deliveredOrders = self::where('status', '=', 'OnHold');
-        return $deliveredOrders ? count($deliveredOrders) : 0;
+        $onHoldOrders = self::where('status', '=', 'On Hold');
+        return $onHoldOrders ? count($onHoldOrders) : 0;
     }
 
     public static function countOnWash() {
-        $returnedOrders = self::where('status', '=', 'OnWash');
-        return $returnedOrders ? count($returnedOrders) : 0;
+        $onWashOrders = self::where('status', '=', 'On Wash');
+        return $onWashOrders ? count($onWashOrders) : 0;
     }
 
     public static function countOnDry() {
-        $borrowedOrders = self::where('status', '=', 'OnDry');
-        return $borrowedOrders ? count($borrowedOrders) : 0;
+        $onDryOrders = self::where('status', '=', 'On Dry');
+        return $onDryOrders ? count($onDryOrders) : 0;
     }
 
     public static function countOnFold() {
-        $borrowedOrders = self::where('status', '=', 'OnFold');
-        return $borrowedOrders ? count($borrowedOrders) : 0;
+        $onFoldOrders = self::where('status', '=', 'On Fold');
+        return $onFoldOrders ? count($onFoldOrders) : 0;
+    }
+
+    public static function countForDelivery() {
+        $forDeliveryOrders = self::where('status', '=', 'For Delivery');
+        return $forDeliveryOrders ? count($forDeliveryOrders) : 0;
     }
 
     public static function countDelivered() {
-        $borrowedOrders = self::where('status', '=', 'Delivered');
-        return $borrowedOrders ? count($borrowedOrders) : 0;
+        $deliveredOrders = self::where('status', '=', 'Delivered');
+        return $deliveredOrders ? count($deliveredOrders) : 0;
     }
 
     public static function getTodaysOrders() {

@@ -27,6 +27,72 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
+    // Function to update order status
+    function updateOrderStatus(orderId, newStatus) {
+        Swal.fire({
+            title: 'Updating...',
+            text: 'Please wait while we update the order status',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        fetch('updateStatus.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                order_id: parseInt(orderId),
+                status: newStatus
+            })
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
+            return response.text().then(text => {
+                console.log('Raw response:', text);
+                
+                try {
+                    const data = JSON.parse(text);
+                    return data;
+                } catch (e) {
+                    throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+                }
+            });
+        })
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Order status updated to ' + newStatus,
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    modal.classList.add('hidden');
+                    location.reload();
+                });
+            } else {
+                throw new Error(data.message || 'Failed to update status');
+            }
+        })
+        .catch(error => {
+            console.error('Update error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: error.message || 'Failed to update order status',
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            });
+        });
+    }
+    
     // Open modal and populate with appropriate status options
     document.querySelectorAll('.openLaundryStatusModal').forEach(button => {
         button.addEventListener('click', function() {
