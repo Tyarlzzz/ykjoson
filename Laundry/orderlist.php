@@ -88,7 +88,11 @@
                                         <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['phone_number']; ?></a></td>
                                         <td><?php echo $order['total_quantity']; ?></td> <!-- etong quantity nga pala lagyan niyo condition na kapag ung customer ay rushed mag kakaroon ng box
                                                     ung pinaka qty nya na kulay red tapos ung text ng number ay kulay white (reference: Figma Prototype) -->
-                                        <td><?php echo $order['status']; ?></td>
+                                        <td>
+                                            <button class="openLaundryStatusModal" data-current-status="<?php echo $order['status']; ?>" data-order-id="<?php echo $order['order_id']; ?>">
+                                                <?php echo $order['status']; ?>
+                                            </button>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                 <?php else: ?>
@@ -100,6 +104,20 @@
                 <?php endif; ?>
             </tbody>
         </table>
+        </div>
+    </div>
+                    
+    <!-- //ETO UNG STATUS CHANGE POP UP -->
+    <div id="laundryStatusModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-80">
+            <h2 class="text-2xl font-['Outfit'] font-semibold mb-5 text-center">Update Order Status</h2>
+            <div id="statusOptionsContainer" class="space-y-4">
+                <!-- Status options will be dynamically inserted here -->
+            </div>
+            <hr class="my-3 border-gray-500 mt-4">
+            <button id="closeLaundryModal" class="mt-4 w-full bg-red-500 text-white py-4 rounded-md">
+                Cancel
+            </button>
         </div>
     </div>
 </main>
