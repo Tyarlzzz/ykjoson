@@ -255,6 +255,23 @@ if ($brandSales) {
         </table>
       </div>
     </div>
+  </div>
+
+  <script>
+    // Set brand data globally BEFORE loading gasCharts.js
+    window.brandChartData = {
+      labels: ['Petron', 'Econo', 'SeaGas'],
+      data: [
+        <?php echo $brandData['Petron']; ?>,
+        <?php echo $brandData['Econo']; ?>,
+        <?php echo $brandData['SeaGas']; ?>
+      ]
+    };
+
+    console.log('Brand data set:', window.brandChartData); // Debug line
+  </script>
+
+  <script src="../assets/js/gas_system_js/gasCharts.js"></script>
 </main>
 
 <?php require '../layout/footer.php' ?>
