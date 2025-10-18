@@ -1,32 +1,32 @@
 <?php
-require_once '../layout/header.php';
-require_once '../database/Database.php';
-require_once '../Models/GasCustomer.php';
-require_once '../Models/GasOrder.php';
-require_once '../Models/Models.php';
+  require_once '../layout/header.php';
+  require_once '../database/Database.php';
+  require_once '../Models/GasCustomer.php';
+  require_once '../Models/GasOrder.php';
+  require_once '../Models/Models.php';
 
-$database = new Database();
-$conn = $database->getConnection();
-Model::setConnection($conn);
+  $database = new Database();
+  $conn = $database->getConnection();
+  Model::setConnection($conn);
 
-$todaysOrders = Gas::getTodaysOrders();
+  $todaysOrders = Gas::getTodaysOrders();
 
-// Get monthly brand sales data
-$brandSales = GasOrder::getMonthlyBrandSales();
+  // Get monthly brand sales data
+  $brandSales = GasOrder::getMonthlyBrandSales();
 
-$brandData = [
-  'Petron' => 0,
-  'Econo' => 0,
-  'SeaGas' => 0
-];
+  $brandData = [
+    'Petron' => 0,
+    'Econo' => 0,
+    'SeaGas' => 0
+  ];
 
-if ($brandSales) {
-  foreach ($brandSales as $sale) {
-    if (isset($brandData[$sale['brand']])) {
-      $brandData[$sale['brand']] = (int) $sale['total_quantity'];
+  if ($brandSales) {
+    foreach ($brandSales as $sale) {
+      if (isset($brandData[$sale['brand']])) {
+        $brandData[$sale['brand']] = (int) $sale['total_quantity'];
+      }
     }
   }
-}
 ?>
 
 <main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-8">
@@ -52,7 +52,7 @@ if ($brandSales) {
           </div>
           <div class="text-3xl font-bold text-gray-900">
             <?php
-            $totalCustomers = count(Gas::all());
+            $totalCustomers = count(GasOrder::all());
             echo $totalCustomers;
             ?>
           </div>
