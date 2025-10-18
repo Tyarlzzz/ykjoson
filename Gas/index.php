@@ -12,16 +12,16 @@ Model::setConnection($conn);
 $todaysOrders = Gas::getTodaysOrders();
 ?>
 
-<main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-6">
+<main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-8">
   <div class="w-full">
     <!-- Header -->
-    <div class="mx-8 flex justify-between items-center">
+    <div class="flex justify-between items-center mb-6">
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Point of Sale System</h1>
       <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
     </div>
 
     <!-- Statistics Cards Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.7fr_1.7fr_3fr_1fr] gap-5 m-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.7fr_1.7fr_3fr_1fr] gap-5 mb-6">
       <!-- Left Column -->
       <div class="flex flex-col justify-between">
         <!-- Total Customer Card -->
@@ -167,7 +167,7 @@ $todaysOrders = Gas::getTodaysOrders();
     </div>
 
     <!-- START NG TABLE -->
-    <div class="md:flex-row max-w-full mx-auto p-6 bg-white rounded-xl shadow-lg ps-6 pe-6 mt-6 ms-6 me-6">
+    <div class="md:flex-row max-w-full mx-auto p-6 bg-white rounded-xl shadow-lg">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span
             class="font-[Switzer] text-sm"><?php echo date("F j, Y"); ?></span></h2>

@@ -2,8 +2,8 @@
     require '../layout/header.php';
 ?>
 
-<main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
-    <div class="w-full px-6">
+<main class="font-[Switzer] flex-1 p-6 bg-gray-50 overflow-auto">
+    <div class="w-full">
         <!-- Top header -->
         <div class="mb-8 flex justify-between items-center">
             <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Petty Cash</h1>
