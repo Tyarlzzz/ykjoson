@@ -312,5 +312,32 @@
                 die("Error deleting order item: " . $e->getMessage());
             }
         }
+
+        public static function getMonthlyBrandSales() {
+            try {
+                $sql = "SELECT 
+                            ii.item_name as brand,
+                            COALESCE(SUM(goi.quantity), 0) as total_quantity
+                        FROM `item inventory` ii
+                        LEFT JOIN `item allotment` ia ON ii.item_id = ia.item_id
+                        LEFT JOIN gas_ordered_items goi ON ia.allotment_id = goi.allotment_id
+                        LEFT JOIN orders o ON goi.order_id = o.order_id
+                        WHERE ii.business_type = 'Gas System'
+                        AND (o.created_at IS NULL OR (MONTH(o.created_at) = MONTH(CURRENT_DATE()) 
+                        AND YEAR(o.created_at) = YEAR(CURRENT_DATE())))
+                        GROUP BY ii.item_name
+                        ORDER BY ii.item_name ASC";
+                
+                $stmt = self::$conn->prepare($sql);
+                $stmt->execute();
+                
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                return count($results) > 0 ? $results : null;
+                
+            } catch (PDOException $e) {
+                die("Error fetching monthly brand sales: " . $e->getMessage());
+            }
+        }
     }
 ?>

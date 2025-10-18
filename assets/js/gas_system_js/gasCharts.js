@@ -5,12 +5,20 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize Brands Pie Chart
   const brandsPieCtx = document.getElementById('brandsPieChart');
   if (brandsPieCtx) {
+
+    // Check if dynamic data exists from PHP, otherwise use default
+    const chartData = window.brandChartData || {
+      labels: ['Petron', 'Econo', 'SeaGas'],
+      data: [60, 25, 15] // Default fallback data
+    };
+
+
     window.brandsPieChart = new Chart(brandsPieCtx.getContext('2d'), {
       type: 'doughnut',
       data: {
-        labels: ['Petron', 'Econo', 'SeaGas'],
+        labels: chartData.labels,
         datasets: [{
-          data: [60, 25, 15],
+          data: chartData.data,
           backgroundColor: [
             '#EF4444', // Red for Petron
             '#3B82F6', // Blue for Econo
@@ -29,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
           tooltip: {
             callbacks: {
               label: function (context) {
-                return context.label + ': ' + context.parsed + '%';
+                return context.label + ': ' + context.parsed + 'units';
               }
             }
           }

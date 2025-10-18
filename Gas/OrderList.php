@@ -126,8 +126,13 @@ if (isset($_GET['error'])) {
                   <?php echo $order['total_quantity']; ?>
                 </td>
                 <td>
-                  <button class="openGasStatusModal" data-current-status="<?php echo $order['status']; ?>"
-                    data-order-id="<?php echo $order['order_id']; ?>">
+                  <button class="openGasStatusModal"
+                    data-current-status="<?php echo $order['status']; ?>"
+                    data-order-id="<?php echo $order['order_id']; ?>"
+                    data-customer-name="<?php echo htmlspecialchars($order['fullname']); ?>"
+                    data-customer-address="<?php echo htmlspecialchars($order['address']); ?>"
+                    data-customer-phone="<?php echo htmlspecialchars($order['phone_number']); ?>"
+                    data-quantity="<?php echo $order['total_quantity']; ?>">
                     <?php echo $order['status']; ?>
                   </button>
                 </td>
@@ -153,7 +158,7 @@ if (isset($_GET['error'])) {
         <!-- Status options will be dynamically inserted here -->
       </div>
       <hr class="my-3 border-gray-500 mt-4">
-      <button id="closeLaundryModal" class="mt-4 w-full bg-red-500 text-white py-4 rounded-md">
+      <button id="closeGasModal" class="mt-4 w-full bg-red-500 text-white py-4 rounded-md">
         Cancel
       </button>
     </div>
