@@ -28,7 +28,7 @@
     </div>
     <div class="p-6 bg-white rounded-xl shadow-xl mx-6 mt-6 mb-4 flex-1 flex flex-col min-h-0">
         <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span class="font-[Switzer] text-sm"><?php echo date("F j, Y");?></span></h2>
+            <h2 class="text-xl font-[Outfit] space-x-2">Order List&nbsp;&nbsp;<span class="font-[Switzer] text-sm"><?php echo date("F j, Y");?></span></h2>
             <div class="flex items-center space-x-3">
                 <div class="relative ms-2">
                     <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" 
