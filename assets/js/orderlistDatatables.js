@@ -69,7 +69,6 @@ $(document).ready(function() {
     function applyFilters() {
     table.columns().search('').draw();
     
-    // Apply search to columns 1 (Name), 2 (Location), 3 (Phone)
     if (currentSearchTerm) {
         table.columns([1, 2, 3]).search(currentSearchTerm, true, false).draw();
     }

@@ -46,6 +46,7 @@
                     <option value="On Wash">On Wash</option>
                     <option value="On Dry">On Dry</option>
                     <option value="On Fold">On Fold</option>
+                    <option value="Paid">Paid</option>
                 </select>
                 <div>
                     <a href="index.php" class="duration-100"> <!-- eto ung maximize button kasi clickable toh-->

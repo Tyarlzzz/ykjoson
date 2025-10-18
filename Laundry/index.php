@@ -233,6 +233,7 @@
                     <option value="On Wash">On Wash</option>
                     <option value="On Dry">On Dry</option>
                     <option value="On Fold">On Fold</option>
+                    <option value="Paid">Paid</option>
                 </select>
                 <div>
                     <a href="orderlist.php">
@@ -276,7 +277,7 @@
                                         </span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="px-4 py-3 text-center">
+                                <td class="px-4 py-3 text-center <?php echo $order['status'] == "Paid" ? 'bg-green-600 text-white font-semibold font-[Outfit] rounded-lg p-4 text-center' : '' ?>">
                                     <?php echo $order['status']; ?>
                                 </td>
                             </tr>
