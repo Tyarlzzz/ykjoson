@@ -22,7 +22,7 @@
     </div>
     <div class="flex flex-col md:flex-row max-w-full mx-auto pt-6 ps-6 pe-6 items-center">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 w-full">
-            <a href="">
+            <a href="orderlist.php">
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="customerCircle w-12 h-12 rounded-full flex items-center justify-center">
@@ -47,7 +47,7 @@
                     <div class="font-[Switzer] text-sm text-gray-500 mt-1 ms-1">Today</div>
                 </div>
             </a>
-            <a href="">
+            <a href="orderlist.php?status=For%20Delivery">
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="pendingCircle w-12 h-12 rounded-full flex items-center justify-center">
@@ -101,7 +101,7 @@
     </div>
     <div class="flex flex-col md:flex-row max-w-full mx-auto pt-6 ps-6 pe-6 items-center">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 w-full">
-            <a href="">
+            <a href="orderlist.php?status=On%20Hold">
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="bg-gradient-to-tr from-[#EFFF86] via-[#FFFF00] to-[#FBFF00] w-12 h-12 rounded-full flex items-center justify-center">
@@ -120,7 +120,7 @@
                     </div>
                 </div>
             </a>
-            <a href="">
+            <a href="orderlist.php?status=On%20Wash">
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="bg-gradient-to-tr from-[#86DFFF] via-[#008CFF] to-[#86DFFF] w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center">
@@ -142,7 +142,7 @@
                     </div>
                 </div>
             </a>
-            <a href="">
+            <a href="orderlist.php?status=On%20Dry">
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="bg-gradient-to-tr from-[#FFCB86] via-[#FFA100] to-[#FFCB86] w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center">
@@ -160,7 +160,7 @@
                     </div>
                 </div>
             </a>
-            <a href="">
+            <a href="orderlist.php?status=On%20Fold">
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="bg-gradient-to-tr from-[#FCAAFF] via-[#FF71EC] to-[#FCAAFF] w-12 h-12 rounded-full flex items-center justify-center">
@@ -181,7 +181,7 @@
                     </div>
                 </div>
             </a>
-            <a href="">
+            <a href="orderlist.php?status=Delivered">
                 <div class="bg-gradient-to-tr from-[#70E359] via-[#9BE98C] to-[#70E359] rounded-2xl shadow-lg p-6">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center">
@@ -232,7 +232,7 @@
                     <option value="Pending">Pending</option>
                 </select>
                 <div>
-                    <a href="">
+                    <a href="orderlist.php">
                         <svg class="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none" x="0px" y="0px">
                             <path d="M40.2196 2C39.115 2 38.2196 2.89543 38.2196 4C38.2196 5.10457 39.115 6 40.2196 6H55.1716L27.5858 33.5858C26.8047 34.3668 26.8047 35.6332 27.5858 36.4142C28.3668 37.1953 29.6332 37.1953 30.4142 36.4142L58 8.82843V24C58 25.1046 58.8954 26 60 26C61.1046 26 62 25.1046 62 24V4C62 2.89543 61.1046 2 60 2H40.2196Z" fill="black"/>
                             <path d="M52 37C52 35.8954 51.1046 35 50 35C48.8954 35 48 35.8954 48 37V56C48 57.1046 47.1046 58 46 58H8C6.89543 58 6 57.1046 6 56L6 18C6 16.8954 6.89543 16 8 16L27 16C28.1046 16 29 15.1046 29 14C29 12.8954 28.1046 12 27 12L8 12C4.68629 12 2 14.6863 2 18L2 56C2 59.3137 4.68629 62 8 62H46C49.3137 62 52 59.3137 52 56V37Z" fill="black"/>

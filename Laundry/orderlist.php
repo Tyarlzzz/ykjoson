@@ -14,7 +14,7 @@
 
 <main class="flex-1 overflow-x-hidden overflow-y-hidden h-screen flex flex-col">
     <div class="justify-between flex">
-        <button class="bg-[#41D72A] font-[Outfit] text-white font-bold text-xl rounded-xl shadow-lg p-4 ms-6 mt-5">Change Status</button>
+        <h1 class="font-['Outfit'] font-bold text-4xl py-3 pl-3 mt-5">&nbsp;&nbsp;|&nbsp;&nbsp;Order List</h1>
         <a href="create.php">
             <div class="bg-gradient-to-br from-blue-600 via-blue-500 to-purple-300 to-purple-500 to-purple-400 rounded-2xl shadow-xl mt-5 me-6">
                 <div class="flex justify-between items-center gap-3 p-3">
@@ -30,11 +30,6 @@
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-[Outfit] space-x-2">Today's Orders&nbsp;&nbsp;<span class="font-[Switzer] text-sm"><?php echo date("F j, Y");?></span></h2>
             <div class="flex items-center space-x-3">
-                <div class="bg-gray-200 rounded-lg">
-                    <button class="ps-7 pe-7 p-3 select-btn">
-                        Select all
-                    </button>
-                </div>
                 <div class="relative ms-2">
                     <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" 
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,7 +48,7 @@
                     <option value="On Fold">On Fold</option>
                 </select>
                 <div>
-                    <a href="dashboard.php" class="duration-100"> <!-- eto ung maximize button kasi clickable toh-->
+                    <a href="index.php" class="duration-100"> <!-- eto ung maximize button kasi clickable toh-->
                         <svg class="w-6 h-6 rotate-180" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" fill="none" x="0px" y="0px">
                             <path d="M40.2196 2C39.115 2 38.2196 2.89543 38.2196 4C38.2196 5.10457 39.115 6 40.2196 6H55.1716L27.5858 33.5858C26.8047 34.3668 26.8047 35.6332 27.5858 36.4142C28.3668 37.1953 29.6332 37.1953 30.4142 36.4142L58 8.82843V24C58 25.1046 58.8954 26 60 26C61.1046 26 62 25.1046 62 24V4C62 2.89543 61.1046 2 60 2H40.2196Z" fill="black"/>
                             <path d="M52 37C52 35.8954 51.1046 35 50 35C48.8954 35 48 35.8954 48 37V56C48 57.1046 47.1046 58 46 58H8C6.89543 58 6 57.1046 6 56L6 18C6 16.8954 6.89543 16 8 16L27 16C28.1046 16 29 15.1046 29 14C29 12.8954 28.1046 12 27 12L8 12C4.68629 12 2 14.6863 2 18L2 56C2 59.3137 4.68629 62 8 62H46C49.3137 62 52 59.3137 52 56V37Z" fill="black"/>
@@ -67,7 +62,6 @@
             <thead>
                 <!-- SAMPLE DATA LANG ITONG MGA NILAGAY KO DAPAT NAKA FOR EACH NA YAN -->
                 <tr>
-                    <th></th>
                     <th>#</th>
                     <th>Name</th>
                     <th>Location</th>
@@ -81,7 +75,6 @@
                                 <?php $counter = 1; ?>
                                 <?php foreach ($Laundry as $order): ?>
                                     <tr>
-                                        <td><input type="checkbox" class="appearance-none peer rounded-md border border-black checked:bg-green-500 checked:border-green-500 w-6 h-6 mt-2"></td>
                                         <td><?php echo $counter++; ?></td> <!-- dito diba mag kulay red ang id kapag rushed order. Ang naisip ko is if customer.rushed == true, mag red ang id -->
                                         <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['fullname']; ?></a></td><!-- dito mo ilalagay ung link para maedit ung order nung customer -->
                                         <td><a href="edit.php?order_id=<?php echo $order['order_id']; ?>"><?php echo $order['address']; ?></a></td>
@@ -97,7 +90,7 @@
                                 <?php endforeach; ?>
                 <?php else: ?>
                   <tr>
-                      <td colspan="8" class="text-center py-8 text-gray-500 italic">
+                      <td colspan="6" class="text-center py-8 text-gray-500 italic">
                           No Laundry Orders Found.
                       </td>
                   </tr>

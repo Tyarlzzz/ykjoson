@@ -1,28 +1,33 @@
 $(document).ready(function() {
 
-    var table = $('#orderlistTable').DataTable({
-        paging: false,
-        info: false, 
-        searching: true,
-        scrollCollapse: true,
-        dom: 't', 
-        ordering: false,
-        autoWidth: false,
-        columnDefs: [
-            {
-                targets: 1,
-                orderable: false,
-                searchable: false
-            }
-        ]
-    });
-
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable('#orderlistTable')) {
+        var table = $('#orderlistTable').DataTable();
+    } else {
+        var table = $('#orderlistTable').DataTable({
+            paging: false,
+            info: false, 
+            searching: true,
+            scrollCollapse: true,
+            dom: 't', 
+            ordering: false,
+            autoWidth: false,
+            columnDefs: [
+                {
+                    targets: 1,
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
+    } 
+    
     var currentPath = window.location.pathname;
     var isGasSystem = currentPath.includes('/Gas/');
 
     function applyStatusColors() {
         $('#orderlistTable tbody tr').each(function() {
-            var statusBox = $(this).find('td').eq(6);
+            var statusBox = $(this).find('td').eq(5);
             var statusText = statusBox.text().trim();
 
             if (isGasSystem) {
@@ -55,56 +60,31 @@ $(document).ready(function() {
 
     applyStatusColors();
 
-    var allSelected = false;
-    $('.select-btn').on('click', function() {
-        allSelected = !allSelected;
-        
-        var rows = table.rows({ 'search': 'applied' }).nodes();
-        
-        $('input[type="checkbox"]', rows).prop('checked', allSelected);
-        
-        if(allSelected) {
-            $(this).text('Deselect all');
-            $(this).parent().removeClass('bg-gray-200').addClass('bg-green-500 text-white');
-        } else {
-            $(this).text('Select all');
-            $(this).parent().removeClass('bg-green-500 text-white').addClass('bg-gray-200');
-        }
-    });
-
-    $('#orderlistTable tbody').on('change', 'input[type="checkbox"]', function() {
-        var rows = table.rows({ 'search': 'applied' }).nodes();
-        var totalCheckboxes = $('input[type="checkbox"]', rows).length;
-        var checkedCheckboxes = $('input[type="checkbox"]:checked', rows).length;
-        
-        if(checkedCheckboxes < totalCheckboxes) {
-            allSelected = false;
-            $('.select-btn').text('Select All');
-            $('.select-btn').parent().removeClass('bg-green-500 text-white').addClass('bg-gray-200');
-        } else if(checkedCheckboxes === totalCheckboxes && totalCheckboxes > 0) {
-            allSelected = true;
-            $('.select-btn').text('Deselect All');
-            $('.select-btn').parent().removeClass('bg-gray-200').addClass('bg-green-500 text-white');
-        }
-    });
+    // Check for status parameter in URL and apply filter
+    var urlParams = new URLSearchParams(window.location.search);
+    var statusParam = urlParams.get('status');
+    
+    if (statusParam) {
+        $('#statusFilter').val(statusParam);
+        table.column(5).search(statusParam).draw();
+        applyStatusColors();
+    }
 
     $('#customSearch').on('keyup', function() {
         table.search(this.value).draw();
-        applyStatusColors(); 
+        applyStatusColors();
     });
 
     $('#statusFilter').on('change', function() {
-        table.column(6).search(this.value).draw();
-        applyStatusColors(); 
+        var selectedStatus = this.value;
+        table.column(6).search(selectedStatus).draw();
+        applyStatusColors();
+        
+        // Update URL without page reload
+        var newUrl = selectedStatus 
+            ? window.location.pathname + '?status=' + encodeURIComponent(selectedStatus)
+            : window.location.pathname;
+        window.history.pushState({}, '', newUrl);
     });
     
-    $('#collapseBtn').on('click', function() {
-        setTimeout(function() {
-            $(window).trigger('resize');
-        }, 500);
-    });
-    
-    $(window).on('resize', function() {
-        table.columns.adjust().draw();
-    });
 });
