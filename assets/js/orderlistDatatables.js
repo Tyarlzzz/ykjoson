@@ -45,7 +45,10 @@ $(document).ready(function() {
                     statusBox.addClass('bg-[#F7DED1] text-[#D33F0E] font-semibold font-[Outfit] rounded-lg p-4 text-center');
                 } else if(statusText === 'Returned') {
                     statusBox.addClass('bg-[#E6D1F7] text-[#C60ED3] font-semibold font-[Outfit] rounded-lg p-4 text-center');
+                } else if(statusText === 'Paid') {
+                    statusBox.addClass('bg-[#D1F0F7] text-[#0E8AD3] font-semibold font-[Outfit] rounded-lg p-4 text-center');
                 }
+                
             } else {
                 if(statusText === 'Delivered') {
                     statusBox.addClass('bg-[#D1F7EA] text-[#17CF93] font-semibold font-[Outfit] rounded-lg p-4 text-center');

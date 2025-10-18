@@ -41,7 +41,7 @@ try {
 		throw new Exception('Invalid order ID');
 	}
 
-	$valid_statuses = ['Pending', 'Borrowed', 'Returned', 'Delivered'];
+	$valid_statuses = ['Pending', 'Borrowed', 'Returned', 'Delivered', 'Paid'];
     
 	if (!in_array($new_status, $valid_statuses)) {
 		throw new Exception('Invalid status value');
