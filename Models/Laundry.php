@@ -37,11 +37,6 @@
             return parent::create($data);
         }
 
-        public static function countPending() {
-            $pendingOrders = self::where('status', '=', 'Pending');
-            return $pendingOrders ? count($pendingOrders) : 0;
-        }
-
         public static function countOnHold() {
             $onHoldOrders = self::where('status', '=', 'On Hold');
             return $onHoldOrders ? count($onHoldOrders) : 0;

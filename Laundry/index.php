@@ -62,8 +62,8 @@
                     </div>
                     <div class="font-['Outfit'] font-bold text-3xl ms-4 mb-[1.45rem]">
                         <?php
-                            $PendingOrders = Laundry::countPending(); //WALA NA TO
-                            echo $PendingOrders;
+                            $ForDeliveryOrders = Laundry::countForDelivery();
+                            echo $ForDeliveryOrders;
                         ?>
                     </div>
                 </div>
