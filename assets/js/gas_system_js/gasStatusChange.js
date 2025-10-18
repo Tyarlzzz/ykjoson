@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('gasStatusModal');
-    const closeBtn = document.getElementById('closeLaundryModal');
+    const closeBtn = document.getElementById('closeGasModal');
     const statusContainer = document.getElementById('statusOptionsContainer');
 
     // All possible statuses with their styling
@@ -27,15 +27,165 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Status transitions for gas orders
-    const statusTransitions = {
-        'Pending': ['Borrowed', 'Delivered', 'Paid'],
-        'Borrowed': ['Returned'],
-        'Returned': [],
-        'Delivered': []
-    };
+    // Function to show delivery confirmation modal with brand inputs
+    function showDeliveryConfirmationModal(orderId, customerName, customerAddress, customerPhone, total_quantity) {
+        Swal.fire({
+            title: 'Confirm Delivery - Order #' + orderId,
+            html: `
+                <div class="text-left">
+                    <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <p class="text-sm font-['Outfit'] font-semibold text-gray-600">Customer Name:</p>
+                                <p class="text-base font-['Switzer'] text-gray-800">${customerName}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-['Outfit'] font-semibold text-gray-600">Phone Number:</p>
+                                <p class="text-base font-['Switzer'] text-gray-800">${customerPhone}</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <p class="text-sm font-['Outfit'] font-semibold text-gray-600">Address:</p>
+                            <p class="text-base font-['Switzer'] text-gray-800">${customerAddress}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-['Outfit'] font-semibold text-gray-600">Total Quantity:</p>
+                            <p class="text-base font-['Switzer'] text-gray-800">${total_quantity}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 mb-3">
+                        <p class="text-lg font-['Outfit'] font-semibold text-gray-700 mb-3">Enter Quantity per Brand:</p>
+                    </div>
 
-    // Function to update order status
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-['Outfit'] font-medium text-gray-700 mb-1">Petron</label>
+                            <input type="number" id="petronQty" min="0" value="0" step="1"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                placeholder="0">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-['Outfit'] font-medium text-gray-700 mb-1">Econo</label>
+                            <input type="number" id="econoQty" min="0" value="0" step="1"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                placeholder="0">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-['Outfit'] font-medium text-gray-700 mb-1">SeaGas</label>
+                            <input type="number" id="seagasQty" min="0" value="0" step="1"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                placeholder="0">
+                        </div>
+                    </div>
+                </div>
+            `,
+            width: '600px',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm Delivery',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#19B900',
+            cancelButtonColor: '#FF1D21',
+            preConfirm: () => {
+                const petronQty = parseInt(document.getElementById('petronQty').value) || 0;
+                const econoQty = parseInt(document.getElementById('econoQty').value) || 0;
+                const seagasQty = parseInt(document.getElementById('seagasQty').value) || 0;
+
+                const totalInputQty = petronQty + econoQty + seagasQty;
+
+                if (totalInputQty === 0) {
+                    Swal.showValidationMessage('Please enter at least one brand quantity');
+                    return false;
+                }
+
+                if (totalInputQty !== parseInt(total_quantity)) {
+                    Swal.showValidationMessage(`Total quantity must equal ${total_quantity}. Current total: ${totalInputQty}`);
+                    return false;
+                }
+
+                return {
+                    petronQty: petronQty,
+                    econoQty: econoQty,
+                    seagasQty: seagasQty,
+                    totalQty: totalInputQty
+                };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Update status with brand quantities
+                updateOrderStatusWithBrands(orderId, 'Delivered', result.value);
+            } else {
+                // If cancelled, close the status modal
+                modal.classList.add('hidden');
+            }
+        });
+    }
+
+    // Function to update order status with brand quantities
+    function updateOrderStatusWithBrands(orderId, newStatus, brandData) {
+        Swal.fire({
+            title: 'Updating...',
+            text: 'Please wait while we update the order status',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        fetch('updateStatus.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                order_id: parseInt(orderId),
+                status: newStatus,
+                brand_quantities: brandData
+            })
+        })
+            .then(response => {
+                return response.text().then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        return data;
+                    } catch (e) {
+                        throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+                    }
+                });
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Order status updated to ' + newStatus,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        modal.classList.add('hidden');
+                        location.reload();
+                    });
+                } else {
+                    throw new Error(data.message || 'Failed to update status');
+                }
+            })
+            .catch(error => {
+                console.error('Update error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'Failed to update order status',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                });
+            });
+    }
+
+    // Function to update order status (for simple status changes)
     function updateOrderStatus(orderId, newStatus) {
         Swal.fire({
             title: 'Updating...',
@@ -59,76 +209,85 @@ document.addEventListener('DOMContentLoaded', function () {
                 status: newStatus
             })
         })
-        .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-
-            return response.text().then(text => {
-                console.log('Raw response:', text);
-                try {
-                    const data = JSON.parse(text);
-                    return data;
-                } catch (e) {
-                    throw new Error('Invalid JSON response: ' + text.substring(0, 100));
-                }
-            });
-        })
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Order status updated to ' + newStatus,
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    modal.classList.add('hidden');
-                    location.reload();
+            .then(response => {
+                return response.text().then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        return data;
+                    } catch (e) {
+                        throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+                    }
                 });
-            } else {
-                throw new Error(data.message || 'Failed to update status');
-            }
-        })
-        .catch(error => {
-            console.error('Update error:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: error.message || 'Failed to update order status',
-                icon: 'error',
-                confirmButtonColor: '#3085d6'
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Order status updated to ' + newStatus,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        modal.classList.add('hidden');
+                        location.reload();
+                    });
+                } else {
+                    throw new Error(data.message || 'Failed to update status');
+                }
+            })
+            .catch(error => {
+                console.error('Update error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'Failed to update order status',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                });
             });
-        });
     }
+
+    // Status transitions for gas orders
+    const statusTransitions = {
+        'Pending': ['Borrowed', 'Delivered'],
+        'Borrowed': ['Returned'],
+        'Returned': [],
+        'Delivered': ['Paid'],
+        'Paid': []
+    };
 
     // Open modal and populate with appropriate status options
     document.querySelectorAll('.openGasStatusModal').forEach(button => {
         button.addEventListener('click', function () {
             const currentStatus = this.getAttribute('data-current-status');
             const orderId = this.getAttribute('data-order-id');
+            const customerName = this.getAttribute('data-customer-name');
+            const customerAddress = this.getAttribute('data-customer-address');
+            const customerPhone = this.getAttribute('data-customer-phone');
+            const total_quantity = this.getAttribute('data-quantity');
 
             statusContainer.innerHTML = '';
 
-            // available statuses based on current status
+            // Get available statuses based on current status
             let availableStatuses = statusTransitions[currentStatus] || [];
 
-            if (currentStatus === 'Delivered') {
-                // Show success message for delivered orders
+            // Show success message for Paid orders (final status)
+            if (currentStatus === 'Paid') {
                 const successMessage = document.createElement('div');
                 successMessage.className = 'text-center py-6';
                 successMessage.innerHTML = `
-                    <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <p class="font-[Outfit] text-xl font-semibold text-gray-800">Delivery Successful!</p>
-                    <p class="font-[Outfit] text-gray-600 mt-2">This order has been successfully delivered.</p>
+                    <p class="font-[Outfit] text-xl font-semibold text-gray-800">Payment Completed!</p>
+                    <p class="font-[Outfit] text-gray-600 mt-2">This order has been fully paid.</p>
                 `;
                 statusContainer.appendChild(successMessage);
                 modal.classList.remove('hidden');
                 return;
             }
 
+            // Show success message for returned orders
             if (currentStatus === 'Returned') {
-                // Show success message for delivered orders
                 const successMessage = document.createElement('div');
                 successMessage.className = 'text-center py-6';
                 successMessage.innerHTML = `
@@ -159,18 +318,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // buttons for available statuses
+            // Create buttons for available statuses
             availableStatuses.forEach(status => {
                 const statusInfo = allStatuses[status];
                 if (!statusInfo) return;
+
                 const button = document.createElement('button');
-                button.className = `font-[Outfit] status-option w-full ${statusInfo.bgColor} ${statusInfo.textColor} py-4 rounded-md`;
+                button.className = `font-[Outfit] status-option w-full ${statusInfo.bgColor} ${statusInfo.textColor} py-4 rounded-md font-semibold text-lg`;
                 button.setAttribute('data-status', status);
                 button.setAttribute('data-order-id', orderId);
                 button.textContent = status;
 
                 button.addEventListener('click', function () {
-                    updateOrderStatus(orderId, status);
+                    // If changing to Delivered, show the confirmation modal with brand inputs
+                    if (status === 'Delivered') {
+                        modal.classList.add('hidden');
+                        showDeliveryConfirmationModal(orderId, customerName, customerAddress, customerPhone, total_quantity);
+                    } else {
+                        // For other status changes, update directly
+                        updateOrderStatus(orderId, status);
+                    }
                 });
 
                 statusContainer.appendChild(button);

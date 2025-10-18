@@ -17,8 +17,9 @@
 ?>
 
 <main class="flex-1 overflow-x-hidden">
-    <div>   
+    <div class="flex justify-between items-center">   
         <h1 class="font-['Outfit'] font-bold text-3xl py-3 pl-2">&nbsp;&nbsp;|&nbsp;&nbsp;Point of Sale System</h1>
+        <p class="text-gray-500 text-base pr-6"><?php echo date('F j, Y'); ?></p>
     </div>
     <div class="flex flex-col md:flex-row max-w-full mx-auto pt-6 ps-6 pe-6 items-center">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 w-full">
@@ -61,8 +62,8 @@
                     </div>
                     <div class="font-['Outfit'] font-bold text-3xl ms-4 mb-[1.45rem]">
                         <?php
-                            $PendingOrders = Laundry::countPending(); //WALA NA TO
-                            echo $PendingOrders;
+                            $ForDeliveryOrders = Laundry::countForDelivery();
+                            echo $ForDeliveryOrders;
                         ?>
                     </div>
                 </div>
