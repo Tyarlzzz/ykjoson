@@ -10,6 +10,23 @@ $conn = $database->getConnection();
 Model::setConnection($conn);
 
 $todaysOrders = Gas::getTodaysOrders();
+
+// Get monthly brand sales data
+$brandSales = GasOrder::getMonthlyBrandSales();
+
+$brandData = [
+  'Petron' => 0,
+  'Econo' => 0,
+  'SeaGas' => 0
+];
+
+if ($brandSales) {
+  foreach ($brandSales as $sale) {
+    if (isset($brandData[$sale['brand']])) {
+      $brandData[$sale['brand']] = (int) $sale['total_quantity'];
+    }
+  }
+}
 ?>
 
 <main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-8">
