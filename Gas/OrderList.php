@@ -76,6 +76,7 @@ if (isset($_GET['error'])) {
           <option value="Pending">Pending</option>
           <option value="Borrowed">Borrowed</option>
           <option value="Returned">Returned</option>
+          <option value="Paid">Paid</option>
         </select>
         <div>
           <a href="index.php" class="duration-100">
