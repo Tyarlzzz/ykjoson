@@ -1,15 +1,32 @@
 <?php
-require_once '../layout/header.php';
-require_once '../database/Database.php';
-require_once '../Models/GasCustomer.php';
-require_once '../Models/GasOrder.php';
-require_once '../Models/Models.php';
+  require_once '../layout/header.php';
+  require_once '../database/Database.php';
+  require_once '../Models/GasCustomer.php';
+  require_once '../Models/GasOrder.php';
+  require_once '../Models/Models.php';
 
-$database = new Database();
-$conn = $database->getConnection();
-Model::setConnection($conn);
+  $database = new Database();
+  $conn = $database->getConnection();
+  Model::setConnection($conn);
 
-$todaysOrders = Gas::getTodaysOrders();
+  $todaysOrders = Gas::getTodaysOrders();
+
+  // Get monthly brand sales data
+  $brandSales = GasOrder::getMonthlyBrandSales();
+
+  $brandData = [
+      'Petron' => 0,
+      'Econo' => 0,
+      'SeaGas' => 0
+  ];
+
+  if ($brandSales) {
+      foreach ($brandSales as $sale) {
+          if (isset($brandData[$sale['brand']])) {
+              $brandData[$sale['brand']] = (int)$sale['total_quantity'];
+          }
+      }
+  }
 ?>
 
 <main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto p-8">
@@ -238,6 +255,24 @@ $todaysOrders = Gas::getTodaysOrders();
         </table>
       </div>
     </div>
+  </div>
+
+  <script>
+    // Set brand data globally BEFORE loading gasCharts.js
+    window.brandChartData = {
+      labels: ['Petron', 'Econo', 'SeaGas'],
+      data: [
+        <?php echo $brandData['Petron']; ?>,
+        <?php echo $brandData['Econo']; ?>,
+        <?php echo $brandData['SeaGas']; ?>
+      ]
+    };
+    
+    console.log('Brand data set:', window.brandChartData); // Debug line
+  </script>
+
+  <script src="../assets/js/gas_system_js/gasCharts.js"></script>
+
 </main>
 
 <?php require '../layout/footer.php' ?>
