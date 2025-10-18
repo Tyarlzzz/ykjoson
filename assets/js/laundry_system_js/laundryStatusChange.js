@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     html: `
                         <div class="text-left">
                             <p class="mb-2">Order status updated to <strong>For Delivery</strong></p>
-                            <div class="bg-gray-50 p-3 rounded-lg text-lg">
+                            <div class="bg-gray-50 p-3 rounded-lg text-sm">
                                 <p><strong>Clothes:</strong> ${weights.clothesWeight} kg</p>
                                 <p><strong>Comforter:</strong> ${weights.comforter_curtainsWeight} kg</p>
                                 <p class="mt-2 font-bold border-t pt-2"><strong>Total Weight:</strong> ${weights.totalWeight} kg</p>
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     `,
                     icon: 'success',
-                    timer: 1500,
+                    timer: 2000,
                     showConfirmButton: false
                 }).then(() => {
                     modal.classList.add('hidden');
