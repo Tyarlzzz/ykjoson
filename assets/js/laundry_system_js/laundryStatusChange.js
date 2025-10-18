@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p><strong>Clothes:</strong> ${weights.clothesWeight} kg</p>
                                 <p><strong>Comforter:</strong> ${weights.comforter_curtainsWeight} kg</p>
                                 <p class="mt-2 font-bold border-t pt-2"><strong>Total Weight:</strong> ${weights.totalWeight} kg</p>
+                                <p class="mt-2 font-bold text-green-700"><strong>Total Price:</strong> ₱${data.total_price.toFixed(2)}</p>
                             </div>
                         </div>
                     `,
