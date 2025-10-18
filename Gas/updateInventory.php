@@ -1,66 +1,66 @@
 <?php
-require_once '../layout/header.php';
-require_once '../database/Database.php';
-require_once '../Models/Models.php';
-require_once '../Models/Item_inventory.php';
+  require_once '../layout/header.php';
+  require_once '../database/Database.php';
+  require_once '../Models/Models.php';
+  require_once '../Models/Item_inventory.php';
 
-$database = new Database();
-$conn = $database->getConnection();
-Model::setConnection($conn);
+  $database = new Database();
+  $conn = $database->getConnection();
+  Model::setConnection($conn);
 
-// Get all gas inventory
-$gasInventory = Item_inventory::getGasInventory();
+  // Get all gas inventory
+  $gasInventory = Item_inventory::getGasInventory();
 
-// Create associative array for easy access
-$inventory = [];
-if ($gasInventory) {
-  foreach ($gasInventory as $item) {
-    $inventory[strtolower($item->item_name)] = $item;
+  // Create associative array for easy access
+  $inventory = [];
+  if ($gasInventory) {
+    foreach ($gasInventory as $item) {
+      $inventory[strtolower($item->item_name)] = $item;
+    }
   }
-}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  try {
-    $brand = $_POST['brand'];
-    $stock = $_POST['stock'];
-    $price = $_POST['price'];
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+      $brand = $_POST['brand'];
+      $stock = $_POST['stock'];
+      $price = $_POST['price'];
 
-    if (empty($brand) || $stock < 0 || $price < 0) {
-      throw new Exception('Invalid input data');
-    }
+      if (empty($brand) || $stock < 0 || $price < 0) {
+        throw new Exception('Invalid input data');
+      }
 
-    $item = Item_inventory::getByItemName($brand);
+      $item = Item_inventory::getByItemName($brand);
 
-    if (!$item) {
-      throw new Exception('Item not found');
-    }
+      if (!$item) {
+        throw new Exception('Item not found');
+      }
 
-    $success = Item_inventory::updateStockAndPrice($item->item_id, $stock, $price);
+      $success = Item_inventory::updateStockAndPrice($item->item_id, $stock, $price);
 
-    if ($success) {
+      if ($success) {
+        echo '<script>
+                        Swal.fire({
+                            title: "Success!",
+                            text: "' . ucfirst($brand) . ' inventory updated successfully!",
+                            icon: "success"
+                        }).then(function() {
+                            window.location = "updateInventory.php";
+                        });
+                    </script>';
+      } else {
+        throw new Exception('Failed to update inventory');
+      }
+
+    } catch (Exception $e) {
       echo '<script>
-                      Swal.fire({
-                          title: "Success!",
-                          text: "' . ucfirst($brand) . ' inventory updated successfully!",
-                          icon: "success"
-                      }).then(function() {
-                          window.location = "updateInventory.php";
-                      });
-                  </script>';
-    } else {
-      throw new Exception('Failed to update inventory');
+                    Swal.fire({
+                        title: "Error!",
+                        text: "' . addslashes($e->getMessage()) . '",
+                        icon: "error"
+                    });
+                </script>';
     }
-
-  } catch (Exception $e) {
-    echo '<script>
-                  Swal.fire({
-                      title: "Error!",
-                      text: "' . addslashes($e->getMessage()) . '",
-                      icon: "error"
-                  });
-              </script>';
   }
-}
 ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
