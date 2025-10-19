@@ -119,8 +119,8 @@ if ($brandSales) {
             </div>
             <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
               <?php
-              $deliveredOrders = GasOrder::countDelivered();
-              echo $deliveredOrders;
+              $returnedOrders = GasOrder::countReturned();
+              echo $returnedOrders;
               ?>
             </div>
             <div class="text-xs text-gray-500 mt-1">This Month</div>

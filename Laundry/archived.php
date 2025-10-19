@@ -42,7 +42,7 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
 
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
-      <div class="py-8 px">
+      <div class="py-8">
       <div class="bg-white p-6 rounded-lg">
       <div class="flex justify-between items-center mb-4 ">
           <p class="font-['Switzer'] text-start text-lg text-gray-600 mt-1">Total archived orders: <strong><?php echo $totalArchived; ?></strong></p>
