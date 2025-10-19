@@ -4,37 +4,67 @@ require_once '../Models/Models.php';
 require_once '../Models/Laundry.php';
 require_once '../Models/Item_inventory.php';
 
+
+
+
 // Get sales report data for laundry system with optional filters
-function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = null, $week = null)
+
+  function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = null, $week = null)
 {
   try {
     $year = $year ?? date('Y');
 
-    // ✅ 1. Pull only unique orders (not item-level)
-    $sql = "SELECT 
-              o.order_id,
-              o.order_date,
-              o.status,
-              o.created_at,
-              c.customer_id,
-              c.fullname,
-              c.address,
-              o.total_price
-            FROM orders o
-            JOIN customer c ON o.customer_id = c.customer_id
-            WHERE o.business_type = 'Laundry System'
-              AND YEAR(o.order_date) = :year";
+    // ✅ Base SQL (combine active + archived)
+    $sql = "
+      SELECT 
+        merged.order_id,
+        merged.customer_id,
+        merged.fullname,
+        merged.address,
+        merged.total_price,
+        merged.order_date,
+        merged.status
+      FROM (
+        -- Active orders
+        SELECT 
+          o.order_id,
+          o.customer_id,
+          c.fullname,
+          c.address,
+          o.total_price,
+          o.order_date,
+          o.status
+        FROM orders o
+        JOIN customer c ON o.customer_id = c.customer_id
+        WHERE o.business_type = 'Laundry System'
+          AND LOWER(o.status) = 'paid'
+
+        UNION ALL
+
+        -- Archived orders (date_created → order_date)
+        SELECT 
+          ao.order_id,
+          ao.customer_id,
+          ao.fullname,
+          ao.address,
+          ao.total_price,
+          ao.date_created AS order_date,
+          'paid' AS status
+        FROM laundry_archived_orders ao
+      ) AS merged
+      WHERE YEAR(merged.order_date) = :year
+    ";
 
     $params = [':year' => $year];
 
-    // ✅ Add month filter if specified
+    // ✅ Period filters
     if ($month !== null) {
-      $sql .= " AND MONTH(o.order_date) = :month";
+      $sql .= " AND MONTH(merged.order_date) = :month";
       $params[':month'] = $month;
     }
 
-    // ✅ Add week filter if specified (week as day range)
     if ($week !== null && $month !== null) {
+      // Define weekly ranges for chart (1–7, 8–14, etc.)
       $weekRanges = [
         1 => [1, 7],
         2 => [8, 14],
@@ -42,22 +72,21 @@ function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = nul
         4 => [22, 28],
         5 => [29, 31]
       ];
+
       if (isset($weekRanges[$week])) {
-        $sql .= " AND DAY(o.order_date) BETWEEN :day_start AND :day_end";
+        $sql .= " AND DAY(merged.order_date) BETWEEN :day_start AND :day_end";
         $params[':day_start'] = $weekRanges[$week][0];
         $params[':day_end'] = $weekRanges[$week][1];
       }
     }
 
-    // ✅ Include only paid orders
-    $sql .= " AND LOWER(o.status) = 'paid'";
-    $sql .= " ORDER BY o.order_date DESC";
+    $sql .= " ORDER BY merged.order_date DESC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // ✅ 2. Compute correct totals (no duplication)
+    // ✅ Compute summary values
     $totalSales = 0;
     $totalPaid = 0;
     $paidCount = 0;
@@ -67,15 +96,12 @@ function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = nul
       $orderTotal = floatval($row['total_price']);
       $totalSales += $orderTotal;
       $uniqueCustomers[$row['customer_id']] = true;
-
-      if (strtolower($row['status']) === 'paid') {
-        $totalPaid += $orderTotal;
-        $paidCount++;
-      }
+      $totalPaid += $orderTotal;
+      $paidCount++;
     }
 
     $customerCount = count($uniqueCustomers);
-    $netWorth = $totalPaid; // same as totalPaid, can be adjusted later
+    $netWorth = $totalPaid;
 
     return [
       'salesData' => $orders,
@@ -99,8 +125,6 @@ function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = nul
   }
 }
 
-
-// Get available months with sales data for a specific year
 function getAvailableMonths($pdo, $year = null)
 {
   try {
