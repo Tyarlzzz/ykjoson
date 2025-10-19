@@ -22,8 +22,8 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Full Name</label>
-                    <input type="text" id="fullname" name="fullname" placeholder="Enter full name"
-                      class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
+                    <input type="text" id="fullname" name="fullname" placeholder="Enter full name" 
+                      class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none position:relative focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
                   </div>
                   <div>
                     <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
