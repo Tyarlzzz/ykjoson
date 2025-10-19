@@ -1,47 +1,11 @@
 // statusUpdate.js - Simplified version with validation
-// Global debug function to test button clicking manually
-window.testPaymentConfirm = function(orderId) {
-    console.log('=== MANUAL TEST OF PAYMENT CONFIRM ===');
-    console.log('Testing payment confirmation for order:', orderId);
-    const button = document.getElementById('confirmPaymentBtn_' + orderId);
-    if (button) {
-        console.log('Button found:', button);
-        console.log('Button style:', window.getComputedStyle(button));
-        console.log('Button parent:', button.parentElement);
-        button.click();
-    } else {
-        console.log('Button not found with ID: confirmPaymentBtn_' + orderId);
-    }
-};
-
-window.testDirectStatusUpdate = function(orderId) {
-    console.log('=== MANUAL TEST OF DIRECT STATUS UPDATE ===');
-    updateOrderStatus(orderId, 'Paid');
-};
-
-// Helper function to get status button colors
-function getStatusButtonColor(status) {
-    const colorMap = {
-        'On Hold': 'bg-yellow-500',
-        'On Wash': 'bg-blue-500',
-        'On Dry': 'bg-orange-500',
-        'On Fold': 'bg-purple-500',
-        'For Delivery': 'bg-indigo-500',
-        'Delivered': 'bg-green-500',
-        'Paid': 'bg-gray-500'
-    };
-    return colorMap[status] || 'bg-gray-500';
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('laundryStatusModal');
     const closeBtn = document.getElementById('closeLaundryModal');
     const statusContainer = document.getElementById('statusOptionsContainer');
     
-    // PHP Print URL
     const PHP_PRINT_URL = '../Receipt/printReceipt.php';
     
-    // All possible statuses with their styling
     const allStatuses = {
         'On Wash': { bgColor: 'bg-[#D1EBF7]', textColor: 'text-[#0E74D3]' },
         'On Dry': { bgColor: 'bg-[#F7DED1]', textColor: 'text-[#D33F0E]' },
@@ -51,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'Paid': { bgColor: 'bg-green-600', textColor: 'text-white' }
     };
     
-    // Function to print receipt using PHP
     function printReceipt(orderId) {
         console.log('=== PRINTING RECEIPT ===');
         console.log('Order ID:', orderId);
@@ -83,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Function to show weight input modal
     function showWeightInputModal(orderId, customerName, customerAddress, customerPhone, total_quantity) {
         console.log('Opening weight modal for order:', orderId);
         
@@ -153,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Function to update order status with weight data
     function updateOrderStatusWithWeights(orderId, newStatus, weights) {
         console.log('=== UPDATING STATUS WITH WEIGHTS ===');
         console.log('Order ID:', orderId);
@@ -203,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                // Wait for database to commit before printing
                 setTimeout(() => {
                     console.log('Calling printReceipt with order_id:', orderId);
                     
@@ -211,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         .then(printData => {
                             console.log('Print successful:', printData);
                             
-                            // Build breakdown HTML
                             let breakdownHTML = '';
                             if (data.breakdown) {
                                 breakdownHTML = `
@@ -251,7 +210,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         .catch(printError => {
                             console.error('Print failed:', printError);
                             
-                            // Build breakdown HTML for error case too
                             let breakdownHTML = '';
                             if (data.breakdown) {
                                 breakdownHTML = `
@@ -306,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Function to update order status (without weights)
     function updateOrderStatus(orderId, newStatus) {
         console.log('=== UPDATE ORDER STATUS CALLED ===');
         console.log('Order ID:', orderId);
@@ -432,7 +389,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Open modal and populate with appropriate status options
+    // Function to fetch order total price for "Delivered" status
+    function fetchOrderTotalPrice(orderId) {
+        return fetch('getOrderTotal.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ order_id: parseInt(orderId) })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                return data.total_price || 0;
+            }
+            return 0;
+        })
+        .catch(error => {
+            console.error('Error fetching total price:', error);
+            return 0;
+        });
+    }
+    
     document.querySelectorAll('.openLaundryStatusModal').forEach(button => {
         button.addEventListener('click', function() {
             const currentStatus = this.getAttribute('data-current-status');
@@ -464,45 +442,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     availableStatuses = ['Delivered'];
                     break;
                 case 'Delivered':
-                    // Create a manual payment confirmation that only triggers when YOU click it
-                    const paymentMessage = document.createElement('div');
-                    paymentMessage.className = 'text-center py-6';
-                    paymentMessage.innerHTML = `
+                    const confirmMessage = document.createElement('div');
+                    confirmMessage.className = 'text-center py-6';
+                    confirmMessage.innerHTML = `
                         <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Order Delivered!</p>
-                        <p class="font-[Outfit] text-gray-600 mt-2">When customer pays, click the button below to mark as paid.</p>
+                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Confirm payment?</p>
+                        <p class="font-[Outfit] text-gray-600 mt-2">Are you sure you want to confirm payment for this order?</p>
                     `;
-                    statusContainer.appendChild(paymentMessage);
-                    
-                    // Create ONLY a "Mark as Paid" button (no automatic confirmation)
-                    const paymentButtonContainer = document.createElement('div');
-                    paymentButtonContainer.className = 'flex justify-center mt-4';
-                    
-                    const markPaidBtn = document.createElement('button');
-                    markPaidBtn.className = 'font-[Outfit] bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600';
-                    markPaidBtn.textContent = '✓ Mark as Paid';
-                    
-                    markPaidBtn.addEventListener('click', function() {
-                        console.log('BUTTON CLICKED - REFRESHING IMMEDIATELY');
-                        
-                        // Send request in background (don't wait)
-                        fetch('updateStatus.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ order_id: parseInt(orderId), status: 'Paid' })
-                        });
-                        
-                        // REFRESH IMMEDIATELY - NO WAITING
-                        window.location.reload();
-                    });
-                    
-                    paymentButtonContainer.appendChild(markPaidBtn);
-                    statusContainer.appendChild(paymentButtonContainer);
-                    
-                    modal.classList.remove('hidden');
-                    return;
+                    statusContainer.appendChild(confirmMessage);
+                    availableStatuses = ['Paid'];
+                    break;
                 case 'Paid':
                     const successMessage = document.createElement('div');
                     successMessage.className = 'text-center py-6';
@@ -539,17 +490,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.textContent = status;
                 
                 button.addEventListener('click', function() {
-                    console.log('=== STATUS BUTTON CLICKED ===');
-                    console.log('Button clicked for status:', status);
-                    console.log('Order ID:', orderId);
-                    console.log('Current time:', new Date().toISOString());
-                    
                     if (status === 'For Delivery') {
-                        console.log('Opening weight input modal...');
                         modal.classList.add('hidden');
                         showWeightInputModal(orderId, customerName, customerAddress, customerPhone, totalQuantity);
                     } else {
-                        console.log('Calling updateOrderStatus...');
                         updateOrderStatus(orderId, status);
                     }
                 });

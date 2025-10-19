@@ -2,7 +2,6 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../database/Database.php';
 
-// Get order_id from POST request
 $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
 
@@ -35,7 +34,7 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Fetch order details
+    // Fetch order details INCLUDING total_price
     $orderSql = "SELECT o.*, c.fullname, c.address, c.phone_number
                  FROM orders o
                  JOIN customer c ON o.customer_id = c.customer_id
@@ -59,25 +58,17 @@ try {
     $itemsStmt->execute([':order_id' => $order_id]);
     $items = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Calculate totals
+    // Calculate totals from items (for quantity and weight display)
     $totalQty = 0;
     $totalWeight = 0;
-    $totalAmount = 0;
-    $clothesWeight = 0;
-    $comforterWeight = 0;
 
     foreach ($items as $item) {
         $totalQty += intval($item['quantity'] ?? 0);
-        $weight = floatval($item['weight_kg'] ?? 0);
-        $totalWeight += $weight;
-        $totalAmount += floatval($item['total'] ?? 0);
-
-        if ($item['category'] === 'Clothing') {
-            $clothesWeight += $weight;
-        } elseif ($item['product_name'] === 'Comforter' || $item['product_name'] === 'Curtains') {
-            $comforterWeight += $weight;
-        }
+        $totalWeight += floatval($item['weight_kg'] ?? 0);
     }
+
+    // Use total_price from database (already calculated and stored)
+    $totalAmount = floatval($order['total_price'] ?? 0);
 
     // Open COM port
     $fp = @fopen($comPort, "w");
@@ -148,7 +139,7 @@ try {
     
     $receipt .= "================================\n";
     
-    // TOTAL (large)
+    // TOTAL (large) - FROM DATABASE
     $receipt .= $ESC_ALIGN_CENTER;
     $receipt .= $ESC_SIZE_DOUBLE;
     $receipt .= "TOTAL: P" . number_format($totalAmount, 2) . "\n";

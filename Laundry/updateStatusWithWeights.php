@@ -32,11 +32,7 @@ try {
 
     $is_rushed = (int)$order['is_rushed'];
 
-    // Step 2: Update order status
-    $updateOrder = $conn->prepare("UPDATE orders SET status = :status WHERE order_id = :order_id");
-    $updateOrder->execute([':status' => $status, ':order_id' => $order_id]);
-
-    // Step 3: Get ALL pricing from database (including barong and gown)
+    // Step 2: Get ALL pricing from database
     $pricingStmt = $conn->query("
         SELECT item_type, pricing_type, standard_price, rush_price, minimum_weight, flat_rate_standard, flat_rate_rush 
         FROM laundry_pricing
@@ -46,7 +42,7 @@ try {
         $pricing[$row['item_type']] = $row;
     }
 
-    // Step 4: Calculate clothes price
+    // Step 3: Calculate clothes price
     $clothes_price_per_kg = $is_rushed 
         ? $pricing['standard_clothes']['rush_price'] 
         : $pricing['standard_clothes']['standard_price'];
@@ -61,14 +57,14 @@ try {
         $clothes_total = $clothes_weight * $clothes_price_per_kg;
     }
 
-    // Step 5: Calculate comforter/curtains price
+    // Step 4: Calculate comforter/curtains price
     $comforter_price_per_kg = $is_rushed 
         ? $pricing['comforter_curtains']['rush_price'] 
         : $pricing['comforter_curtains']['standard_price'];
 
     $comforter_total = $comforter_curtains_weight * $comforter_price_per_kg;
 
-    // Step 6: Get Barong and Gown prices from database
+    // Step 5: Get Barong and Gown prices from database
     $barong_price = $is_rushed 
         ? $pricing['barong']['rush_price'] 
         : $pricing['barong']['standard_price'];
@@ -77,7 +73,7 @@ try {
         ? $pricing['gown']['rush_price'] 
         : $pricing['gown']['standard_price'];
 
-    // Step 7: Get Barong and Gown quantities from order
+    // Step 6: Get Barong and Gown quantities from order
     $barongGownStmt = $conn->prepare("
         SELECT pc.product_name, loi.quantity
         FROM laundry_ordered_items loi
@@ -103,10 +99,22 @@ try {
         }
     }
 
-    // Step 8: Calculate grand total
+    // Step 7: Calculate grand total
     $grand_total = $clothes_total + $comforter_total + $barong_total + $gown_total;
 
-    // Step 9: Update CLOTHES items (excluding Barong and Gown)
+    // Step 8: Update order status AND total_price
+    $updateOrder = $conn->prepare("
+        UPDATE orders 
+        SET status = :status, total_price = :total_price 
+        WHERE order_id = :order_id
+    ");
+    $updateOrder->execute([
+        ':status' => $status, 
+        ':total_price' => $grand_total,
+        ':order_id' => $order_id
+    ]);
+
+    // Step 9: Update CLOTHES items
     $updateClothes = $conn->prepare("
         UPDATE laundry_ordered_items
         SET weight_kg = :weight_kg,
@@ -147,7 +155,7 @@ try {
         ':order_id' => $order_id
     ]);
 
-    // Step 11: Update BARONG items (per piece pricing from database)
+    // Step 11: Update BARONG items
     if ($barong_qty > 0) {
         $updateBarong = $conn->prepare("
             UPDATE laundry_ordered_items
@@ -168,7 +176,7 @@ try {
         ]);
     }
 
-    // Step 12: Update GOWN items (per piece pricing from database)
+    // Step 12: Update GOWN items
     if ($gown_qty > 0) {
         $updateGown = $conn->prepare("
             UPDATE laundry_ordered_items
