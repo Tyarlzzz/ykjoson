@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== true) {
+    header('Location: ownerAccess.php');
+    exit;
+}
+
 require '../layout/header.php';
 require_once 'reportFunctions.php';
 require_once '../database/Database.php';

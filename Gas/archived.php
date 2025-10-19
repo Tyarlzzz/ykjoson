@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== true) {
+    header('Location: ownerAccess.php');
+    exit;
+}
+?>
+
 <?php require '../layout/header.php' ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
