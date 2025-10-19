@@ -30,31 +30,40 @@ if (!$selected_rider && count($riders) > 0) {
 
 // ✅ Get today's total sales dynamically
 $today = date('Y-m-d');
-
 try {
-    // Gas Sales (unique by order_id)
+    // ✅ GAS SALES — count each order_id only once
     $stmt_gas = $conn->prepare("
-        SELECT IFNULL(SUM(o.total_price), 0) AS gas_sales
-        FROM orders o
-        WHERE DATE(o.order_date) = :today
-          AND LOWER(o.status) = 'paid'
-          AND o.business_type = 'Gas System'
+        SELECT IFNULL(SUM(gas_per_order.total_per_order), 0) AS gas_sales
+        FROM (
+            SELECT o.order_id, SUM(goi.total) AS total_per_order
+            FROM gas_ordered_items goi
+            INNER JOIN orders o ON o.order_id = goi.order_id
+            WHERE DATE(o.order_date) = :today
+              AND LOWER(o.status) = 'paid'
+              AND o.business_type = 'Gas System'
+            GROUP BY o.order_id
+        ) AS gas_per_order
     ");
     $stmt_gas->execute([':today' => $today]);
     $gas_sales = (float)$stmt_gas->fetchColumn();
 
-    // Laundry Sales (unique by order_id)
+    // ✅ LAUNDRY SALES — count each order_id only once
     $stmt_laundry = $conn->prepare("
-        SELECT IFNULL(SUM(o.total_price), 0) AS laundry_sales
-        FROM orders o
-        WHERE DATE(o.order_date) = :today
-          AND LOWER(o.status) = 'paid'
-          AND o.business_type = 'Laundry System'
+        SELECT IFNULL(SUM(laundry_per_order.total_per_order), 0) AS laundry_sales
+        FROM (
+            SELECT o.order_id, SUM(loi.total) AS total_per_order
+            FROM laundry_ordered_items loi
+            INNER JOIN orders o ON o.order_id = loi.order_id
+            WHERE DATE(o.order_date) = :today
+              AND LOWER(o.status) = 'paid'
+              AND o.business_type = 'Laundry System'
+            GROUP BY o.order_id
+        ) AS laundry_per_order
     ");
     $stmt_laundry->execute([':today' => $today]);
     $laundry_sales = (float)$stmt_laundry->fetchColumn();
 
-    // Combine both
+    // ✅ Combine both systems
     $total_sales = $gas_sales + $laundry_sales;
 
 } catch (PDOException $e) {
