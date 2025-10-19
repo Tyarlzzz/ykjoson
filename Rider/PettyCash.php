@@ -32,30 +32,35 @@ if (!$selected_rider && count($riders) > 0) {
 $today = date('Y-m-d');
 
 try {
-    // Gas Sales
+    // Gas Sales (unique by order_id)
     $stmt_gas = $conn->prepare("
-        SELECT IFNULL(SUM(goi.total), 0)
-        FROM gas_ordered_items goi
-        INNER JOIN orders o ON o.order_id = goi.order_id
-        WHERE DATE(o.order_date) = :today AND LOWER(o.status) = 'paid'
+        SELECT IFNULL(SUM(o.total_price), 0) AS gas_sales
+        FROM orders o
+        WHERE DATE(o.order_date) = :today
+          AND LOWER(o.status) = 'paid'
+          AND o.business_type = 'Gas System'
     ");
     $stmt_gas->execute([':today' => $today]);
     $gas_sales = (float)$stmt_gas->fetchColumn();
 
-    // Laundry Sales
+    // Laundry Sales (unique by order_id)
     $stmt_laundry = $conn->prepare("
-        SELECT IFNULL(SUM(loi.total), 0)
-        FROM laundry_ordered_items loi
-        INNER JOIN orders o ON o.order_id = loi.order_id
-        WHERE DATE(o.order_date) = :today AND LOWER(o.status) = 'paid'
+        SELECT IFNULL(SUM(o.total_price), 0) AS laundry_sales
+        FROM orders o
+        WHERE DATE(o.order_date) = :today
+          AND LOWER(o.status) = 'paid'
+          AND o.business_type = 'Laundry System'
     ");
     $stmt_laundry->execute([':today' => $today]);
     $laundry_sales = (float)$stmt_laundry->fetchColumn();
 
+    // Combine both
     $total_sales = $gas_sales + $laundry_sales;
+
 } catch (PDOException $e) {
     $total_sales = 0;
 }
+
 
 $current_petty = (float)($selected_rider['petty_cash'] ?? 0);
 $total_amount = $total_sales + $current_petty;
