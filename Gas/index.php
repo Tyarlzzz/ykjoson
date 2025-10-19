@@ -1,120 +1,131 @@
 <?php
-  require_once '../layout/header.php';
-  require_once '../database/Database.php';
-  require_once '../Models/GasCustomer.php';
-  require_once '../Models/GasOrder.php';
-  require_once '../Models/Models.php';
+require_once '../layout/header.php';
+require_once '../database/Database.php';
+require_once '../Models/GasCustomer.php';
+require_once '../Models/GasOrder.php';
+require_once '../Models/Models.php';
 
-  $database = new Database();
-  $conn = $database->getConnection();
-  Model::setConnection($conn);
+$database = new Database();
+$conn = $database->getConnection();
+Model::setConnection($conn);
 
-  $todaysOrders = Gas::getTodaysOrders();
+$todaysOrders = Gas::getTodaysOrders();
 
-  // Get monthly brand sales data
-  $brandSales = GasOrder::getMonthlyBrandSales();
+// Get monthly brand sales data
+$brandSales = GasOrder::getMonthlyBrandSales();
 
-  $brandData = [
-    'Petron' => 0,
-    'Econo' => 0,
-    'SeaGas' => 0
-  ];
+$brandData = [
+  'Petron' => 0,
+  'Econo' => 0,
+  'SeaGas' => 0
+];
 
-  if ($brandSales) {
-    foreach ($brandSales as $sale) {
-      if (isset($brandData[$sale['brand']])) {
-        $brandData[$sale['brand']] = (int) $sale['total_quantity'];
-      }
+if ($brandSales) {
+  foreach ($brandSales as $sale) {
+    if (isset($brandData[$sale['brand']])) {
+      $brandData[$sale['brand']] = (int) $sale['total_quantity'];
     }
   }
+}
 ?>
 
 <main class="font-[Switzer] flex-1 bg-gray-50 overflow-auto">
   <div class="w-full">
     <!-- Header -->
-    <div class="flex justify-between items-center">   
-        <h1 class="font-['Outfit'] font-bold text-3xl py-3 pl-2">&nbsp;&nbsp;|&nbsp;&nbsp;Point of Sale System</h1>
-        <p class="text-gray-500 text-base pr-6"><?php echo date('F j, Y'); ?></p>
+    <div class="flex justify-between items-center">
+      <h1 class="font-['Outfit'] font-bold text-3xl py-3 pl-2">&nbsp;&nbsp;|&nbsp;&nbsp;Point of Sale System</h1>
+      <p class="text-gray-500 text-base pr-6"><?php echo date('F j, Y'); ?></p>
     </div>
 
     <!-- Statistics Cards Section -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.7fr_1.7fr_3fr_1fr] gap-5 mb-6 ps-6 pt-6 pe-6">
       <!-- Left Column -->
       <div class="flex flex-col justify-between">
+
         <!-- Total Customer Card -->
-        <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
-          <div class="flex items-center gap-3 mb-1">
-            <div
-              class="w-12 h-12 rounded-full bg-gradient-to-br from-green-200 via-green-300 to-green-400 flex items-center justify-center">
-              <img class="w-8 h-8" src="../assets/images/customers.png" alt="totalCustomerIcon">
+        <a href="OrderList.php">
+          <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+            <div class="flex items-center gap-3 mb-1">
+              <div
+                class="w-12 h-12 rounded-full bg-gradient-to-br from-green-200 via-green-300 to-green-400 flex items-center justify-center">
+                <img class="w-8 h-8" src="../assets/images/customers.png" alt="totalCustomerIcon">
+              </div>
+              <span class="text-sm font-semibold text-gray-700">Total Customer</span>
             </div>
-            <span class="text-sm font-semibold text-gray-700">Total Customer</span>
+            <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
+              <?php
+              $totalCustomers = count(GasOrder::all());
+              echo $totalCustomers;
+              ?>
+            </div>
+            <div class="text-xs text-gray-500 mt-1 ms-2">Today</div>
           </div>
-          <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
-            <?php
-            $totalCustomers = count(GasOrder::all());
-            echo $totalCustomers;
-            ?>
-          </div>
-          <div class="text-xs text-gray-500 mt-1 ms-2">Today</div>
-        </div>
+        </a>
 
         <!-- Pending Order Card -->
-        <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
-          <div class="flex items-center gap-3 mb-1">
-            <div
-              class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-300 flex items-center justify-center">
-              <img class="w-8 h-8 ms-2" src="../assets/images/pending.png" alt="pendingOrderIcon">
+        <a href="OrderList.php?status=Pending">
+          <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+            <div class="flex items-center gap-3 mb-1">
+              <div
+                class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-300 flex items-center justify-center">
+                <img class="w-8 h-8 ms-2" src="../assets/images/pending.png" alt="pendingOrderIcon">
+              </div>
+              <span class="text-sm font-semibold text-gray-700">Pending Order</span>
             </div>
-            <span class="text-sm font-semibold text-gray-700">Pending Order</span>
+            <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
+              <?php
+              $pendingOrders = GasOrder::countPending();
+              echo $pendingOrders;
+              ?>
+            </div>
+            <div class="text-xs text-gray-500 mt-1 ms-2">Today</div>
           </div>
-          <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
-            <?php
-            $pendingOrders = GasOrder::countPending();
-            echo $pendingOrders;
-            ?>
-          </div>
-          <div class="text-xs text-gray-500 mt-1 ms-2">Today</div>
-        </div>
+        </a>
       </div>
 
       <!-- Middle Column -->
       <div class="flex flex-col justify-between">
+
         <!-- Borrowed Tanks Card -->
-        <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
-          <div class="flex items-center gap-3 mb-1">
-            <div
-              class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 via-orange-200 to-orange-300 flex items-center justify-center">
-              <img class="w-8 h-8" src="../assets/images/borrowed.png" alt="borrowedTanksIcon">
+        <a href="OrderList.php?status=Borrowed">
+          <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+            <div class="flex items-center gap-3 mb-1">
+              <div
+                class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 via-orange-200 to-orange-300 flex items-center justify-center">
+                <img class="w-8 h-8" src="../assets/images/borrowed.png" alt="borrowedTanksIcon">
+              </div>
+              <span class="text-sm font-semibold text-gray-700">Borrowed Tanks</span>
             </div>
-            <span class="text-sm font-semibold text-gray-700">Borrowed Tanks</span>
+            <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
+              <?php
+              $borrowedOrders = GasOrder::countBorrowed();
+              echo $borrowedOrders;
+              ?>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">This Month</div>
           </div>
-          <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
-            <?php
-            $borrowedOrders = GasOrder::countBorrowed();
-            echo $borrowedOrders;
-            ?>
-          </div>
-          <div class="text-xs text-gray-500 mt-1">This Month</div>
-        </div>
+        </a>
+
 
         <!-- Returned Tanks Card -->
-        <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
-          <div class="flex items-center gap-3 mb-1">
-            <div
-              class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 via-pink-300 to-purple-300 flex items-center justify-center">
-              <img class="w-8 h-8" src="../assets/images/returned.png" alt="returnedTanksIcon">
+        <a href="OrderList.php?status=Returned">
+          <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+            <div class="flex items-center gap-3 mb-1">
+              <div
+                class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 via-pink-300 to-purple-300 flex items-center justify-center">
+                <img class="w-8 h-8" src="../assets/images/returned.png" alt="returnedTanksIcon">
+              </div>
+              <span class="text-sm font-semibold text-gray-700">Returned Tanks</span>
             </div>
-            <span class="text-sm font-semibold text-gray-700">Returned Tanks</span>
+            <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
+              <?php
+              $deliveredOrders = GasOrder::countDelivered();
+              echo $deliveredOrders;
+              ?>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">This Month</div>
           </div>
-          <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
-            <?php
-            $deliveredOrders = GasOrder::countDelivered();
-            echo $deliveredOrders;
-            ?>
-          </div>
-          <div class="text-xs text-gray-500 mt-1">This Month</div>
-        </div>
+        </a>
       </div>
 
       <!-- Top Brands Sold Card -->
@@ -151,6 +162,7 @@
 
       <!-- Right Column - Action Button -->
       <div class="flex flex-col gap-4 h-full">
+
         <!-- Add Order Button -->
         <button onclick="window.location.href='create.php'"
           class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 text-white text-lg font-semibold flex-1 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-all">
@@ -163,7 +175,7 @@
         </button>
 
         <!-- Delivered Button -->
-        <div
+        <a href="OrderList.php?status=Delivered"
           class="bg-gradient-to-br from-green-500 via-green-40 0 to-green-300 text-white rounded-2xl shadow-md flex-1 flex flex-col items-start justify-center px-6">
           <div class="flex items-center gap-2">
             <svg class="w-12 h-12" viewBox="0 0 24 24">
@@ -179,7 +191,8 @@
             echo $deliveredOrders;
             ?>
           </span>
-        </div>
+        </a>
+
       </div>
     </div>
 
