@@ -17,11 +17,10 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
 ?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
-  <div class="w-full px-8">
+  <div class="w-full">
     <div class="mb-6 flex justify-between items-center">
       <div>
-        <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Archived Orders</h1>
-        <p class="ps-3 text-sm text-gray-600 mt-1">Total archived orders: <?php echo $totalArchived; ?></p>
+        <h1 class="ps-3 text-3xl font-['Outfit'] font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
       </div>
       <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
     </div>
@@ -45,8 +44,8 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
       <div class="py-8 px-4">
       <div class="bg-white p-6 rounded-lg">
-      <div class="flex justify-end items-center mb-4 ">
-        <div class="flex items-center gap-3">
+      <div class="flex justify-between items-center mb-4 ">
+          <p class="fpnt-['Switzer'] text-start text-lg text-gray-600 mt-1">Total archived orders: <strong><?php echo $totalArchived; ?></strong></p>
           <div class="relative flex items-center">
             <input type="text" id="searchInput" placeholder="Search by name, phone, or order ID"
               class="border border-gray-300 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-300 w-80">
