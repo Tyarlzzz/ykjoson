@@ -7,7 +7,6 @@
     font-display: swap;
 }
 
-/* Outfit Font - SemiBold (600) */
 @font-face {
     font-family: 'Outfit';
     src: url('../fonts/Outfit-SemiBold.woff2') format('woff2'),
@@ -23,8 +22,11 @@ body {
 }
 
 #sidebar {
-    background-color: #0C60CB;
     position: relative;
+}
+
+#sidebar.laundry-mode {
+    background-color: #0C60CB;
 }
 
 #sidebar.gas-mode {

@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>PoS Laundry</title>
+
     <!-- CSS -->
     <link rel="stylesheet" href="../assets/css/styles.css">
 
@@ -25,7 +26,14 @@
     ?>
 
     <div class="flex h-screen overflow-hidden">
-        <aside id="sidebar" class="w-[260px] h-screen flex flex-col shadow-2xl transition-all duration-600 overflow-hidden flex-shrink-0">
+        <aside id="sidebar" class="w-[260px] h-screen flex flex-col shadow-2xl transition-all duration-600 overflow-hidden flex-shrink-0">      
+            <script>
+                (function() {
+                    const currentSystem = localStorage.getItem('currentSystem') || 'laundry';
+                    const sidebar = document.getElementById('sidebar');
+                    sidebar.classList.add(currentSystem === 'gas' ? 'gas-mode' : 'laundry-mode');
+                })();
+            </script>
             <div class="pl-4 py-5 flex items-center">
                 <img src="../assets/images/logo.png" alt="" class="w-10 h-10">
                 <a href="../Laundry/index.php" class="sidebar-text font-['Outfit'] font-bold text-2xl py-2 text-white ml-2">YK JOSON</a>
@@ -41,7 +49,7 @@
                 <p class="sidebar-text ml-1 mb-8 mt-8 text-xl text-[#D8D8D8]">MENU</p>
                 <ul class="space-y-10">
                     <li>
-                        <a id="dashboardLink" href="../Laundry/index.php" class="nav-item flex items-center gap-3 ml-6">
+                        <a id="dashboardLink" href="" class="nav-item flex items-center gap-3 ml-6">
                             <svg class="w-6 h-6 text-white flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3.5 5.25C3.5 4.83579 3.16421 4.5 2.75 4.5C2.33579 4.5 2 4.83579 2 5.25V17.25C2 18.4926 3.00736 19.5 4.25 19.5H21.25C21.6642 19.5 22 19.1642 22 18.75C22 18.3358 21.6642 18 21.25 18H4.25C3.83579 18 3.5 17.6642 3.5 17.25V5.25Z" fill="currentColor"/>
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M7 10.2773C5.89543 10.2773 5 11.1728 5 12.2773V15.7501C5 16.1643 5.33579 16.5001 5.75 16.5001H8.25C8.66421 16.5001 9 16.1643 9 15.7501V12.2773C9 11.1728 8.10457 10.2773 7 10.2773ZM6.5 12.2773C6.5 12.0012 6.72386 11.7773 7 11.7773C7.27614 11.7773 7.5 12.0012 7.5 12.2773V15.0001H6.5V12.2773Z" fill="currentColor"/>
@@ -52,7 +60,7 @@
                         </a>
                     </li>
                     <li>
-                        <a id="addOrderLink" href="../Laundry/create.php" class="nav-item flex items-center gap-3 ml-6">
+                        <a id="addOrderLink" href="" class="nav-item flex items-center gap-3 ml-6">
                             <svg class="w-6 h-6 mt-1 text-white flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" version="1.1" viewBox="-5.0 -10.0 110.0 135.0">
                                 <path d="m67.5 47.891h-15.391v-15.391c0-1.1719-0.94922-2.1094-2.1094-2.1094-1.1719 0-2.1094 0.94922-2.1094 2.1094v15.391h-15.391c-1.1719 0-2.1094 0.94922-2.1094 2.1094 0 1.1719 0.94922 2.1094 2.1094 2.1094h15.391v15.391c0 1.1719 0.94922 2.1094 2.1094 2.1094 1.1719 0 2.1094-0.94922 2.1094-2.1094v-15.391h15.391c1.1719 0 2.1094-0.94922 2.1094-2.1094 0.011719-1.1719-0.9375-2.1094-2.1094-2.1094z" fill="currentColor" stroke="currentColor" stroke-width="6"/>
                                 <path d="m74.109 0h-48.219c-14.281 0-25.891 11.609-25.891 25.891v48.219c0 14.281 11.609 25.891 25.891 25.891h48.219c14.281 0 25.891-11.609 25.891-25.891v-48.219c0-14.281-11.609-25.891-25.891-25.891zm21.66 74.109c0 11.949-9.7188 21.672-21.672 21.672h-48.207c-11.949 0-21.672-9.7188-21.672-21.672v-48.219c0-11.949 9.7188-21.672 21.672-21.672h48.219c11.949 0 21.672 9.7188 21.672 21.672v48.219z" fill="currentColor" stroke="currentColor" stroke-width="6"/>
@@ -61,7 +69,7 @@
                         </a>
                     </li>
                     <li>
-                        <a id="orderListLink" href="../Laundry/OrderList.php" class="nav-item flex items-center gap-3 ml-6">
+                        <a id="orderListLink" href="" class="nav-item flex items-center gap-3 ml-6">
                             <svg class="w-6 h-6 text-white flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5M9 12H15M9 16H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -69,7 +77,7 @@
                         </a>
                     </li>
                     <li>
-                        <a id="pettyCashLink" href="../Laundry/pettyCash.php" class="nav-item flex items-center gap-3 ml-5">
+                        <a id="pettyCashLink" href="" class="nav-item flex items-center gap-3 ml-5">
                             <svg class="w-6 h-6 text-white flex-shrink-0 mb-1 ml-1" viewBox="4 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 32 40" enable-background="new 0 0 32 32" xml:space="preserve">
                                 <path d="M24.824,11.995H7.537c-1.164,0-2.107,0.943-2.107,2.107v3.012c0.219-0.076,0.449-0.125,0.691-0.125h5.225  c1.164,0,2.107,0.943,2.107,2.107v1.955c0,1.164-0.943,2.107-2.107,2.107H6.121c-0.242,0-0.473-0.049-0.691-0.125v3.012  c0,1.164,0.943,2.107,2.107,2.107h17.287c1.164,0,2.107-0.943,2.107-2.107V14.103C26.932,12.938,25.988,11.995,24.824,11.995z   M10.473,14.806H8.211c-0.205,0-0.371-0.189-0.371-0.424c0-0.232,0.166-0.422,0.371-0.422h2.262c0.205,0,0.371,0.189,0.371,0.422  C10.844,14.616,10.678,14.806,10.473,14.806z M10.473,26.188H8.211c-0.205,0-0.371-0.189-0.371-0.422  c0-0.234,0.166-0.424,0.371-0.424h2.262c0.205,0,0.371,0.189,0.371,0.424C10.844,25.999,10.678,26.188,10.473,26.188z M21.889,13.96  h2.264c0.205,0,0.371,0.189,0.371,0.422c0,0.234-0.166,0.424-0.371,0.424h-2.264c-0.203,0-0.371-0.189-0.371-0.424  C21.518,14.149,21.686,13.96,21.889,13.96z M15.033,26.188H12.77c-0.205,0-0.371-0.189-0.371-0.422c0-0.234,0.166-0.424,0.371-0.424  h2.264c0.205,0,0.371,0.189,0.371,0.424C15.404,25.999,15.238,26.188,15.033,26.188z M15.033,14.806H12.77  c-0.205,0-0.371-0.189-0.371-0.424c0-0.232,0.166-0.422,0.371-0.422h2.264c0.205,0,0.371,0.189,0.371,0.422  C15.404,14.616,15.238,14.806,15.033,14.806z M19.592,26.188H17.33c-0.205,0-0.371-0.189-0.371-0.422  c0-0.234,0.166-0.424,0.371-0.424h2.262c0.205,0,0.371,0.189,0.371,0.424C19.963,25.999,19.797,26.188,19.592,26.188z   M19.592,14.806H17.33c-0.205,0-0.371-0.189-0.371-0.424c0-0.232,0.166-0.422,0.371-0.422h2.262c0.205,0,0.371,0.189,0.371,0.422  C19.963,14.616,19.797,14.806,19.592,14.806z M24.152,26.188h-2.264c-0.203,0-0.371-0.189-0.371-0.422  c0-0.234,0.168-0.424,0.371-0.424h2.264c0.205,0,0.371,0.189,0.371,0.424C24.523,25.999,24.357,26.188,24.152,26.188z   M24.947,23.485c0,0.205-0.189,0.371-0.424,0.371S24.1,23.69,24.1,23.485v-2.262c0-0.205,0.189-0.371,0.424-0.371  s0.424,0.166,0.424,0.371V23.485z M24.947,18.927c0,0.203-0.189,0.369-0.424,0.369S24.1,19.13,24.1,18.927v-2.264  c0-0.205,0.189-0.371,0.424-0.371s0.424,0.166,0.424,0.371V18.927z" fill="currentColor"/>
                                 <path d="M11.346,22.106c0.58,0,1.053-0.473,1.053-1.055v-1.955c0-0.582-0.473-1.053-1.053-1.053H6.121  c-0.582,0-1.053,0.471-1.053,1.053v1.955c0,0.582,0.471,1.055,1.053,1.055H11.346z M7.658,19.153c0.51,0,0.922,0.412,0.922,0.922  c0,0.508-0.412,0.922-0.922,0.922s-0.922-0.414-0.922-0.922C6.736,19.565,7.148,19.153,7.658,19.153z" fill="currentColor"/>
@@ -80,7 +88,7 @@
                         </a>
                     </li>
                     <li>
-                        <a id="inventorySales" href="../Laundry/expenses.php" class="nav-item flex items-center gap-3 ml-6">
+                        <a id="inventorySales" href="" class="nav-item flex items-center gap-3 ml-6">
                             <svg class="w-6 h-6 mb-2 text-white flex-shrink-0" xmlns="http://www.w3.org/2000/svg" data-name="Layer 2" viewBox="0 0 64 80">
                                 <path d="M32,24A12,12,0,1,1,44,12,12.0131,12.0131,0,0,1,32,24ZM32,4a8,8,0,1,0,8,8A8.0092,8.0092,0,0,0,32,4Zm.249,12.5615,5-4a2,2,0,1,0-2.498-3.123L31.1484,12.32l-1.7343-1.7344a2,2,0,0,0-2.8282,2.8282l3,3a1.9988,1.9988,0,0,0,2.6631.1474ZM63.82,32.1729l-5-11a1.995,1.995,0,0,0-1.0771-1.0293L46.99,15.8418a2,2,0,0,0-1.4863,3.7129L51.615,22,32,29.8457,12.3849,22l6.1112-2.4449A2,2,0,1,0,17.01,15.8418L6.2569,20.1436A1.9952,1.9952,0,0,0,5.18,21.1729l-5,11a1.998,1.998,0,0,0,1.0508,2.6728L5,36.4163V52a2.0025,2.0025,0,0,0,1.2569,1.8574l25,10a2.0051,2.0051,0,0,0,1.4209.0244l25-9A2.0006,2.0006,0,0,0,59,53V36.4163l3.77-1.5706A1.998,1.998,0,0,0,63.82,32.1729ZM8.03,24.567,29.1652,33.02l-4.0588,7.4408L4.6749,31.9482ZM9,38.083l16.2305,6.7627a2.0015,2.0015,0,0,0,2.5254-.8877L30,39.8436V59.0464L9,50.6455ZM55,51.5947l-21,7.56V39.8436l2.2441,4.1144a1.9993,1.9993,0,0,0,2.5254.8877L55,38.083ZM38.8935,40.4609l-4.0584-7.44L55.97,24.567l3.3551,7.3812Z" fill="currentColor"/>
                             </svg>
