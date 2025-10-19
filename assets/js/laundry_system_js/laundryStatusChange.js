@@ -1,4 +1,4 @@
-// statusUpdate.js
+// statusUpdate.js - need pa sa gown
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('laundryStatusModal');
     const closeBtn = document.getElementById('closeLaundryModal');
@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'Delivered': { bgColor: 'bg-[#D1F7EA]', textColor: 'text-[#17CF93]' },
         'Paid': { bgColor: 'bg-green-600', textColor: 'text-white' }
     };
+
     
     function printReceipt(orderId) {
         console.log('=== PRINTING RECEIPT ===');
@@ -66,11 +67,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <div class="mb-3">
                         <label class="text-start text-lg font-medium text-gray-700 mb-1 font-['Switzer']">
-                            Clothes Weight (kg) <span class="text-red-500">*</span>
+                            Clothes Weight (kg)
                         </label>
                         <input type="number" id="clothesWeight" step="0.01" min="0" value="0"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                            placeholder="0.00" required>
+                            placeholder="0.00 (leave 0 if none)">
                     </div>
                     
                     <div>
@@ -95,10 +96,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const comforter_curtainsWeight = parseFloat(document.getElementById('comforter_curtainsWeight').value) || 0;
                 const totalWeight = clothesWeight + comforter_curtainsWeight;
                 
-                if (clothesWeight === 0 && comforter_curtainsWeight === 0) {
-                    Swal.showValidationMessage('Please enter at least clothes weight');
-                    return false;
-                }
+                // Allow proceeding even if all weights are 0 (for barong/gown only orders)
+                // No validation needed - user can proceed with 0 weights
                 
                 return {
                     clothesWeight: clothesWeight,
@@ -177,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         ${data.breakdown.clothes_total > 0 ? `<p class="text-gray-700">• Clothes: ₱${parseFloat(data.breakdown.clothes_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.comforter_total > 0 ? `<p class="text-gray-700">• Comforter/Curtains: ₱${parseFloat(data.breakdown.comforter_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.barong_total > 0 ? `<p class="text-gray-700">• Barong (${data.breakdown.barong_qty} pcs × ₱${parseFloat(data.breakdown.barong_price).toFixed(2)}): ₱${parseFloat(data.breakdown.barong_total).toFixed(2)}</p>` : ''}
-                                        ${data.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gowns_qty} pcs × ₱${parseFloat(data.breakdown.gowns_price).toFixed(2)}): ₱${parseFloat(data.breakdown.gown_total).toFixed(2)}</p>` : ''}
+                                        ${data.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gowns_qty} pcs × ₱${parseFloat(data.breakdown.gowns_price).toFixed(2)}): ₱${parseFloat(data.breakdown.gowns_total).toFixed(2)}</p>` : ''}
                                     </div>
                                 `;
                             }
@@ -262,17 +261,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Track if update is in progress to prevent duplicates
-    let updateInProgress = false;
-    
     function updateOrderStatus(orderId, newStatus) {
-        // Prevent duplicate calls
-        if (updateInProgress) return;
-        updateInProgress = true;
-        
-        // Close any existing SweetAlert dialogs first
-        Swal.close();
-        
+        Swal.fire({
+            title: 'Updating...',
+            text: 'Please wait while we update the order status',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         fetch('updateStatus.php', {
             method: 'POST',
             headers: {
@@ -284,50 +284,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 status: newStatus
             })
         })
-        .then(response => response.json())
+        .then(response => response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+            }
+        }))
         .then(data => {
             if (data.success) {
-                // Show the success dialog
-                if (newStatus === 'Paid') {
-                    Swal.fire({
-                        title: 'Payment Confirmed!',
-                        text: 'Order has been marked as Paid successfully.',
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#22c55e'
-                    }).then(() => {
-                        updateInProgress = false;
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Order status updated to ' + newStatus,
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#22c55e'
-                    }).then(() => {
-                        updateInProgress = false;
-                        location.reload();
-                    });
-                }
-            } else {
-                updateInProgress = false;
                 Swal.fire({
-                    title: 'Error!',
-                    text: data.message || 'Failed to update status',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
+                    title: 'Success!',
+                    text: 'Order status updated to ' + newStatus,
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    modal.classList.add('hidden');
+                    location.reload();
                 });
+            } else {
+                throw new Error(data.message || 'Failed to update status');
             }
         })
         .catch(error => {
-            updateInProgress = false;
+            console.error('Update error:', error);
             Swal.fire({
                 title: 'Error!',
-                text: 'Failed to update order status',
+                text: error.message || 'Failed to update order status',
                 icon: 'error',
-                confirmButtonText: 'OK'
+                confirmButtonColor: '#3085d6'
             });
         });
     }
@@ -413,27 +399,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             button.setAttribute('data-order-id', orderId);
                             button.textContent = status;
                             
-                            button.addEventListener('click', function(e) {
-                                // Prevent event bubbling and multiple clicks
-                                e.preventDefault();
-                                e.stopPropagation();
-                                
-                                if (this.disabled) return;
-                                this.disabled = true;
-                                
-                                // Close any existing SweetAlert dialogs
-                                Swal.close();
-                                
-                                // Close the modal first
-                                modal.classList.add('hidden');
-                                
-                                // Call updateOrderStatus directly - no delay needed
+                            button.addEventListener('click', function() {
                                 updateOrderStatus(orderId, status);
-                                
-                                // Re-enable after a short delay
-                                setTimeout(() => {
-                                    this.disabled = false;
-                                }, 2000);
                             });
                             
                             statusContainer.appendChild(button);
