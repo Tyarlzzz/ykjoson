@@ -37,7 +37,7 @@ try {
         SELECT IFNULL(SUM(goi.total), 0)
         FROM gas_ordered_items goi
         INNER JOIN orders o ON o.order_id = goi.order_id
-        WHERE DATE(o.order_date) = :today
+        WHERE DATE(o.order_date) = :today AND LOWER(o.status) = 'paid'
     ");
     $stmt_gas->execute([':today' => $today]);
     $gas_sales = (float)$stmt_gas->fetchColumn();
@@ -47,7 +47,7 @@ try {
         SELECT IFNULL(SUM(loi.total), 0)
         FROM laundry_ordered_items loi
         INNER JOIN orders o ON o.order_id = loi.order_id
-        WHERE DATE(o.order_date) = :today
+        WHERE DATE(o.order_date) = :today AND LOWER(o.status) = 'paid'
     ");
     $stmt_laundry->execute([':today' => $today]);
     $laundry_sales = (float)$stmt_laundry->fetchColumn();
