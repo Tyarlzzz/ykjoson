@@ -262,18 +262,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Track if update is in progress to prevent duplicates
+    let updateInProgress = false;
+    
     function updateOrderStatus(orderId, newStatus) {
-        Swal.fire({
-            title: 'Updating...',
-            text: 'Please wait while we update the order status',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
+        // Prevent duplicate calls
+        if (updateInProgress) return;
+        updateInProgress = true;
+        
+        // Close any existing SweetAlert dialogs first
+        Swal.close();
+        
         fetch('updateStatus.php', {
             method: 'POST',
             headers: {
@@ -285,36 +284,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 status: newStatus
             })
         })
-        .then(response => response.text().then(text => {
-            try {
-                return JSON.parse(text);
-            } catch (e) {
-                throw new Error('Invalid JSON response: ' + text.substring(0, 100));
-            }
-        }))
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Order status updated to ' + newStatus,
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    modal.classList.add('hidden');
-                    location.reload();
-                });
+                // Show the success dialog
+                if (newStatus === 'Paid') {
+                    Swal.fire({
+                        title: 'Payment Confirmed!',
+                        text: 'Order has been marked as Paid successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#22c55e'
+                    }).then(() => {
+                        updateInProgress = false;
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Order status updated to ' + newStatus,
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#22c55e'
+                    }).then(() => {
+                        updateInProgress = false;
+                        location.reload();
+                    });
+                }
             } else {
-                throw new Error(data.message || 'Failed to update status');
+                updateInProgress = false;
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message || 'Failed to update status',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         })
         .catch(error => {
-            console.error('Update error:', error);
+            updateInProgress = false;
             Swal.fire({
                 title: 'Error!',
-                text: error.message || 'Failed to update order status',
+                text: 'Failed to update order status',
                 icon: 'error',
-                confirmButtonColor: '#3085d6'
+                confirmButtonText: 'OK'
             });
         });
     }
@@ -400,8 +413,27 @@ document.addEventListener('DOMContentLoaded', function() {
                             button.setAttribute('data-order-id', orderId);
                             button.textContent = status;
                             
-                            button.addEventListener('click', function() {
+                            button.addEventListener('click', function(e) {
+                                // Prevent event bubbling and multiple clicks
+                                e.preventDefault();
+                                e.stopPropagation();
+                                
+                                if (this.disabled) return;
+                                this.disabled = true;
+                                
+                                // Close any existing SweetAlert dialogs
+                                Swal.close();
+                                
+                                // Close the modal first
+                                modal.classList.add('hidden');
+                                
+                                // Call updateOrderStatus directly - no delay needed
                                 updateOrderStatus(orderId, status);
+                                
+                                // Re-enable after a short delay
+                                setTimeout(() => {
+                                    this.disabled = false;
+                                }, 2000);
                             });
                             
                             statusContainer.appendChild(button);
