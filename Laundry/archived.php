@@ -12,6 +12,9 @@ Model::setConnection($conn);
 // Get all archived orders
 $archivedOrders = LaundryArchivedOrder::getAllArchived();
 
+// Debug: Log the count
+error_log("Archived page: Retrieved " . ($archivedOrders ? count($archivedOrders) : 0) . " archived orders");
+
 // Get count of archived orders
 $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
 ?>
@@ -74,7 +77,10 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
           </thead>
             <tbody>
               <?php if ($archivedOrders): ?>
-                  <?php foreach ($archivedOrders as $index => $order): ?>
+                  <?php 
+                  error_log("Archived page: Displaying " . count($archivedOrders) . " orders in HTML");
+                  foreach ($archivedOrders as $index => $order): 
+                  ?>
                       <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200">
                           <td class="p-4 text-gray-800 font-mono"><?php echo str_pad($order->order_id, 4, '0', STR_PAD_LEFT); ?></td>
                           <td class="p-4 text-gray-600"><?php echo date('M j, Y', strtotime($order->date_created)); ?></td>
@@ -86,6 +92,7 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
                       </tr>
                   <?php endforeach; ?>
               <?php else: ?>
+                  <?php error_log("Archived page: No orders to display - showing empty state"); ?>
                   <tr>
                       <td colspan="7" class="p-8 text-center text-gray-500">
                           <div class="flex flex-col items-center">
@@ -161,6 +168,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Auto-refresh archived page every 10 seconds to show newly archived orders
+setInterval(() => {
+    location.reload();
+}, 10000);
 </script>
 
 <?php require '../layout/footer.php' ?>

@@ -19,6 +19,9 @@ if ($order_id <= 0) {
 }
 
 try {
+    // Log start of archive process
+    error_log("Schedule Archive: Starting archive process for order ID: $order_id");
+    
     // Include required files
     require_once __DIR__ . '/../database/Database.php';
     require_once __DIR__ . '/../Models/Models.php';
@@ -28,6 +31,8 @@ try {
     $database = new Database();
     $conn = $database->getConnection();
     Model::setConnection($conn);
+    
+    error_log("Schedule Archive: Database connection established for order ID: $order_id");
 
     // Check if order is still eligible for archiving
     $stmt = $conn->prepare("SELECT status, paid_at FROM orders WHERE order_id = ? AND business_type = 'Laundry System'");

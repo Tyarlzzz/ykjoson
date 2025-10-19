@@ -102,10 +102,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <script src="../assets/js/datatables.js"></script>
     <script src="../assets/js/laundry_system_js/laundryAddOrder.js"></script>
     <script src="../assets/js/gas_system_js/gasAddOrder.js"></script>
-    <script src="../assets/js/orderlistDatatables.js"></script>
-    <script src="../assets/js/laundry_system_js/pricing.js"></script>
-    <script src="../assets/js/gas_system_js/gasPettyCash.js"></script>
-    <script src="../assets/js/gas_system_js/gasStatusChange.js"></script>
-    <script src="../assets/js/laundry_system_js/laundryStatusChange.js"></script>
+    <script src="../assets/js/orderlistDatatables.js?v=<?php echo time(); ?>"></script>
+    <script src="../assets/js/laundry_system_js/pricing.js?v=<?php echo time(); ?>"></script>
+    <script src="../assets/js/gas_system_js/gasPettyCash.js?v=<?php echo time(); ?>"></script>
+    <script src="../assets/js/gas_system_js/gasStatusChange.js?v=<?php echo time(); ?>"></script>
+    <script src="../assets/js/laundry_system_js/laundryStatusChange.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

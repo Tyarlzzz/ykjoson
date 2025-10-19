@@ -93,14 +93,20 @@
                             <?php endif; ?>
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <button class="openLaundryStatusModal" 
+                            <button class="openLaundryStatusModal status-button" 
                                 data-current-status="<?php echo $order['status']; ?>" 
                                 data-order-id="<?php echo $order['order_id']; ?>"
                                 data-customer-name="<?php echo $order['fullname']; ?>"
                                 data-customer-address="<?php echo $order['address']; ?>"
                                 data-customer-phone="<?php echo $order['phone_number']; ?>"
-                                data-quantity="<?php echo $order['total_quantity']; ?>">
+                                data-quantity="<?php echo $order['total_quantity']; ?>"
+                                data-archive-at="<?php echo $order['archive_at'] ?? ''; ?>">
                                 <?php echo $order['status']; ?>
+                                <?php if ($order['status'] === 'Paid' && $order['archive_at']): ?>
+                                    <div class="text-xs mt-1 text-gray-200 archive-timer" data-archive-at="<?php echo $order['archive_at']; ?>">
+                                        ⏱ Archiving in...
+                                    </div>
+                                <?php endif; ?>
                             </button>
                         </td>
                     </tr>
