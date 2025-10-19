@@ -1,9 +1,8 @@
 <?php
 require '../layout/header.php';
 require_once 'reportFunctions.php';
-
-// Initialize PDO connection
 require_once '../database/Database.php';
+
 $pdo = (new Database())->getConnection();
 
 // Get current year and month
@@ -91,7 +90,7 @@ $fullMonthNames = [
           <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
             <span class="text-lg font-semibold">Delivered</span>
             <span id="summaryCardDelivered" class="text-5xl font-bold mt-2">
-              <?php echo $currentWeekData['delivered']; ?>
+              <?php echo $currentWeekData['paid']; ?>
             </span>
           </div>
           <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
