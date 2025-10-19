@@ -1,12 +1,24 @@
-<?php  
-header('Content-Type: application/json');
+<?php
+// Start output buffering to catch any unwanted output
+ob_start();
+
+// Suppress all errors
+error_reporting(0);
+ini_set('display_errors', 0);
+
 require_once __DIR__ . '/../database/Database.php';
+
+// Clean any output from includes and set header
+ob_clean();
+header('Content-Type: application/json');
 
 $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
 
 if (!isset($data['order_id'], $data['status'], $data['clothes_weight'], $data['comforter_curtains_weight'])) {
+    ob_clean();
     echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+    ob_end_flush();
     exit;
 }
 
@@ -26,7 +38,9 @@ try {
     $order = $orderStmt->fetch();
 
     if (!$order) {
+        ob_clean();
         echo json_encode(['success' => false, 'message' => 'Order not found']);
+        ob_end_flush();
         exit;
     }
 
@@ -200,6 +214,7 @@ try {
     }
 
     // Step 13: Return JSON with detailed breakdown
+    ob_clean(); // Clean all output before sending JSON
     echo json_encode([
         'success' => true,
         'message' => 'Order updated successfully',
@@ -218,8 +233,12 @@ try {
             'grand_total' => $grand_total
         ]
     ]);
+    ob_end_flush();
+    exit;
 
 } catch (PDOException $e) {
+    ob_clean();
     echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    ob_end_flush();
+    exit;
 }
-?>
