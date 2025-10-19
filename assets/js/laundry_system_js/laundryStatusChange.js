@@ -1,13 +1,11 @@
-// statusUpdate.js - Simplified version with validation
+// statusUpdate.js - Updated with price display for Paid status
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('laundryStatusModal');
     const closeBtn = document.getElementById('closeLaundryModal');
     const statusContainer = document.getElementById('statusOptionsContainer');
     
-    // PHP Print URL
     const PHP_PRINT_URL = '../Receipt/printReceipt.php';
     
-    // All possible statuses with their styling
     const allStatuses = {
         'On Wash': { bgColor: 'bg-[#D1EBF7]', textColor: 'text-[#0E74D3]' },
         'On Dry': { bgColor: 'bg-[#F7DED1]', textColor: 'text-[#D33F0E]' },
@@ -17,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'Paid': { bgColor: 'bg-green-600', textColor: 'text-white' }
     };
     
-    // Function to print receipt using PHP
     function printReceipt(orderId) {
         console.log('=== PRINTING RECEIPT ===');
         console.log('Order ID:', orderId);
@@ -49,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Function to show weight input modal
     function showWeightInputModal(orderId, customerName, customerAddress, customerPhone, total_quantity) {
         console.log('Opening weight modal for order:', orderId);
         
@@ -119,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Function to update order status with weight data
     function updateOrderStatusWithWeights(orderId, newStatus, weights) {
         console.log('=== UPDATING STATUS WITH WEIGHTS ===');
         console.log('Order ID:', orderId);
@@ -178,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                // Wait for database to commit before printing
                 setTimeout(() => {
                     console.log('Calling printReceipt with order_id:', orderId);
                     
@@ -186,7 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         .then(printData => {
                             console.log('Print successful:', printData);
                             
-                            // Build breakdown HTML
                             let breakdownHTML = '';
                             if (data.breakdown) {
                                 breakdownHTML = `
@@ -226,7 +219,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         .catch(printError => {
                             console.error('Print failed:', printError);
                             
-                            // Build breakdown HTML for error case too
                             let breakdownHTML = '';
                             if (data.breakdown) {
                                 breakdownHTML = `
@@ -281,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Function to update order status (without weights)
     function updateOrderStatus(orderId, newStatus) {
         Swal.fire({
             title: 'Updating...',
@@ -339,7 +330,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Open modal and populate with appropriate status options
+    // Function to fetch order total price for "Delivered" status
+    function fetchOrderTotalPrice(orderId) {
+        return fetch('getOrderTotal.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ order_id: parseInt(orderId) })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                return data.total_price || 0;
+            }
+            return 0;
+        })
+        .catch(error => {
+            console.error('Error fetching total price:', error);
+            return 0;
+        });
+    }
+    
     document.querySelectorAll('.openLaundryStatusModal').forEach(button => {
         button.addEventListener('click', function() {
             const currentStatus = this.getAttribute('data-current-status');
@@ -371,18 +383,42 @@ document.addEventListener('DOMContentLoaded', function() {
                     availableStatuses = ['Delivered'];
                     break;
                 case 'Delivered':
-                    const confirmMessage = document.createElement('div');
-                    confirmMessage.className = 'text-center py-6';
-                    confirmMessage.innerHTML = `
-                        <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Confirm payment?</p>
-                        <p class="font-[Outfit] text-gray-600 mt-2">Are you sure you want to confirm payment for this order?</p>
-                    `;
-                    statusContainer.appendChild(confirmMessage);
+                    // Fetch total price and show confirmation
+                    fetchOrderTotalPrice(orderId).then(totalPrice => {
+                        const confirmMessage = document.createElement('div');
+                        confirmMessage.className = 'text-center py-6';
+                        confirmMessage.innerHTML = `
+                            <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="font-[Outfit] text-xl font-semibold text-gray-800">Confirm payment?</p>
+                            <div class="mt-4 bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                                <p class="font-[Outfit] text-3xl font-bold text-green-700">₱${parseFloat(totalPrice).toFixed(2)}</p>
+                                <p class="font-[Outfit] text-sm text-gray-600 mt-1">Total Amount</p>
+                            </div>
+                            <p class="font-[Outfit] text-gray-600 mt-3">Are you sure you want to confirm payment for this order?</p>
+                        `;
+                        statusContainer.appendChild(confirmMessage);
+                        
+                        // Add "Paid" button after the message
+                        availableStatuses.forEach(status => {
+                            const statusInfo = allStatuses[status];
+                            const button = document.createElement('button');
+                            button.className = `font-[Outfit] status-option w-full ${statusInfo.bgColor} ${statusInfo.textColor} py-4 rounded-md mt-4`;
+                            button.setAttribute('data-status', status);
+                            button.setAttribute('data-order-id', orderId);
+                            button.textContent = status;
+                            
+                            button.addEventListener('click', function() {
+                                updateOrderStatus(orderId, status);
+                            });
+                            
+                            statusContainer.appendChild(button);
+                        });
+                    });
                     availableStatuses = ['Paid'];
-                    break;
+                    modal.classList.remove('hidden');
+                    return;
                 case 'Paid':
                     const successMessage = document.createElement('div');
                     successMessage.className = 'text-center py-6';
@@ -410,27 +446,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
             }
             
-            availableStatuses.forEach(status => {
-                const statusInfo = allStatuses[status];
-                const button = document.createElement('button');
-                button.className = `font-[Outfit] status-option w-full ${statusInfo.bgColor} ${statusInfo.textColor} py-4 rounded-md`;
-                button.setAttribute('data-status', status);
-                button.setAttribute('data-order-id', orderId);
-                button.textContent = status;
-                
-                button.addEventListener('click', function() {
-                    if (status === 'For Delivery') {
-                        modal.classList.add('hidden');
-                        showWeightInputModal(orderId, customerName, customerAddress, customerPhone, totalQuantity);
-                    } else {
-                        updateOrderStatus(orderId, status);
-                    }
+            // Only create buttons if not "Delivered" or "Paid" status (they have custom handling)
+            if (currentStatus !== 'Delivered' && currentStatus !== 'Paid') {
+                availableStatuses.forEach(status => {
+                    const statusInfo = allStatuses[status];
+                    const button = document.createElement('button');
+                    button.className = `font-[Outfit] status-option w-full ${statusInfo.bgColor} ${statusInfo.textColor} py-4 rounded-md`;
+                    button.setAttribute('data-status', status);
+                    button.setAttribute('data-order-id', orderId);
+                    button.textContent = status;
+                    
+                    button.addEventListener('click', function() {
+                        if (status === 'For Delivery') {
+                            modal.classList.add('hidden');
+                            showWeightInputModal(orderId, customerName, customerAddress, customerPhone, totalQuantity);
+                        } else {
+                            updateOrderStatus(orderId, status);
+                        }
+                    });
+                    
+                    statusContainer.appendChild(button);
                 });
                 
-                statusContainer.appendChild(button);
-            });
-            
-            modal.classList.remove('hidden');
+                modal.classList.remove('hidden');
+            }
         });
     });
     
