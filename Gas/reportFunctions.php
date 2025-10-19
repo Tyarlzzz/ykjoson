@@ -1,5 +1,4 @@
 <?php
-// reportFunctions.php - Complete backend for sales reporting
 require_once '../database/Database.php';
 require_once '../Models/Models.php';
 require_once '../Models/GasOrder.php';
@@ -10,6 +9,7 @@ function getGasSalesReport($pdo, $period = 'all', $year = null, $month = null, $
 {
   try {
     $year = $year ?? date('Y');
+
 
     $sql = "SELECT 
                     o.order_id,
@@ -59,6 +59,9 @@ function getGasSalesReport($pdo, $period = 'all', $year = null, $month = null, $
       }
     }
 
+    // Only include orders with status 'paid' for sales calculation
+    $sql .= " AND (o.status) = 'paid'";
+
     $sql .= " ORDER BY o.order_date DESC";
 
     $stmt = $pdo->prepare($sql);
@@ -67,17 +70,17 @@ function getGasSalesReport($pdo, $period = 'all', $year = null, $month = null, $
 
     // Compute summary values
     $totalSales = 0;
-    $totalDelivered = 0;
+    $totalPaid = 0;
     $uniqueCustomers = [];
-    $deliveredCount = 0;
+    $paidCount = 0;
 
     foreach ($salesData as $row) {
       $totalSales += $row['total'];
       $uniqueCustomers[$row['customer_id']] = true;
 
-      if (strtolower($row['status']) === 'delivered') {
-        $totalDelivered += $row['total'];
-        $deliveredCount++;
+      if (strtolower($row['status']) === 'paid') {
+        $totalPaid += $row['total'];
+        $paidCount++;
       }
     }
 
@@ -87,10 +90,10 @@ function getGasSalesReport($pdo, $period = 'all', $year = null, $month = null, $
     return [
       'salesData' => $salesData,
       'totalSales' => $totalSales,
-      'totalDelivered' => $totalDelivered,
+      'totalPaid' => $totalPaid,
       'customerCount' => $customerCount,
       'netWorth' => $netWorth,
-      'deliveredCount' => $deliveredCount
+      'paidCount' => $paidCount
     ];
 
   } catch (PDOException $e) {
@@ -98,10 +101,10 @@ function getGasSalesReport($pdo, $period = 'all', $year = null, $month = null, $
     return [
       'salesData' => [],
       'totalSales' => 0,
-      'totalDelivered' => 0,
+      'totalPaid' => 0,
       'customerCount' => 0,
       'netWorth' => 0,
-      'deliveredCount' => 0
+      'paidCount' => 0
     ];
   }
 }
@@ -172,7 +175,7 @@ function getWeeklySalesData($pdo, $year, $month)
         'week' => $week,
         'sales' => $report['totalSales'],
         'customers' => $report['customerCount'],
-        'delivered' => $report['deliveredCount']
+        'paid' => $report['paidCount']
       ];
     }
 
@@ -193,7 +196,7 @@ function getMonthlySummary($pdo, $year, $month)
     return [
       'sales' => $report['totalSales'],
       'customers' => $report['customerCount'],
-      'delivered' => $report['deliveredCount']
+      'paid' => $report['paidCount']
     ];
 
   } catch (Exception $e) {
@@ -201,7 +204,7 @@ function getMonthlySummary($pdo, $year, $month)
     return [
       'sales' => 0,
       'customers' => 0,
-      'delivered' => 0
+      'paid' => 0
     ];
   }
 }
@@ -277,7 +280,7 @@ function getCurrentWeekData($pdo)
       'week' => $week,
       'sales' => $report['totalSales'],
       'customers' => $report['customerCount'],
-      'delivered' => $report['deliveredCount'],
+      'paid' => $report['paidCount'],
       'netWorth' => $report['netWorth']
     ];
 
@@ -287,7 +290,7 @@ function getCurrentWeekData($pdo)
       'week' => 1,
       'sales' => 0,
       'customers' => 0,
-      'delivered' => 0,
+      'paid' => 0,
       'netWorth' => 0
     ];
   }
