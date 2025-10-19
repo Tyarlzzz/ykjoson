@@ -1,12 +1,12 @@
 <?php
 
 
-    require_once 'Models.php';
+    require_once 'Model.php';
 
     class Product_code extends Model{
-        protected static $table = "product_code"; //edit based sa pangalan ng table sa database
+        protected static $table = "product_codes"; //edit based sa pangalan ng table sa database
 
-        //mga gusto maretrieve sa users na table, kung ano pangalan ng column sa users na table, dapat EXACTLY pareho sa column name sa table
+        //mga gusto maretrieve sa product_codes na table, kung ano pangalan ng column sa product_codes na table, dapat EXACTLY pareho sa column name sa table
         public $code_id;
         public $category;
         public $product_name;

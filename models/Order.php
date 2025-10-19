@@ -15,6 +15,7 @@
         public $note;
         public $created_at;
         public $updated_at;
+        public $paid_at;
 
         public function __construct(array $data = []){
             foreach ($data as $key => $value){
@@ -70,7 +71,8 @@
                 "is_rushed" => $this->is_rushed,
                 "note" => $this->note,
                 "created_at" => $this->created_at,
-                "updated_at" => $this->updated_at
+                "updated_at" => $this->updated_at,
+                "paid_at" => $this->paid_at
             ];
 
             $this->update($data);

@@ -104,12 +104,6 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-                <?php else: ?>
-                  <tr>
-                      <td colspan="6" class="text-center py-8 text-gray-500 italic">
-                          No Laundry Orders Found.
-                      </td>
-                  </tr>
                 <?php endif; ?>
             </tbody>
         </table>

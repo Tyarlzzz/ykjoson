@@ -1,4 +1,9 @@
         $(document).ready(function() {
+            // Skip DataTables initialization for archived page since it has different structure
+            var currentPath = window.location.pathname;
+            if (currentPath.includes('archived.php')) {
+                return; // Don't initialize DataTables for archived page
+            }
 
             var table = $('#ordersTable').DataTable({
                 paging: false,
@@ -11,8 +16,12 @@
             });
 
             // determine if the path is for gas or laundry system
-            var currentPath = window.location.pathname;
             var isGasSystem = currentPath.includes('/Gas/');
+
+            // Skip status styling and other functionality for archived page
+            if (currentPath.includes('archived.php')) {
+                return; // Don't run the rest of the script for archived page
+            }
 
             $('#ordersTable tbody tr').each(function() {
                 var statusBox = $(this).find('td:last');

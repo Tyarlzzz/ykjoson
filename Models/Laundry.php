@@ -1,5 +1,6 @@
 <?php
     require_once 'Order.php';
+    require_once 'LaundryArchivedOrder.php';
 
     class Laundry extends Order {
         public static function all() {
@@ -7,8 +8,13 @@
             $allOrders = parent::all();
             if (!$allOrders) return null;
 
-            return array_filter($allOrders, function($order) {
+            $laundryOrders = array_filter($allOrders, function($order) {
                 return isset($order->business_type) && $order->business_type === 'Laundry System';
+            });
+
+            // Exclude archived orders
+            return array_filter($laundryOrders, function($order) {
+                return !LaundryArchivedOrder::isOrderArchived($order->order_id);
             });
         }
 
@@ -18,9 +24,14 @@
 
             if (!$results) return null;
 
-            // Then filter by business_type = 'Laundry System'
-            return array_filter($results, function($order) {
+            // Filter by business_type = 'Laundry System'
+            $laundryResults = array_filter($results, function($order) {
                 return isset($order->business_type) && $order->business_type === 'Laundry System';
+            });
+
+            // Exclude archived orders
+            return array_filter($laundryResults, function($order) {
+                return !LaundryArchivedOrder::isOrderArchived($order->order_id);
             });
         }
 
@@ -102,8 +113,10 @@
                             WHERE loi.order_id = o.order_id), 0) as total_items
                         FROM orders o
                         INNER JOIN customer c ON o.customer_id = c.customer_id
+                        LEFT JOIN laundry_archived_orders lao ON o.order_id = lao.order_id
                         WHERE o.business_type = 'Laundry System'
                         AND DATE(o.created_at) = :today
+                        AND lao.order_id IS NULL
                         ORDER BY o.created_at DESC";
                 
                 $stmt = self::$conn->prepare($sql);
@@ -133,7 +146,9 @@
                         FROM orders o
                         INNER JOIN customer c ON o.customer_id = c.customer_id
                         LEFT JOIN laundry_ordered_items loi ON o.order_id = loi.order_id
+                        LEFT JOIN laundry_archived_orders lao ON o.order_id = lao.order_id
                         WHERE o.business_type = 'Laundry System'
+                        AND lao.order_id IS NULL
                         GROUP BY o.order_id, o.status, o.is_rushed, o.created_at, c.fullname, c.address, c.phone_number
                         ORDER BY o.created_at DESC";
                 

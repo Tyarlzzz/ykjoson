@@ -12,17 +12,22 @@ $(document).ready(function() {
             dom: 't', 
             ordering: false,
             autoWidth: false,
+            language: {
+                emptyTable: "No laundry orders found. Create your first order to get started!",
+                zeroRecords: "No orders match your search criteria."
+            },
             columnDefs: [
+                { targets: 0, orderable: false, searchable: false }, // # column
+                { targets: 1, orderable: false, searchable: true },  // Name column
+                { targets: 2, orderable: false, searchable: true },  // Location column
+                { targets: 3, orderable: false, searchable: false }, // Phone column
+                { targets: 4, orderable: false, searchable: false }, // Qty column
+                { targets: 5, orderable: false, searchable: true },  // Status column
                 {
                     targets: 1, // make name column searchable by visible text
                     render: function (data, type, row) {
                         return type === 'filter' || type === 'search' ? $(data).text() : data;
                     }
-                },
-                {
-                    targets: 1,
-                    orderable: false,
-                    searchable: true
                 }
             ]
         });

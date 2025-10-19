@@ -1,6 +1,6 @@
 <?php
     require_once '../database/Database.php';
-    require_once '../Models/GasCustomer.php';
+    require_once '../Models/Gas.php';
     include '../layout/header.php';
 
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -65,7 +65,7 @@
             foreach($brands as $brand => $data){
                 if($data['qty'] > 0){
                     
-                    $productSql = "SELECT code_id FROM `product codes` 
+                    $productSql = "SELECT code_id FROM `product_codes` 
                                    WHERE business_type = 'Gas System' 
                                    AND brand = :brand LIMIT 1";
                     $productStmt = $db->prepare($productSql);
@@ -78,7 +78,7 @@
 
                     $product_code_id = $product['code_id'];
 
-                    $itemSql = "SELECT item_id, stocks, cost FROM `item inventory` 
+                    $itemSql = "SELECT item_id, stocks, cost FROM `inventory` 
                                 WHERE business_type = 'Gas System' 
                                 AND item_name = :item_name LIMIT 1";
                     $itemStmt = $db->prepare($itemSql);
@@ -97,7 +97,7 @@
                     $unit_price = $item['cost'];
                     $total = $unit_price * $data['qty'];
 
-                    $allotmentSql = "INSERT INTO `item allotment` (item_id, quantity, total_cost, created_at) 
+                    $allotmentSql = "INSERT INTO `allotment` (item_id, quantity, total_cost, created_at) 
                                      VALUES (:item_id, :quantity, :total_cost, NOW())";
                     $allotmentStmt = $db->prepare($allotmentSql);
                     $allotmentStmt->execute([
@@ -108,7 +108,7 @@
 
                     $allotment_id = $db->lastInsertId();
 
-                    $updateStockSql = "UPDATE `item inventory` 
+                    $updateStockSql = "UPDATE `inventory` 
                                        SET stocks = stocks - :quantity, 
                                            updated_at = NOW() 
                                        WHERE item_id = :item_id";

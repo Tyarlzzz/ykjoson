@@ -1,4 +1,38 @@
 // statusUpdate.js - Simplified version with validation
+// Global debug function to test button clicking manually
+window.testPaymentConfirm = function(orderId) {
+    console.log('=== MANUAL TEST OF PAYMENT CONFIRM ===');
+    console.log('Testing payment confirmation for order:', orderId);
+    const button = document.getElementById('confirmPaymentBtn_' + orderId);
+    if (button) {
+        console.log('Button found:', button);
+        console.log('Button style:', window.getComputedStyle(button));
+        console.log('Button parent:', button.parentElement);
+        button.click();
+    } else {
+        console.log('Button not found with ID: confirmPaymentBtn_' + orderId);
+    }
+};
+
+window.testDirectStatusUpdate = function(orderId) {
+    console.log('=== MANUAL TEST OF DIRECT STATUS UPDATE ===');
+    updateOrderStatus(orderId, 'Paid');
+};
+
+// Helper function to get status button colors
+function getStatusButtonColor(status) {
+    const colorMap = {
+        'On Hold': 'bg-yellow-500',
+        'On Wash': 'bg-blue-500',
+        'On Dry': 'bg-orange-500',
+        'On Fold': 'bg-purple-500',
+        'For Delivery': 'bg-indigo-500',
+        'Delivered': 'bg-green-500',
+        'Paid': 'bg-gray-500'
+    };
+    return colorMap[status] || 'bg-gray-500';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('laundryStatusModal');
     const closeBtn = document.getElementById('closeLaundryModal');
@@ -125,16 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Order ID:', orderId);
         console.log('Weights:', weights);
         
-        Swal.fire({
-            title: 'Updating...',
-            text: 'Please wait while we update the order status and weights',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+        // Removed loading dialog - status update happens instantly
 
         fetch('updateStatusWithWeights.php', {
             method: 'POST',
@@ -283,16 +308,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to update order status (without weights)
     function updateOrderStatus(orderId, newStatus) {
-        Swal.fire({
-            title: 'Updating...',
-            text: 'Please wait while we update the order status',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+        console.log('=== UPDATE ORDER STATUS CALLED ===');
+        console.log('Order ID:', orderId);
+        console.log('New Status:', newStatus);
+        console.log('Call stack:', new Error().stack);
+        console.log('Current time:', new Date().toISOString());
+        
+        // Removed loading dialog - status update happens instantly
 
         fetch('updateStatus.php', {
             method: 'POST',
@@ -305,37 +327,108 @@ document.addEventListener('DOMContentLoaded', function() {
                 status: newStatus
             })
         })
-        .then(response => response.text().then(text => {
-            try {
-                return JSON.parse(text);
-            } catch (e) {
-                throw new Error('Invalid JSON response: ' + text.substring(0, 100));
-            }
-        }))
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.text().then(text => {
+                console.log('Response text:', text);
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+                }
+            });
+        })
         .then(data => {
+            console.log('=== RESPONSE RECEIVED ===');
+            console.log('Response data:', data);
+            console.log('data.success:', data.success);
+            console.log('newStatus:', newStatus);
+            
             if (data.success) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Order status updated to ' + newStatus,
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
+                console.log('✅ Status update successful!');
+                
+                // Update the status button text immediately
+                const statusButton = document.querySelector(`[data-order-id="${orderId}"]`);
+                if (statusButton) {
+                    console.log('Found status button, updating immediately...');
+                    statusButton.textContent = newStatus;
+                    statusButton.setAttribute('data-current-status', newStatus);
+                    
+                    // Update button color based on status
+                    statusButton.className = statusButton.className.replace(/bg-\w+-\d+/, getStatusButtonColor(newStatus));
+                } else {
+                    console.log('❌ Could not find status button with data-order-id:', orderId);
+                }
+                
+                // Always hide modal and reload, with or without SweetAlert
+                const closeAndReload = () => {
+                    console.log('Closing modal and reloading page...');
                     modal.classList.add('hidden');
-                    location.reload();
-                });
+                    
+                    // For "Paid" status, refresh immediately without delay
+                    if (newStatus === 'Paid') {
+                        console.log('Status changed to Paid - refreshing page immediately');
+                        location.reload();
+                    } else {
+                        setTimeout(() => location.reload(), 100);
+                    }
+                };
+                
+                try {
+                    console.log('Checking if newStatus is Paid:', newStatus === 'Paid');
+                    
+                    // For "Paid" status, show simple success and reload
+                    if (newStatus === 'Paid') {
+                        console.log('🎯 PAID STATUS - STARTING RELOAD PROCESS');
+                        
+                        // Hide modal
+                        modal.classList.add('hidden');
+                        
+                        // Show a simple alert instead of SweetAlert
+                        alert('Order marked as Paid! Page will refresh.');
+                        
+                        // Force reload
+                        console.log('Forcing page reload...');
+                        window.location.reload(true);
+                        return;
+                    }
+                    
+                    // For other statuses, use SweetAlert
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message || 'Order status updated to ' + newStatus,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        willClose: closeAndReload
+                    });
+                } catch (sweetAlertError) {
+                    console.error('SweetAlert error:', sweetAlertError);
+                    // Fallback: just close and reload without SweetAlert
+                    alert(data.message || 'Order status updated to ' + newStatus);
+                    closeAndReload();
+                }
             } else {
+                console.error('Backend returned success:false', data);
                 throw new Error(data.message || 'Failed to update status');
             }
         })
         .catch(error => {
             console.error('Update error:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: error.message || 'Failed to update order status',
-                icon: 'error',
-                confirmButtonColor: '#3085d6'
-            });
+            console.error('Error stack:', error.stack);
+            
+            try {
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'Failed to update order status',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                });
+            } catch (sweetAlertError) {
+                console.error('SweetAlert error in catch:', sweetAlertError);
+                alert('Error: ' + (error.message || 'Failed to update order status'));
+            }
         });
     }
     
@@ -371,18 +464,45 @@ document.addEventListener('DOMContentLoaded', function() {
                     availableStatuses = ['Delivered'];
                     break;
                 case 'Delivered':
-                    const confirmMessage = document.createElement('div');
-                    confirmMessage.className = 'text-center py-6';
-                    confirmMessage.innerHTML = `
+                    // Create a manual payment confirmation that only triggers when YOU click it
+                    const paymentMessage = document.createElement('div');
+                    paymentMessage.className = 'text-center py-6';
+                    paymentMessage.innerHTML = `
                         <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Confirm payment?</p>
-                        <p class="font-[Outfit] text-gray-600 mt-2">Are you sure you want to confirm payment for this order?</p>
+                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Order Delivered!</p>
+                        <p class="font-[Outfit] text-gray-600 mt-2">When customer pays, click the button below to mark as paid.</p>
                     `;
-                    statusContainer.appendChild(confirmMessage);
-                    availableStatuses = ['Paid'];
-                    break;
+                    statusContainer.appendChild(paymentMessage);
+                    
+                    // Create ONLY a "Mark as Paid" button (no automatic confirmation)
+                    const paymentButtonContainer = document.createElement('div');
+                    paymentButtonContainer.className = 'flex justify-center mt-4';
+                    
+                    const markPaidBtn = document.createElement('button');
+                    markPaidBtn.className = 'font-[Outfit] bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600';
+                    markPaidBtn.textContent = '✓ Mark as Paid';
+                    
+                    markPaidBtn.addEventListener('click', function() {
+                        console.log('BUTTON CLICKED - REFRESHING IMMEDIATELY');
+                        
+                        // Send request in background (don't wait)
+                        fetch('updateStatus.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ order_id: parseInt(orderId), status: 'Paid' })
+                        });
+                        
+                        // REFRESH IMMEDIATELY - NO WAITING
+                        window.location.reload();
+                    });
+                    
+                    paymentButtonContainer.appendChild(markPaidBtn);
+                    statusContainer.appendChild(paymentButtonContainer);
+                    
+                    modal.classList.remove('hidden');
+                    return;
                 case 'Paid':
                     const successMessage = document.createElement('div');
                     successMessage.className = 'text-center py-6';
@@ -419,10 +539,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.textContent = status;
                 
                 button.addEventListener('click', function() {
+                    console.log('=== STATUS BUTTON CLICKED ===');
+                    console.log('Button clicked for status:', status);
+                    console.log('Order ID:', orderId);
+                    console.log('Current time:', new Date().toISOString());
+                    
                     if (status === 'For Delivery') {
+                        console.log('Opening weight input modal...');
                         modal.classList.add('hidden');
                         showWeightInputModal(orderId, customerName, customerAddress, customerPhone, totalQuantity);
                     } else {
+                        console.log('Calling updateOrderStatus...');
                         updateOrderStatus(orderId, status);
                     }
                 });
