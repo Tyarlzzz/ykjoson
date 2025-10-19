@@ -133,35 +133,44 @@
         }
 
         public static function getAllLaundryWithDetails() {
-            try {
-                $sql = "SELECT 
-                            o.order_id,
-                            o.status,
-                            o.is_rushed,
-                            c.fullname,
-                            o.created_at,
-                            c.address,
-                            c.phone_number,
-                            COALESCE(SUM(loi.quantity), 0) as total_quantity
-                        FROM orders o
-                        INNER JOIN customer c ON o.customer_id = c.customer_id
-                        LEFT JOIN laundry_ordered_items loi ON o.order_id = loi.order_id
-                        LEFT JOIN laundry_archived_orders lao ON o.order_id = lao.order_id
-                        WHERE o.business_type = 'Laundry System'
-                        AND lao.order_id IS NULL
-                        GROUP BY o.order_id, o.status, o.is_rushed, o.created_at, c.fullname, c.address, c.phone_number
-                        ORDER BY o.created_at DESC";
-                
-                $stmt = self::$conn->prepare($sql);
-                $stmt->execute();
-                
-                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                return count($results) > 0 ? $results : null;
-                
-            } catch (PDOException $e) {
-                die("Error fetching laundry orders: " . $e->getMessage());
-            }
-        }
+    try {
+        $sql = "SELECT 
+                    o.order_id,
+                    o.status,
+                    o.is_rushed,
+                    o.archive_at,  -- ✅ include this line
+                    c.fullname,
+                    o.created_at,
+                    c.address,
+                    c.phone_number,
+                    COALESCE(SUM(loi.quantity), 0) AS total_quantity
+                FROM orders o
+                INNER JOIN customer c ON o.customer_id = c.customer_id
+                LEFT JOIN laundry_ordered_items loi ON o.order_id = loi.order_id
+                LEFT JOIN laundry_archived_orders lao ON o.order_id = lao.order_id
+                WHERE o.business_type = 'Laundry System'
+                AND lao.order_id IS NULL
+                GROUP BY 
+                    o.order_id, 
+                    o.status, 
+                    o.is_rushed, 
+                    o.archive_at,  -- ✅ add here too
+                    o.created_at, 
+                    c.fullname, 
+                    c.address, 
+                    c.phone_number
+                ORDER BY o.created_at DESC";
+
+        $stmt = self::$conn->prepare($sql);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return count($results) > 0 ? $results : null;
+
+    } catch (PDOException $e) {
+        die("Error fetching laundry orders: " . $e->getMessage());
+    }
+}
+
     }
 ?>

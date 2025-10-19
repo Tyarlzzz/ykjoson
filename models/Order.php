@@ -16,6 +16,7 @@
         public $created_at;
         public $updated_at;
         public $paid_at;
+        public $archive_at;
 
         public function __construct(array $data = []){
             foreach ($data as $key => $value){
@@ -72,7 +73,8 @@
                 "note" => $this->note,
                 "created_at" => $this->created_at,
                 "updated_at" => $this->updated_at,
-                "paid_at" => $this->paid_at
+                "paid_at" => $this->paid_at,
+                "archive_at" => $this->archive_at
             ];
 
             $this->update($data);
