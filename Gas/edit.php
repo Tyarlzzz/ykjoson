@@ -1,56 +1,56 @@
-<?php 
-  require_once '../database/Database.php';
-  require_once '../Models/Models.php';
-  require_once '../Models/GasOrder.php';
+<?php
+require_once '../database/Database.php';
+require_once '../Models/Models.php';
+require_once '../Models/GasOrder.php';
 
-  $database = new Database();
-  $conn = $database->getConnection();
-  Model::setConnection($conn);
+$database = new Database();
+$conn = $database->getConnection();
+Model::setConnection($conn);
 
-  $orderId = isset($_GET['id']) ? intval($_GET['id']) : null;
+$orderId = isset($_GET['id']) ? intval($_GET['id']) : null;
 
-  if (!$orderId) {
-      header('Location: orderlist.php?error=Invalid order ID');
-      exit();
+if (!$orderId) {
+  header('Location: orderlist.php?error=Invalid order ID');
+  exit();
+}
+
+$orderData = GasOrder::getOrderWithDetails($orderId);
+
+if (!$orderData) {
+  header('Location: orderlist.php?error=Order not found');
+  exit();
+}
+
+$orderItems = GasOrder::getOrderItems($orderId);
+
+$petronQty = 0;
+$econoQty = 0;
+$seagasQty = 0;
+
+if ($orderItems) {
+  foreach ($orderItems as $item) {
+    $brandLower = strtolower($item['item_name']);
+    if ($brandLower === 'petron') {
+      $petronQty = $item['quantity'];
+    } elseif ($brandLower === 'econo') {
+      $econoQty = $item['quantity'];
+    } elseif ($brandLower === 'seagas') {
+      $seagasQty = $item['quantity'];
+    }
   }
+}
 
-  $orderData = GasOrder::getOrderWithDetails($orderId);
+require '../layout/header.php';
 
-  if (!$orderData) {
-      header('Location: orderlist.php?error=Order not found');
-      exit();
-  }
-
-  $orderItems = GasOrder::getOrderItems($orderId);
-
-  $petronQty = 0;
-  $econoQty = 0;
-  $seagasQty = 0;
-
-  if ($orderItems) {
-      foreach ($orderItems as $item) {
-          $brandLower = strtolower($item['item_name']);
-          if ($brandLower === 'petron') {
-              $petronQty = $item['quantity'];
-          } elseif ($brandLower === 'econo') {
-              $econoQty = $item['quantity'];
-          } elseif ($brandLower === 'seagas') {
-              $seagasQty = $item['quantity'];
-          }
-      }
-  }
-
-  require '../layout/header.php';
-
-  if (isset($_GET['error'])) {
-      echo '<script>
+if (isset($_GET['error'])) {
+  echo '<script>
               Swal.fire({
                   title: "Error!",
                   text: "' . addslashes($_GET['error']) . '",
                   icon: "error"
               });
           </script>';
-  }
+}
 ?>
 
 <!-- Main Content Area -->
@@ -82,8 +82,7 @@
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Number</label>
                 <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number" required
-                  value="<?php echo htmlspecialchars($orderData['phone_number']); ?>"
-                  pattern="[0-9]{10,11}"
+                  value="<?php echo htmlspecialchars($orderData['phone_number']); ?>" pattern="[0-9]{10,11}"
                   title="Please enter 10-11 digit phone number"
                   class="w-full px-4 py-3 border-2 border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 focus:border-blue-500 text-gray-800 font-medium">
               </div>
@@ -110,8 +109,7 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
               <!-- Petron -->
-              <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
                 <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">Petron</h3>
                 <div
                   class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center">
@@ -134,8 +132,7 @@
               </div>
 
               <!-- Econo -->
-              <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
                 <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">Econo</h3>
                 <div
                   class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center">
@@ -158,8 +155,7 @@
               </div>
 
               <!-- SeaGas -->
-              <div
-                class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
+              <div class="item-card bg-gray-50 text-center border-2 border-transparent p-3">
                 <h3 class="font-bold text-gray-700 text-base sm:text-lg mb-2">SeaGas</h3>
                 <div
                   class="w-full max-w-xs aspect-square mx-auto my-4 p-0 bg-white border-2 border-gray-200 shadow-sm rounded-2xl flex items-center justify-center">
@@ -186,7 +182,7 @@
 
         <!-- Right Side - Order Summary -->
         <div class="w-1/3">
-          <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8">
+          <div class="bg-white rounded-2xl shadow-xl p-6">
             <h2 class="border-b border-black text-xl font-bold text-gray-800 mb-6 pb-2">Order Summary</h2>
 
             <div class="space-y-3 mb-4 text-sm overflow-y-auto max-h-96">
@@ -227,7 +223,8 @@
             <div class="border-t pt-4">
               <div class="flex justify-between items-center mb-2">
                 <span class="font-bold text-gray-700">Total Items:</span>
-                <span id="total-items" class="font-bold text-xl text-gray-800"><?php echo ($petronQty + $econoQty + $seagasQty); ?></span>
+                <span id="total-items"
+                  class="font-bold text-xl text-gray-800"><?php echo ($petronQty + $econoQty + $seagasQty); ?></span>
               </div>
               <div class="text-sm text-gray-600">
                 <span class="font-semibold">Notes:</span>
@@ -238,8 +235,9 @@
             </div>
           </div>
 
+          <!-- Action buttons -->
           <div class="flex gap-3 mt-6">
-            <button type="button" onclick="window.location.href='orderlist.php'"
+            <button type="button" onclick="window.location.href='Orderlist.php'"
               class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl font-semibold transition">
               Cancel
             </button>
@@ -248,26 +246,26 @@
               <span>Update</span>
             </button>
           </div>
-
           <button type="button" onclick="confirmDeleteOrder(<?php echo $orderId; ?>)"
             class="w-full mt-3 border-2 border-red-500 text-red-500 hover:bg-red-50 py-3 rounded-2xl font-semibold transition">
             Delete Order
           </button>
         </div>
       </div>
+  </div>
 
-      <input type="hidden" id="petron-qty-input" name="petronQty" value="<?php echo $petronQty; ?>">
-      <input type="hidden" id="econo-qty-input" name="econoQty" value="<?php echo $econoQty; ?>">
-      <input type="hidden" id="seagas-qty-input" name="seagasQty" value="<?php echo $seagasQty; ?>">
-      
-      <input type="hidden" name="originalPetronQty" value="<?php echo $petronQty; ?>">
-      <input type="hidden" name="originalEconoQty" value="<?php echo $econoQty; ?>">
-      <input type="hidden" name="originalSeagasQty" value="<?php echo $seagasQty; ?>">
-    </form>
+  <input type="hidden" id="petron-qty-input" name="petronQty" value="<?php echo $petronQty; ?>">
+  <input type="hidden" id="econo-qty-input" name="econoQty" value="<?php echo $econoQty; ?>">
+  <input type="hidden" id="seagas-qty-input" name="seagasQty" value="<?php echo $seagasQty; ?>">
+
+  <input type="hidden" name="originalPetronQty" value="<?php echo $petronQty; ?>">
+  <input type="hidden" name="originalEconoQty" value="<?php echo $econoQty; ?>">
+  <input type="hidden" name="originalSeagasQty" value="<?php echo $seagasQty; ?>">
+  </form>
   </div>
 </main>
 
-</div> 
+</div>
 
 <script>
   window.initialOrderData = {
@@ -300,7 +298,7 @@
             Swal.showLoading();
           }
         });
-        
+
         window.location.href = `destroy.php?id=${orderId}&confirm=yes`;
       }
     });
