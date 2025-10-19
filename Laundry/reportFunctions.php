@@ -10,37 +10,30 @@ function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = nul
   try {
     $year = $year ?? date('Y');
 
-
+    // ✅ 1. Pull only unique orders (not item-level)
     $sql = "SELECT 
-            o.order_id,
-            o.order_date,
-            o.status,
-            o.created_at,
-            c.customer_id,
-            c.fullname,
-            c.address,
-            loi.weight_kg,
-            loi.price_per_kg,
-            loi.total,
-            p.product_name,
-            p.brand
-        FROM orders o
-        JOIN customer c ON o.customer_id = c.customer_id
-        JOIN laundry_ordered_items loi ON o.order_id = loi.order_id
-        JOIN `product codes` p ON loi.product_code_id = p.code_id
-        WHERE o.business_type = 'Laundry System'
-          AND YEAR(o.order_date) = :year";
-
+              o.order_id,
+              o.order_date,
+              o.status,
+              o.created_at,
+              c.customer_id,
+              c.fullname,
+              c.address,
+              o.total_price
+            FROM orders o
+            JOIN customer c ON o.customer_id = c.customer_id
+            WHERE o.business_type = 'Laundry System'
+              AND YEAR(o.order_date) = :year";
 
     $params = [':year' => $year];
 
-    // Add month filter if specified
+    // ✅ Add month filter if specified
     if ($month !== null) {
       $sql .= " AND MONTH(o.order_date) = :month";
       $params[':month'] = $month;
     }
 
-    // Add week filter if specified (week is calculated as day ranges within a month)
+    // ✅ Add week filter if specified (week as day range)
     if ($week !== null && $month !== null) {
       $weekRanges = [
         1 => [1, 7],
@@ -49,7 +42,6 @@ function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = nul
         4 => [22, 28],
         5 => [29, 31]
       ];
-
       if (isset($weekRanges[$week])) {
         $sql .= " AND DAY(o.order_date) BETWEEN :day_start AND :day_end";
         $params[':day_start'] = $weekRanges[$week][0];
@@ -57,36 +49,36 @@ function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = nul
       }
     }
 
-    // Only include orders with status 'paid' for sales calculation
-    $sql .= " AND (o.status) = 'paid'";
-
+    // ✅ Include only paid orders
+    $sql .= " AND LOWER(o.status) = 'paid'";
     $sql .= " ORDER BY o.order_date DESC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
-    $salesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Compute summary values
+    // ✅ 2. Compute correct totals (no duplication)
     $totalSales = 0;
     $totalPaid = 0;
-    $uniqueCustomers = [];
     $paidCount = 0;
+    $uniqueCustomers = [];
 
-    foreach ($salesData as $row) {
-      $totalSales += $row['total'];
+    foreach ($orders as $row) {
+      $orderTotal = floatval($row['total_price']);
+      $totalSales += $orderTotal;
       $uniqueCustomers[$row['customer_id']] = true;
 
       if (strtolower($row['status']) === 'paid') {
-        $totalPaid += $row['total'];
+        $totalPaid += $orderTotal;
         $paidCount++;
       }
     }
 
     $customerCount = count($uniqueCustomers);
-    $netWorth = $totalSales;
+    $netWorth = $totalPaid; // same as totalPaid, can be adjusted later
 
     return [
-      'salesData' => $salesData,
+      'salesData' => $orders,
       'totalSales' => $totalSales,
       'totalPaid' => $totalPaid,
       'customerCount' => $customerCount,
@@ -95,7 +87,7 @@ function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = nul
     ];
 
   } catch (PDOException $e) {
-    error_log("Error fetching sales data: " . $e->getMessage());
+    error_log("Error fetching laundry sales data: " . $e->getMessage());
     return [
       'salesData' => [],
       'totalSales' => 0,
@@ -106,6 +98,7 @@ function getLaundrySalesReport($pdo, $period = 'all', $year = null, $month = nul
     ];
   }
 }
+
 
 // Get available months with sales data for a specific year
 function getAvailableMonths($pdo, $year = null)
