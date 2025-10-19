@@ -38,8 +38,9 @@
                     </svg>
                     <input id="customSearch" type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-64"/>
                 </div>
-                <select id="statusFilter" class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <select id="orderliststatusFilter" class="border border-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     <option value="">All Status</option>
+                    <option value="rushed">Rushed Orders</option>
                     <option value="Delivered">Delivered</option>
                     <option value="For Delivery">For Delivery</option>
                     <option value="On Hold">On Hold</option>

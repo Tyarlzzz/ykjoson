@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     laundry: {
       dashboard: '../Laundry/index.php',
       addOrder: '../Laundry/create.php',
-      orderList: '../Laundry/OrderList.php',
+      orderList: '../Laundry/orderlist.php',
       pettyCash: '../Rider/PettyCash.php',
       inventory: '../Laundry/expenses.php'
     },
