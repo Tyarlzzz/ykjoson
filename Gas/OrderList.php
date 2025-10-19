@@ -12,6 +12,31 @@ Model::setConnection($conn);
 
 $gasOrders = GasOrder::getAllOrdersWithDetails();
 
+// fetch brand quantities to each order
+if ($gasOrders && count($gasOrders) > 0) {
+  foreach ($gasOrders as &$order) {
+    $orderItems = GasOrder::getOrderItems($order['order_id']);
+    
+    $order['petronQty'] = 0;
+    $order['econoQty'] = 0;
+    $order['seagasQty'] = 0;
+    
+    if ($orderItems) {
+      foreach ($orderItems as $item) {
+        $brandLower = strtolower($item['item_name']);
+        if ($brandLower === 'petron') {
+          $order['petronQty'] = $item['quantity'];
+        } elseif ($brandLower === 'econo') {
+          $order['econoQty'] = $item['quantity'];
+        } elseif ($brandLower === 'seagas') {
+          $order['seagasQty'] = $item['quantity'];
+        }
+      }
+    }
+  }
+  unset($order);
+}
+
 if (isset($_GET['success'])) {
   echo '<script>
                 Swal.fire({
@@ -126,13 +151,16 @@ if (isset($_GET['error'])) {
                   <?php echo $order['total_quantity']; ?>
                 </td>
                 <td>
-                  <button class="openGasStatusModal"
+                  <button class="openGasStatusModal" 
                     data-current-status="<?php echo $order['status']; ?>"
                     data-order-id="<?php echo $order['order_id']; ?>"
                     data-customer-name="<?php echo htmlspecialchars($order['fullname']); ?>"
                     data-customer-address="<?php echo htmlspecialchars($order['address']); ?>"
                     data-customer-phone="<?php echo htmlspecialchars($order['phone_number']); ?>"
-                    data-quantity="<?php echo $order['total_quantity']; ?>">
+                    data-quantity="<?php echo $order['total_quantity']; ?>"
+                    data-petron-qty="<?php echo $order['petronQty']; ?>"
+                    data-econo-qty="<?php echo $order['econoQty']; ?>"
+                    data-seagas-qty="<?php echo $order['seagasQty']; ?>">
                     <?php echo $order['status']; ?>
                   </button>
                 </td>
@@ -150,8 +178,7 @@ if (isset($_GET['error'])) {
     </div>
   </div>
 
-  <div id="gasStatusModal"
-    class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+  <div id="gasStatusModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
     <div class="bg-white rounded-xl shadow-lg p-6 w-80">
       <h2 class="text-2xl font-['Outfit'] font-semibold mb-5 text-center">Update Order Status</h2>
       <div id="statusOptionsContainer" class="space-y-4">

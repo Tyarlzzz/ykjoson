@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Function to show delivery confirmation modal with brand inputs
-    function showDeliveryConfirmationModal(orderId, customerName, customerAddress, customerPhone, total_quantity) {
+    // Function to show delivery confirmation modal with existing brand data
+    function showDeliveryConfirmationModal(orderId, customerName, customerAddress, customerPhone, total_quantity, petronQty, econoQty, seagasQty) {
         Swal.fire({
             title: 'Confirm Delivery - Order #' + orderId,
             html: `
@@ -55,30 +55,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                     
                     <div class="mt-6 mb-3">
-                        <p class="text-lg font-['Outfit'] font-semibold text-gray-700 mb-3">Enter Quantity per Brand:</p>
+                        <p class="text-lg font-['Outfit'] font-semibold text-gray-700 mb-3">Ordered Brand/s:</p>
                     </div>
 
                     <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm font-['Outfit'] font-medium text-gray-700 mb-1">Petron</label>
-                            <input type="number" id="petronQty" min="0" value="0" step="1"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                placeholder="0">
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded-md">
+                            <span class="font-['Outfit'] font-medium text-gray-700">Petron</span>
+                            <span class="font-['Switzer'] font-semibold text-gray-900">${petronQty} units</span>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-['Outfit'] font-medium text-gray-700 mb-1">Econo</label>
-                            <input type="number" id="econoQty" min="0" value="0" step="1"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                placeholder="0">
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-md">
+                            <span class="font-['Outfit'] font-medium text-gray-700">Econo</span>
+                            <span class="font-['Switzer'] font-semibold text-gray-900">${econoQty} units</span>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-['Outfit'] font-medium text-gray-700 mb-1">SeaGas</label>
-                            <input type="number" id="seagasQty" min="0" value="0" step="1"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                placeholder="0">
+                        <div class="flex justify-between items-center p-3 bg-purple-50 rounded-md">
+                            <span class="font-['Outfit'] font-medium text-gray-700">SeaGas</span>
+                            <span class="font-['Switzer'] font-semibold text-gray-900">${seagasQty} units</span>
                         </div>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                        <p class="text-sm font-['Outfit'] text-yellow-800">
+                            <strong>Note:</strong> Please verify the quantities before confirming delivery.
+                        </p>
                     </div>
                 </div>
             `,
@@ -87,35 +87,17 @@ document.addEventListener('DOMContentLoaded', function () {
             confirmButtonText: 'Confirm Delivery',
             cancelButtonText: 'Cancel',
             confirmButtonColor: '#19B900',
-            cancelButtonColor: '#FF1D21',
-            preConfirm: () => {
-                const petronQty = parseInt(document.getElementById('petronQty').value) || 0;
-                const econoQty = parseInt(document.getElementById('econoQty').value) || 0;
-                const seagasQty = parseInt(document.getElementById('seagasQty').value) || 0;
-
-                const totalInputQty = petronQty + econoQty + seagasQty;
-
-                if (totalInputQty === 0) {
-                    Swal.showValidationMessage('Please enter at least one brand quantity');
-                    return false;
-                }
-
-                if (totalInputQty !== parseInt(total_quantity)) {
-                    Swal.showValidationMessage(`Total quantity must equal ${total_quantity}. Current total: ${totalInputQty}`);
-                    return false;
-                }
-
-                return {
-                    petronQty: petronQty,
-                    econoQty: econoQty,
-                    seagasQty: seagasQty,
-                    totalQty: totalInputQty
-                };
-            }
+            cancelButtonColor: '#FF1D21'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Update status with brand quantities
-                updateOrderStatusWithBrands(orderId, 'Delivered', result.value);
+                // Update status with existing brand quantities
+                const brandData = {
+                    petronQty: parseInt(petronQty),
+                    econoQty: parseInt(econoQty),
+                    seagasQty: parseInt(seagasQty),
+                    totalQty: parseInt(total_quantity)
+                };
+                updateOrderStatusWithBrands(orderId, 'Delivered', brandData);
             } else {
                 // If cancelled, close the status modal
                 modal.classList.add('hidden');
@@ -264,6 +246,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const customerAddress = this.getAttribute('data-customer-address');
             const customerPhone = this.getAttribute('data-customer-phone');
             const total_quantity = this.getAttribute('data-quantity');
+            const petronQty = this.getAttribute('data-petron-qty') || 0;
+            const econoQty = this.getAttribute('data-econo-qty') || 0;
+            const seagasQty = this.getAttribute('data-seagas-qty') || 0;
 
             statusContainer.innerHTML = '';
 
@@ -330,10 +315,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.textContent = status;
 
                 button.addEventListener('click', function () {
-                    // If changing to Delivered, show the confirmation modal with brand inputs
+                    // If changing to Delivered, show the confirmation modal with existing brand data
                     if (status === 'Delivered') {
                         modal.classList.add('hidden');
-                        showDeliveryConfirmationModal(orderId, customerName, customerAddress, customerPhone, total_quantity);
+                        showDeliveryConfirmationModal(orderId, customerName, customerAddress, customerPhone, total_quantity, petronQty, econoQty, seagasQty);
                     } else {
                         // For other status changes, update directly
                         updateOrderStatus(orderId, status);
