@@ -1,4 +1,4 @@
-// statusUpdate.js - need pa sa gown
+// statusUpdate.js
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('laundryStatusModal');
     const closeBtn = document.getElementById('closeLaundryModal');
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'Delivered': { bgColor: 'bg-[#D1F7EA]', textColor: 'text-[#17CF93]' },
         'Paid': { bgColor: 'bg-green-600', textColor: 'text-white' }
     };
-
     
     function printReceipt(orderId) {
         console.log('=== PRINTING RECEIPT ===');
