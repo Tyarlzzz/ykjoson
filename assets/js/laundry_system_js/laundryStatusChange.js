@@ -1,4 +1,4 @@
-// statusUpdate.js - Simplified version with validation
+// statusUpdate.js
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('laundryStatusModal');
     const closeBtn = document.getElementById('closeLaundryModal');
@@ -119,8 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('=== UPDATING STATUS WITH WEIGHTS ===');
         console.log('Order ID:', orderId);
         console.log('Weights:', weights);
-        
-        // Removed loading dialog - status update happens instantly
 
         fetch('updateStatusWithWeights.php', {
             method: 'POST',
@@ -179,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         ${data.breakdown.clothes_total > 0 ? `<p class="text-gray-700">• Clothes: ₱${parseFloat(data.breakdown.clothes_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.comforter_total > 0 ? `<p class="text-gray-700">• Comforter/Curtains: ₱${parseFloat(data.breakdown.comforter_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.barong_total > 0 ? `<p class="text-gray-700">• Barong (${data.breakdown.barong_qty} pcs × ₱${parseFloat(data.breakdown.barong_price).toFixed(2)}): ₱${parseFloat(data.breakdown.barong_total).toFixed(2)}</p>` : ''}
-                                        ${data.breakdown.gown_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gown_qty} pcs × ₱${parseFloat(data.breakdown.gown_price).toFixed(2)}): ₱${parseFloat(data.breakdown.gown_total).toFixed(2)}</p>` : ''}
+                                        ${data.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gowns_qty} pcs × ₱${parseFloat(data.breakdown.gowns_price).toFixed(2)}): ₱${parseFloat(data.breakdown.gown_total).toFixed(2)}</p>` : ''}
                                     </div>
                                 `;
                             }
@@ -218,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         ${data.breakdown.clothes_total > 0 ? `<p class="text-gray-700">• Clothes: ₱${parseFloat(data.breakdown.clothes_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.comforter_total > 0 ? `<p class="text-gray-700">• Comforter/Curtains: ₱${parseFloat(data.breakdown.comforter_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.barong_total > 0 ? `<p class="text-gray-700">• Barong (${data.breakdown.barong_qty} pcs × ₱250): ₱${parseFloat(data.breakdown.barong_total).toFixed(2)}</p>` : ''}
-                                        ${data.breakdown.gown_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gown_qty} pcs × ₱500): ₱${parseFloat(data.breakdown.gown_total).toFixed(2)}</p>` : ''}
+                                        ${data.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gowns_qty} pcs × ₱500): ₱${parseFloat(data.breakdown.gowns_total).toFixed(2)}</p>` : ''}
                                     </div>
                                 `;
                             }
@@ -265,13 +263,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function updateOrderStatus(orderId, newStatus) {
-        console.log('=== UPDATE ORDER STATUS CALLED ===');
-        console.log('Order ID:', orderId);
-        console.log('New Status:', newStatus);
-        console.log('Call stack:', new Error().stack);
-        console.log('Current time:', new Date().toISOString());
-        
-        // Removed loading dialog - status update happens instantly
+        Swal.fire({
+            title: 'Updating...',
+            text: 'Please wait while we update the order status',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         fetch('updateStatus.php', {
             method: 'POST',
@@ -284,110 +285,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 status: newStatus
             })
         })
-        .then(response => {
-            console.log('Response status:', response.status);
-            return response.text().then(text => {
-                console.log('Response text:', text);
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    console.error('JSON parse error:', e);
-                    throw new Error('Invalid JSON response: ' + text.substring(0, 100));
-                }
-            });
-        })
+        .then(response => response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+            }
+        }))
         .then(data => {
-            console.log('=== RESPONSE RECEIVED ===');
-            console.log('Response data:', data);
-            console.log('data.success:', data.success);
-            console.log('newStatus:', newStatus);
-            
             if (data.success) {
-                console.log('✅ Status update successful!');
-                
-                // Update the status button text immediately
-                const statusButton = document.querySelector(`[data-order-id="${orderId}"]`);
-                if (statusButton) {
-                    console.log('Found status button, updating immediately...');
-                    statusButton.textContent = newStatus;
-                    statusButton.setAttribute('data-current-status', newStatus);
-                    
-                    // Update button color based on status
-                    statusButton.className = statusButton.className.replace(/bg-\w+-\d+/, getStatusButtonColor(newStatus));
-                } else {
-                    console.log('❌ Could not find status button with data-order-id:', orderId);
-                }
-                
-                // Always hide modal and reload, with or without SweetAlert
-                const closeAndReload = () => {
-                    console.log('Closing modal and reloading page...');
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Order status updated to ' + newStatus,
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
                     modal.classList.add('hidden');
-                    
-                    // For "Paid" status, refresh immediately without delay
-                    if (newStatus === 'Paid') {
-                        console.log('Status changed to Paid - refreshing page immediately');
-                        location.reload();
-                    } else {
-                        setTimeout(() => location.reload(), 100);
-                    }
-                };
-                
-                try {
-                    console.log('Checking if newStatus is Paid:', newStatus === 'Paid');
-                    
-                    // For "Paid" status, show simple success and reload
-                    if (newStatus === 'Paid') {
-                        console.log('🎯 PAID STATUS - STARTING RELOAD PROCESS');
-                        
-                        // Hide modal
-                        modal.classList.add('hidden');
-                        
-                        // Show a simple alert instead of SweetAlert
-                        alert('Order marked as Paid! Page will refresh.');
-                        
-                        // Force reload
-                        console.log('Forcing page reload...');
-                        window.location.reload(true);
-                        return;
-                    }
-                    
-                    // For other statuses, use SweetAlert
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message || 'Order status updated to ' + newStatus,
-                        icon: 'success',
-                        timer: 2000,
-                        showConfirmButton: false,
-                        willClose: closeAndReload
-                    });
-                } catch (sweetAlertError) {
-                    console.error('SweetAlert error:', sweetAlertError);
-                    // Fallback: just close and reload without SweetAlert
-                    alert(data.message || 'Order status updated to ' + newStatus);
-                    closeAndReload();
-                }
+                    location.reload();
+                });
             } else {
-                console.error('Backend returned success:false', data);
                 throw new Error(data.message || 'Failed to update status');
             }
         })
         .catch(error => {
             console.error('Update error:', error);
-            console.error('Error stack:', error.stack);
-            
-            try {
-                Swal.fire({
-                    title: 'Error!',
-                    text: error.message || 'Failed to update order status',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6'
-                });
-            } catch (sweetAlertError) {
-                console.error('SweetAlert error in catch:', sweetAlertError);
-                alert('Error: ' + (error.message || 'Failed to update order status'));
-            }
+            Swal.fire({
+                title: 'Error!',
+                text: error.message || 'Failed to update order status',
+                icon: 'error',
+                confirmButtonColor: '#3085d6'
+            });
         });
     }
+
     
     // Function to fetch order total price for "Delivered" status
     function fetchOrderTotalPrice(orderId) {
@@ -442,18 +373,44 @@ document.addEventListener('DOMContentLoaded', function() {
                     availableStatuses = ['Delivered'];
                     break;
                 case 'Delivered':
-                    const confirmMessage = document.createElement('div');
-                    confirmMessage.className = 'text-center py-6';
-                    confirmMessage.innerHTML = `
-                        <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <p class="font-[Outfit] text-xl font-semibold text-gray-800">Confirm payment?</p>
-                        <p class="font-[Outfit] text-gray-600 mt-2">Are you sure you want to confirm payment for this order?</p>
-                    `;
-                    statusContainer.appendChild(confirmMessage);
-                    availableStatuses = ['Paid'];
-                    break;
+                    // FIXED: Fetch total price first, then display
+                    fetchOrderTotalPrice(orderId).then(totalPrice => {
+                        const confirmMessage = document.createElement('div');
+                        confirmMessage.className = 'text-center py-6';
+                        confirmMessage.innerHTML = `
+                            <svg class="w-16 h-16 mx-auto mb-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div class="mt-4 bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                                <p class="font-[Outfit] text-3xl font-bold text-green-700">₱${parseFloat(totalPrice).toFixed(2)}</p>
+                                <p class="font-[Outfit] text-sm text-gray-600 mt-1">Total Amount</p>
+                            </div>
+                            <p class="font-[Outfit] text-xl font-semibold text-gray-800 mt-4">Confirm payment?</p>
+                            <p class="font-[Outfit] text-gray-600 mt-2">Are you sure you want to confirm payment for this order?</p>
+                        `;
+                        statusContainer.appendChild(confirmMessage);
+                        
+                        // Add the Paid button
+                        availableStatuses = ['Paid'];
+                        availableStatuses.forEach(status => {
+                            const statusInfo = allStatuses[status];
+                            const button = document.createElement('button');
+                            button.className = `font-[Outfit] status-option w-full ${statusInfo.bgColor} ${statusInfo.textColor} py-4 rounded-md mt-4`;
+                            button.setAttribute('data-status', status);
+                            button.setAttribute('data-order-id', orderId);
+                            button.textContent = status;
+                            
+                            button.addEventListener('click', function() {
+                                updateOrderStatus(orderId, status);
+                            });
+                            
+                            statusContainer.appendChild(button);
+                        });
+                    });
+                    
+                    modal.classList.remove('hidden');
+                    return; // Exit early for Delivered case
+                    
                 case 'Paid':
                     const successMessage = document.createElement('div');
                     successMessage.className = 'text-center py-6';
@@ -481,6 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
             }
             
+            // For all other statuses (On Hold, On Wash, On Dry, On Fold, For Delivery)
             availableStatuses.forEach(status => {
                 const statusInfo = allStatuses[status];
                 const button = document.createElement('button');
