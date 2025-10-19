@@ -60,7 +60,7 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
       </div>
 
       <div class="overflow-x-auto rounded-xl border border-gray-500">
-        <table id="ordersTable" class="w-full text-left table-auto ">
+        <table id="archivedOrdersTable" class="w-full text-left table-auto ">
           <thead class="bg-gray-50">
             <tr class="text-sm text-black-500 uppercase">
               <th class="p-4 text-left">Order #</th>
@@ -110,7 +110,7 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
-    const table = document.getElementById('ordersTable');
+    const table = document.getElementById('archivedOrdersTable');
     const tbody = table.getElementsByTagName('tbody')[0];
     const rows = Array.from(tbody.getElementsByTagName('tr'));
 
