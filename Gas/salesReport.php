@@ -1,9 +1,46 @@
-<?php require '../layout/header.php' ?>
+<?php
+require '../layout/header.php';
+require_once 'reportFunctions.php';
+
+// Initialize PDO connection
+require_once '../database/Database.php';
+$pdo = (new Database())->getConnection();
+
+// Get current year and month
+$currentYear = date('Y');
+$currentMonth = date('n'); // 1-12
+
+// Fetch current week's data for summary cards
+$currentWeekData = getCurrentWeekData($pdo);
+
+// Fetch yearly sales data for JavaScript
+$yearlySalesData = getYearlySalesData($pdo, $currentYear);
+
+// Get available months for dropdown
+$availableMonths = getAvailableMonths($pdo, $currentYear);
+
+$fullMonthNames = [
+  1 => 'January',
+  2 => 'February',
+  3 => 'March',
+  4 => 'April',
+  5 => 'May',
+  6 => 'June',
+  7 => 'July',
+  8 => 'August',
+  9 => 'September',
+  10 => 'October',
+  11 => 'November',
+  12 => 'December'
+];
+?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
   <div class="w-full">
     <div class="mb-6 flex justify-between items-center">
-      <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
+      <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">
+        Inventory & Sales Report
+      </h1>
       <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
     </div>
 
@@ -29,7 +66,11 @@
         <div class="mb-5 flex">
           <h2 class="font-[Outfit] text-3xl font-bold text-gray-800 mb-2">This Week's Summary</h2>
           <div class="flex items-center justify-between">
-            <span id="weekDisplay" class="ms-3 ps-1 border-l border-gray-900 text-md">October - Week 1</span>
+            <span id="weekDisplay" class="ms-3 ps-1 border-l border-gray-900 text-md">
+              <?php
+              echo getShortMonthName($currentMonth) . ' - Week ' . $currentWeekData['week'];
+              ?>
+            </span>
           </div>
         </div>
 
@@ -37,70 +78,106 @@
         <div class="grid grid-cols-4 gap-6 mb-8 justify-left">
           <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
             <span class="text-lg font-semibold">Sales</span>
-            <span id="summaryCardSales" class="text-5xl font-bold mt-2">₱ 3,450</span>
+            <span id="summaryCardSales" class="text-5xl font-bold mt-2">
+              ₱ <?php echo number_format($currentWeekData['sales']); ?>
+            </span>
           </div>
           <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
             <span class="text-lg font-semibold">Customers</span>
-            <span id="summaryCardCustomers" class="text-5xl font-bold mt-2">27</span>
+            <span id="summaryCardCustomers" class="text-5xl font-bold mt-2">
+              <?php echo $currentWeekData['customers']; ?>
+            </span>
           </div>
           <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
             <span class="text-lg font-semibold">Delivered</span>
-            <span id="summaryCardDelivered" class="text-5xl font-bold mt-2">26</span>
+            <span id="summaryCardDelivered" class="text-5xl font-bold mt-2">
+              <?php echo $currentWeekData['delivered']; ?>
+            </span>
           </div>
           <div class="bg-red-600 text-white rounded-xl px-4 py-3 flex flex-col items-start">
             <span class="text-lg font-semibold">Net Worth</span>
-            <span class="text-5xl font-bold mt-2">₱ 9,109</span>
+            <span id="summaryCardNetWorth" class="text-5xl font-bold mt-2">
+              ₱ <?php echo number_format($currentWeekData['netWorth']); ?>
+            </span>
           </div>
         </div>
 
-        <!-- Sales Chart Section -->
-        <div class="flex items-center gap-4 mb-6">
-          <label class="font-medium">Filter By</label>
-          <select id="salesFilterType" class="border-2 border-black rounded-md px-2 py-1">
-            <option value="Week">Week</option>
-            <option value="Month">Month</option>
-          </select>
-          <label class="font-medium">Month</label>
-          <select id="salesMonth" class="border-2 border-black rounded-md px-2 py-1">
-            <option value="September" selected>September</option>
-            <option value="October">October</option>
-            <option value="November">November</option>
-            <option value="December">December</option>
-          </select>
-        </div>
-
-        <!-- Sales Chart Area -->
+        <!-- Sales Chart with Filters -->
         <div class="bg-gray-100 border rounded-lg p-6 mb-6">
-          <h2 id="salesChartTitle" class="text-xl font-bold mb-4">October Sales Summary</h2>
+          <div class="flex justify-between items-center mb-4">
+            <h2 id="salesChartTitle" class="text-xl font-bold">
+              <?php echo $fullMonthNames[$currentMonth]; ?> Sales Summary
+            </h2>
+            <div class="flex">
+              <div class="flex items-center justify-center w-full">
+                <p class="text-lg text-center w-20">Filter by:</p>
+              </div>
+              <select id="salesFilterType" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="Week">Weekly</option>
+                <option value="Month">Monthly</option>
+              </select>
+              <div class="flex items-center justify-center w-full">
+                <p class="text-lg text-center w-20">Month:</p>
+              </div>
+              <select id="salesMonth" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <?php
+                foreach ($availableMonths as $month) {
+                  $selected = ($month['month_num'] == $currentMonth) ? 'selected' : '';
+                  echo "<option value='{$fullMonthNames[$month['month_num']]}' {$selected}>{$fullMonthNames[$month['month_num']]}</option>";
+                }
+                ?>
+              </select>
+            </div>
+          </div>
           <canvas id="salesChart" height="100"></canvas>
         </div>
 
-        <!-- Customer Chart Section -->
-        <div class="flex items-center gap-4 mb-6">
-          <label class="font-medium">Filter By</label>
-          <select id="customerFilterType" class="border-2 border-black rounded-md px-2 py-1">
-            <option value="Week">Week</option>
-            <option value="Month">Month</option>
-          </select>
-          <label class="font-medium">Month</label>
-          <select id="customerMonth" class="border-2 border-black rounded-md px-2 py-1">
-            <option value="September" selected>September</option>
-            <option value="October">October</option>
-            <option value="November">November</option>
-            <option value="December">December</option>
-          </select>
-        </div>
-
-        <!-- Customer Chart Area -->
-        <div class="bg-gray-100 border rounded-lg p-6">
-          <h2 id="customerChartTitle" class="text-xl font-bold mb-4">October Number of Customers</h2>
+        <!-- Customer Chart with Filters -->
+        <div class="bg-gray-100 border rounded-lg p-6 mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 id="customerChartTitle" class="text-xl font-bold">
+              <?php echo $fullMonthNames[$currentMonth]; ?> Number of Customers
+            </h2>
+            <div class="flex">
+              <div class="flex items-center justify-center w-full">
+                <p class="text-lg text-center w-20">Filter by: </p>
+              </div>
+              <select id="customerFilterType" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="Week">Weekly</option>
+                <option value="Month">Monthly</option>
+              </select>
+              <div class="flex items-center justify-center w-full">
+                <p class="text-lg text-center w-20">Month:</p>
+              </div>
+              <select id="customerMonth" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <?php
+                foreach ($availableMonths as $month) {
+                  $selected = ($month['month_num'] == $currentMonth) ? 'selected' : '';
+                  echo "<option value='{$fullMonthNames[$month['month_num']]}' {$selected}>{$fullMonthNames[$month['month_num']]}</option>";
+                }
+                ?>
+              </select>
+            </div>
+          </div>
           <canvas id="numCustomer" height="100"></canvas>
         </div>
+
 
       </div>
     </div>
   </div>
 </main>
 
-<?php require '../layout/footer.php' ?>
+<!-- Pass PHP data to JavaScript -->
+<script>
+  window.salesData = <?php echo json_encode([
+    $currentYear => $yearlySalesData
+  ]); ?>;
+
+  window.currentYear = <?php echo $currentYear; ?>;
+  window.currentMonth = "<?php echo $fullMonthNames[$currentMonth]; ?>";
+</script>
+
+<?php require '../layout/footer.php'; ?>
+<script src="../assets/js/gas_system_js/gasCharts.js"></script>
 <script src="../assets/js/gas_system_js/salesReport.js"></script>

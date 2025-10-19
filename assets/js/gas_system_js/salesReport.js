@@ -1,50 +1,3 @@
-// Mock datas muna
-const salesData = {
-  2024: {
-    September: {
-      weeks: [
-        { week: 1, sales: 2500, customers: 20, delivered: 19 },
-        { week: 2, sales: 500, customers: 30, delivered: 24 },
-        { week: 3, sales: 8000, customers: 22, delivered: 21 },
-        { week: 4, sales: 1200, customers: 15, delivered: 23 },
-        { week: 5, sales: 7600, customers: 24, delivered: 23 }
-      ],
-      monthly: { sales: 11600, customers: 111, delivered: 87 }
-    },
-    October: {
-      weeks: [
-        { week: 1, sales: 3450, customers: 27, delivered: 26 },
-        { week: 2, sales: 9000, customers: 32, delivered: 30 },
-        { week: 3, sales: 2200, customers: 29, delivered: 28 },
-        { week: 4, sales: 900, customers: 31, delivered: 30 },
-        { week: 5, sales: 8029, customers: 24, delivered: 23 }
-      ],
-      monthly: { sales: 15550, customers: 143, delivered: 114 }
-    },
-    November: {
-      weeks: [
-        { week: 1, sales: 3900, customers: 30, delivered: 29 },
-        { week: 2, sales: 4500, customers: 15, delivered: 33 },
-        { week: 3, sales: 4100, customers: 31, delivered: 30 },
-        { week: 4, sales: 4300, customers: 50, delivered: 32 },
-        { week: 5, sales: 3100, customers: 24, delivered: 23 }
-      ],
-      monthly: { sales: 16800, customers: 150, delivered: 124 }
-    },
-    December: {
-      weeks: [
-        { week: 1, sales: 100, customers: 15, delivered: 38 },
-        { week: 2, sales: 9000, customers: 45, delivered: 43 },
-        { week: 3, sales: 6000, customers: 20, delivered: 40 },
-        { week: 4, sales: 15000, customers: 13, delivered: 41 },
-        { week: 5, sales: 3100, customers: 24, delivered: 23 }
-      ],
-      monthly: { sales: 22000, customers: 117, delivered: 162 }
-    }
-  }
-};
-
-// Initialize Charts on DOM
 document.addEventListener('DOMContentLoaded', function () {
   setupFilterListeners();
   setTimeout(() => {
@@ -64,7 +17,7 @@ function setupFilterListeners() {
   });
   salesMonth?.addEventListener('change', () => {
     updateSalesChart();
-    updateSummaryCards();
+    updateSummaryCardsForMonth();
   });
 
   // Customer filters
@@ -77,13 +30,17 @@ function setupFilterListeners() {
 }
 
 function updateSalesChart() {
-  if (!window.salesChart) return;
+  if (!window.salesChart || !window.salesData) return;
 
   const filterType = document.getElementById('salesFilterType').value;
   const month = document.getElementById('salesMonth').value;
+  const year = window.currentYear || new Date().getFullYear();
 
-  const data = salesData[2024][month];
-  if (!data) return;
+  const data = window.salesData[year]?.[month];
+  if (!data) {
+    console.warn(`No data found for ${month} ${year}`);
+    return;
+  }
 
   let labels, values;
   if (filterType === 'Week') {
@@ -106,7 +63,7 @@ function updateSalesChart() {
   };
   window.salesChart.update();
 
-  // Update chart title (ex. September Sales Summary)
+  // Update chart title
   const salesChartTitle = document.getElementById('salesChartTitle');
   if (salesChartTitle) {
     salesChartTitle.textContent = `${month} Sales Summary`;
@@ -114,13 +71,17 @@ function updateSalesChart() {
 }
 
 function updateCustomerChart() {
-  if (!window.customerChart) return;
+  if (!window.customerChart || !window.salesData) return;
 
   const filterType = document.getElementById('customerFilterType').value;
   const month = document.getElementById('customerMonth').value;
+  const year = window.currentYear || new Date().getFullYear();
 
-  const data = salesData[2024][month];
-  if (!data) return;
+  const data = window.salesData[year]?.[month];
+  if (!data) {
+    console.warn(`No data found for ${month} ${year}`);
+    return;
+  }
 
   let labels, values;
 
@@ -142,30 +103,35 @@ function updateCustomerChart() {
   };
   window.customerChart.update();
 
-  // update chart title (ex. September Number of Customers)
+  // Update chart title
   const customerChartTitle = document.getElementById('customerChartTitle');
   if (customerChartTitle) {
     customerChartTitle.textContent = `${month} Number of Customers`;
   }
 }
 
-function updateSummaryCards() {
+function updateSummaryCardsForMonth() {
+  if (!window.salesData) return;
+
   const month = document.getElementById('salesMonth').value;
-  const data = salesData[2024][month];
+  const year = window.currentYear || new Date().getFullYear();
+  const data = window.salesData[year]?.[month];
 
   if (data && data.weeks.length > 0) {
     const currentWeek = data.weeks[0];
 
-    // update summary cards (Sales, Customers, Delivered)
+    // Update summary cards (Sales, Customers, Delivered)
     const salesCard = document.getElementById('summaryCardSales');
     const customersCard = document.getElementById('summaryCardCustomers');
     const deliveredCard = document.getElementById('summaryCardDelivered');
+    const netWorthCard = document.getElementById('summaryCardNetWorth');
 
-    if (salesCard) salesCard.textContent = `₱ ${currentWeek.sales.toLocaleString()}`;
+    if (salesCard) salesCard.textContent = `₱ ${currentWeek.sales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     if (customersCard) customersCard.textContent = currentWeek.customers;
     if (deliveredCard) deliveredCard.textContent = currentWeek.delivered;
+    if (netWorthCard) netWorthCard.textContent = `₱ ${currentWeek.sales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-    // update week display (ex. September - Week 1)
+    // Update week display
     const weekDisplay = document.getElementById('weekDisplay');
     if (weekDisplay) {
       weekDisplay.textContent = `${month} - Week 1`;
@@ -174,7 +140,24 @@ function updateSummaryCards() {
 }
 
 function updateDashboard() {
-  updateSummaryCards();
   updateSalesChart();
   updateCustomerChart();
+}
+
+// Format currency
+function formatCurrency(amount) {
+  return '₱ ' + parseFloat(amount).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+// Get week of month from date
+function getWeekOfMonth(date) {
+  const day = date.getDate();
+  if (day <= 7) return 1;
+  if (day <= 14) return 2;
+  if (day <= 21) return 3;
+  if (day <= 28) return 4;
+  return 5;
 }

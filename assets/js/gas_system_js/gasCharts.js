@@ -1,4 +1,4 @@
-// Charts.js - All chart configurations for the POS system
+// gasCharts.js - All chart configurations for the POS system
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -9,9 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Check if dynamic data exists from PHP, otherwise use default
     const chartData = window.brandChartData || {
       labels: ['Petron', 'Econo', 'SeaGas'],
-      data: [60, 25, 15] // Default fallback data
+      data: [0, 0, 0] // Default
     };
-
 
     window.brandsPieChart = new Chart(brandsPieCtx.getContext('2d'), {
       type: 'doughnut',
@@ -22,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
           backgroundColor: [
             '#EF4444', // Red for Petron
             '#3B82F6', // Blue for Econo
-            '#22C55E'  // Green for SeaGas
+            '#22C55E', // Green for SeaGas
           ],
           borderWidth: 0
         }]
@@ -32,12 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
         maintainAspectRatio: true,
         plugins: {
           legend: {
-            display: false // Hide default legend since we have custom legend
+            display: false
           },
           tooltip: {
             callbacks: {
               label: function (context) {
-                return context.label + ': ' + context.parsed + 'units';
+                return context.label + ': ' + context.parsed + ' units';
               }
             }
           }
@@ -52,21 +51,16 @@ document.addEventListener('DOMContentLoaded', function () {
     window.salesChart = new Chart(salesCtx.getContext('2d'), {
       type: 'line',
       data: {
-        labels: [
-          '',
-          'Week 1 - Oct 1-7',
-          'Week 2 - Oct 8-14',
-          'Week 3 - Oct 15-21',
-          'Week 4 - Oct 22-28',
-          'Week 5 - Oct 29-31'
-        ],
+        labels: [],
         datasets: [{
           label: 'Sales',
-          data: [0, 4000, 6000, 12000, 3000, 9000],
+          data: [],
           borderColor: 'rgba(220,38,38,1)',
-          backgroundColor: 'rgba(220,38,38,1)',
-          fill: false,
-          tension: null
+          backgroundColor: 'rgba(220,38,38,0.1)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6
         }]
       },
       options: {
@@ -75,11 +69,28 @@ document.addEventListener('DOMContentLoaded', function () {
           legend: {
             display: false
           },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Sales: ₱' + context.parsed.y.toLocaleString();
+              }
+            }
+          }
         },
         interaction: {
           intersect: false,
+          mode: 'index'
         },
-        scales: {}
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function (value) {
+                return '₱' + value.toLocaleString();
+              }
+            }
+          }
+        }
       }
     });
   }
@@ -90,20 +101,13 @@ document.addEventListener('DOMContentLoaded', function () {
     window.customerChart = new Chart(customerCtx.getContext('2d'), {
       type: 'bar',
       data: {
-        labels: [
-          'Week 1 - Oct 1-7',
-          'Week 2 - Oct 8-14',
-          'Week 3 - Oct 15-21',
-          'Week 4 - Oct 22-28',
-          'Week 5 - Oct 29-31'
-        ],
+        labels: [],
         datasets: [{
           label: 'Customers',
-          data: [40, 80, 130, 100, 60],
+          data: [],
           borderColor: 'rgba(220,38,38,1)',
-          backgroundColor: 'rgba(220,38,38,1)',
-          fill: false,
-          tension: null
+          backgroundColor: 'rgba(220,38,38,0.8)',
+          borderWidth: 1
         }]
       },
       options: {
@@ -112,11 +116,29 @@ document.addEventListener('DOMContentLoaded', function () {
           legend: {
             display: false
           },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Customers: ' + context.parsed.y;
+              }
+            }
+          }
         },
         interaction: {
           intersect: false,
+          mode: 'index'
         },
-        scales: {}
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 10,
+              callback: function (value) {
+                return value;
+              }
+            }
+          }
+        }
       }
     });
   }
