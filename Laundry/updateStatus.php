@@ -1,8 +1,12 @@
 <?php
 /**
- * 🎯 ARCHIVE TIMING CONFIGURATION:
+ * 🎯 AUTOMATIC ARCHIVE WORKFLOW:
  * 
- * To change the automatic archive delay, modify this variable on line ~89:
+ * 1. User marks order as "Paid" → Status changes immediately to "Paid"
+ * 2. Countdown timer starts (configurable delay on line ~118)
+ * 3. After countdown finishes → Order automatically moves to archived
+ * 
+ * To change the countdown duration, modify this variable:
  * $archiveDelaySeconds = 60; // Change this number (in seconds)
  * 
  * Examples:
@@ -10,7 +14,7 @@
  * - 60 = 1 minute  
  * - 120 = 2 minutes
  * - 300 = 5 minutes
- * - 600 = 10 minutes
+ * - 7200 = 2 hours
  */
 
 ob_start();
@@ -105,23 +109,31 @@ try {
         throw new Exception('Failed to update order status - unexpected error');
     }
 
-    // If status is changed to 'Paid', schedule archive process for specified delay
+    // If status is changed to 'Paid', start countdown timer for automatic archiving
     if ($new_status === 'Paid') {
         try {
             // Check if order is not already archived
             if (!LaundryArchivedOrder::isOrderArchived($order_id)) {
-                // 🎯 CUSTOMIZE ARCHIVE DELAY HERE (in seconds):
-                $archiveDelaySeconds = 60; // 60 = 1 minute, 120 = 2 minutes, 30 = 30 seconds
+                // 🎯 ARCHIVE COUNTDOWN TIMER (starts AFTER status becomes "Paid"):
+                $archiveDelaySeconds = 120; // 2 minutes delay for background archiving
                 
-                // Set up a background process to archive this order after the specified delay
+                // Start background countdown process to archive this order after the specified delay
                 $phpPath = '/Applications/XAMPP/xamppfiles/bin/php';
                 $archiveScript = __DIR__ . '/schedule_archive.php';
-                $command = "sleep $archiveDelaySeconds && $phpPath $archiveScript $order_id > /dev/null 2>&1 &";
+                
+                // Use nohup to ensure the process runs completely in background without blocking
+                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    // Windows
+                    $command = "start /B timeout /T $archiveDelaySeconds /NOBREAK && $phpPath \"$archiveScript\" $order_id";
+                } else {
+                    // Unix/Linux/macOS
+                    $command = "nohup sh -c 'sleep $archiveDelaySeconds && $phpPath \"$archiveScript\" $order_id' > /dev/null 2>&1 &";
+                }
                 exec($command);
             }
         } catch (Exception $e) {
             // Log error but don't fail the status update
-            error_log("Failed to schedule archive process for order ID: " . $order_id . " - " . $e->getMessage());
+            error_log("Failed to start archive countdown for order ID: " . $order_id . " - " . $e->getMessage());
         }
     }
 

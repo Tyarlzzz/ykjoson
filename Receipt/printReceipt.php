@@ -61,11 +61,33 @@ try {
     // Calculate totals from items (for quantity and weight display)
     $totalQty = 0;
     $totalWeight = 0;
+    $clothesWeight = 0;
+    $comforterWeight = 0;
+    $clothesWeightCounted = false;
+    $comforterWeightCounted = false;
 
     foreach ($items as $item) {
         $totalQty += intval($item['quantity'] ?? 0);
-        $totalWeight += floatval($item['weight_kg'] ?? 0);
+
+        // Count clothes weight only once
+        if ($item['category'] === 'Clothing' && !in_array($item['product_name'], ['Barong', 'Gowns'])) {
+            if (!$clothesWeightCounted) {
+                $clothesWeight = floatval($item['weight_kg'] ?? 0);
+                $clothesWeightCounted = true;
+            }
+        }
+
+        // Count comforter/curtains weight only once
+        if (in_array($item['product_name'], ['Comforter', 'Curtains'])) {
+            if (!$comforterWeightCounted) {
+                $comforterWeight = floatval($item['weight_kg'] ?? 0);
+                $comforterWeightCounted = true;
+            }
+        }
     }
+
+    // Final total weight
+    $totalWeight = $clothesWeight + $comforterWeight;
 
     // Use total_price from database (already calculated and stored)
     $totalAmount = floatval($order['total_price'] ?? 0);

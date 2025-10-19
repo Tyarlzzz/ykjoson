@@ -42,10 +42,11 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
 
     <!-- Container -->
     <div class="w-full bg-white rounded-lg rounded-tl-none shadow-md border border-gray-200 overflow-hidden">
-      <div class="py-8 px-4">
+      <div class="py-8 px">
       <div class="bg-white p-6 rounded-lg">
       <div class="flex justify-between items-center mb-4 ">
-          <p class="fpnt-['Switzer'] text-start text-lg text-gray-600 mt-1">Total archived orders: <strong><?php echo $totalArchived; ?></strong></p>
+          <p class="font-['Switzer'] text-start text-lg text-gray-600 mt-1">Total archived orders: <strong><?php echo $totalArchived; ?></strong></p>
+        <div class="flex items-center gap-3">
           <div class="relative flex items-center">
             <input type="text" id="searchInput" placeholder="Search by name, phone, or order ID"
               class="border border-gray-300 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-300 w-80">

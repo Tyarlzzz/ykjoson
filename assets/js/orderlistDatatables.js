@@ -35,6 +35,7 @@ $(document).ready(function() {
     
     var currentPath = window.location.pathname;
     var isGasSystem = currentPath.includes('/Gas/');
+    var currentorderliststatusFilter = ''; // Track current filter
 
     function applyStatusColors() {
         $('#orderlistTable tbody tr').each(function() {
@@ -74,31 +75,43 @@ $(document).ready(function() {
         });
     }
 
-    function applyFilters() {
-    table.columns().search('').draw();
-    
-    if (currentSearchTerm) {
-        table.columns([1, 2, 3]).search(currentSearchTerm, true, false).draw();
-    }
-    
-    // Apply status filter to column 5
-    if (currentStatusFilter) {
-        table.column(5).search('^' + currentStatusFilter + '$', true, false).draw();
-    }
-    
-    applyStatusColors();
-    }
+    // Custom filter for rushed and status filtering
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        var row = $(table.row(dataIndex).node());
+        var idCell = row.find('td').eq(0);
+        var statusCell = row.find('td').eq(5);
+        var isRushed = idCell.hasClass('font-bold') && idCell.hasClass('text-red-600');
+        var statusText = statusCell.text().trim();
+
+        // If rushed filter is active, only show rushed orders
+        if (currentorderliststatusFilter === 'rushed') {
+            return isRushed;
+        }
+        
+        // If a status filter is active, show orders with that status
+        if (currentorderliststatusFilter && currentorderliststatusFilter !== 'rushed') {
+            return statusText === currentorderliststatusFilter;
+        }
+        
+        // If no filter, show all
+        return true;
+    });
 
     applyStatusColors();
 
-    // Check for status parameter in URL and apply filter
+    // Check for URL parameters and apply filter
     var urlParams = new URLSearchParams(window.location.search);
     var statusParam = urlParams.get('status');
+    var rushedParam = urlParams.get('is_rushed');
     
-    if (statusParam) {
-        $('#statusFilter').val(statusParam);
-        table.column(5).search(statusParam).draw();
-        applyStatusColors();
+    if (rushedParam === '1') {
+        currentorderliststatusFilter = 'rushed';
+        $('#orderliststatusFilter').val('rushed');
+        table.draw();
+    } else if (statusParam) {
+        currentorderliststatusFilter = statusParam;
+        $('#orderliststatusFilter').val(statusParam);
+        table.draw();
     }
 
     $('#customSearch').on('keyup', function() {
@@ -106,15 +119,17 @@ $(document).ready(function() {
         applyStatusColors();
     });
 
-    $('#statusFilter').on('change', function() {
-        var selectedStatus = this.value;
-        table.column(5).search(selectedStatus).draw();
+    $('#orderliststatusFilter').on('change', function() {
+        currentorderliststatusFilter = this.value;
+        table.draw();
         applyStatusColors();
         
         // Update URL without page reload
-        var newUrl = selectedStatus 
-            ? window.location.pathname + '?status=' + encodeURIComponent(selectedStatus)
-            : window.location.pathname;
+        var newUrl = currentorderliststatusFilter === 'rushed'
+            ? window.location.pathname + '?is_rushed=1'
+            : currentorderliststatusFilter
+                ? window.location.pathname + '?status=' + encodeURIComponent(currentorderliststatusFilter)
+                : window.location.pathname;
         window.history.pushState({}, '', newUrl);
     });
     

@@ -67,11 +67,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <div class="mb-3">
                         <label class="text-start text-lg font-medium text-gray-700 mb-1 font-['Switzer']">
-                            Clothes Weight (kg) <span class="text-red-500">*</span>
+                            Clothes Weight (kg)
                         </label>
                         <input type="number" id="clothesWeight" step="0.01" min="0" value="0"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                            placeholder="0.00" required>
+                            placeholder="0.00 (leave 0 if none)">
                     </div>
                     
                     <div>
@@ -96,10 +96,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const comforter_curtainsWeight = parseFloat(document.getElementById('comforter_curtainsWeight').value) || 0;
                 const totalWeight = clothesWeight + comforter_curtainsWeight;
                 
-                if (clothesWeight === 0 && comforter_curtainsWeight === 0) {
-                    Swal.showValidationMessage('Please enter at least clothes weight');
-                    return false;
-                }
+                // Allow proceeding even if all weights are 0 (for barong/gown only orders)
+                // No validation needed - user can proceed with 0 weights
                 
                 return {
                     clothesWeight: clothesWeight,
@@ -178,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         ${data.breakdown.clothes_total > 0 ? `<p class="text-gray-700">• Clothes: ₱${parseFloat(data.breakdown.clothes_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.comforter_total > 0 ? `<p class="text-gray-700">• Comforter/Curtains: ₱${parseFloat(data.breakdown.comforter_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.barong_total > 0 ? `<p class="text-gray-700">• Barong (${data.breakdown.barong_qty} pcs × ₱${parseFloat(data.breakdown.barong_price).toFixed(2)}): ₱${parseFloat(data.breakdown.barong_total).toFixed(2)}</p>` : ''}
-                                        ${data.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gowns_qty} pcs × ₱${parseFloat(data.breakdown.gowns_price).toFixed(2)}): ₱${parseFloat(data.breakdown.gown_total).toFixed(2)}</p>` : ''}
+                                        ${data.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gowns_qty} pcs × ₱${parseFloat(data.breakdown.gowns_price).toFixed(2)}): ₱${parseFloat(data.breakdown.gowns_total).toFixed(2)}</p>` : ''}
                                     </div>
                                 `;
                             }
