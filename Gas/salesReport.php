@@ -2,8 +2,8 @@
 session_start();
 
 if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== true) {
-    header('Location: ownerAccess.php');
-    exit;
+  header('Location: ownerAccess.php');
+  exit;
 }
 
 require '../layout/header.php';
@@ -47,7 +47,10 @@ $fullMonthNames = [
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">
         Inventory & Sales Report
       </h1>
-      <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+      <div class="flex items-center gap-2">
+        <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+        <a href="logoutInventorySales.php" class="bg-red-600 text-white py-1 px-4 rounded-full">Logout</a>
+      </div>
     </div>
 
     <!-- Navigation Tabs -->
@@ -74,7 +77,7 @@ $fullMonthNames = [
           <div class="flex items-center justify-between">
             <span id="weekDisplay" class="ms-3 ps-1 border-l border-gray-900 text-md">
               <?php
-              echo getShortMonthName($currentMonth) . ' - Week ' . $currentWeekData['week'];
+              echo getMonthName($currentMonth) . ' - Week ' . $currentWeekData['week'];
               ?>
             </span>
           </div>
