@@ -60,7 +60,7 @@ if (isset($_GET['error'])) {
 
 <main class="flex-1 overflow-x-hidden overflow-y-hidden h-screen flex flex-col">
   <div class="flex items-center justify-between px-8 pt-4">
-    <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Order List</h1>
+    <h1 class="font-[Outfit] ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Order List</h1>
     <a href="create.php" class="flex items-center">
       <div class="bg-gradient-to-br from-red-400 via-red-500 to-red-600 rounded-2xl shadow-xl">
         <div class="flex gap-3 p-3 items-center">

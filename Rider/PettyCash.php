@@ -5,7 +5,7 @@ require_once __DIR__ . '/../database/Database.php';
 $db = new Database();
 $conn = $db->getConnection();
 
-// ✅ Fetch all riders
+// Fetch all riders
 try {
     $stmt = $conn->prepare("SELECT rider_id AS id, fullname, petty_cash FROM riders ORDER BY rider_id ASC");
     $stmt->execute();
@@ -14,7 +14,7 @@ try {
     die("<p style='color:red;'>Database Error: " . htmlspecialchars($e->getMessage()) . "</p>");
 }
 
-// ✅ Determine active rider
+// Determine active rider
 $active_rider_id = isset($_GET['rider_id']) ? (int)$_GET['rider_id'] : ($riders[0]['id'] ?? 1);
 $selected_rider = null;
 foreach ($riders as $rider) {
@@ -28,10 +28,10 @@ if (!$selected_rider && count($riders) > 0) {
     $active_rider_id = $riders[0]['id'];
 }
 
-// ✅ Get today's total sales dynamically
+// Get today's total sales dynamically
 $today = date('Y-m-d');
 try {
-    // ✅ GAS SALES — each order counted once
+    // GAS SALES — each order counted once
     $stmt_gas = $conn->prepare("
         SELECT IFNULL(SUM(total_per_order), 0) AS gas_sales
         FROM (
@@ -47,7 +47,7 @@ try {
     $stmt_gas->execute([':today' => $today]);
     $gas_sales = (float)$stmt_gas->fetchColumn();
 
-    // ✅ LAUNDRY SALES — each order counted once (no duplication)
+    // LAUNDRY SALES — each order counted once (no duplication)
     $stmt_laundry = $conn->prepare("
         SELECT IFNULL(SUM(o.total_price), 0) AS laundry_sales
         FROM orders o
@@ -58,7 +58,7 @@ try {
     $stmt_laundry->execute([':today' => $today]);
     $laundry_sales = (float)$stmt_laundry->fetchColumn();
 
-    // ✅ Total combined
+    // Total combined
     $total_sales = $gas_sales + $laundry_sales;
 
 } catch (PDOException $e) {
@@ -70,15 +70,15 @@ $current_petty = (float)($selected_rider['petty_cash'] ?? 0);
 $total_amount = $total_sales + $current_petty;
 ?>
 
-<main class="font-[Switzer] flex-1 p-6 bg-gray-50 overflow-auto">
+<main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
     <div class="w-full">
         <!-- Header -->
         <div class="mb-8 flex justify-between items-center">
-            <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Petty Cash</h1>
+            <h1 class="font-[Outfit] ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Petty Cash</h1>
             <p class="text-gray-500 text-base" id="currentDate"></p>
         </div>
 
-        <!-- ✅ Rider Tabs -->
+        <!-- Rider Tabs -->
         <div class="mb-1 flex gap-2">
             <?php foreach ($riders as $rider): ?>
                 <?php $is_active = ($rider['id'] == $active_rider_id); ?>
@@ -172,7 +172,7 @@ $total_amount = $total_sales + $current_petty;
     </div>
 </main>
 
-<!-- ✅ Pass PHP data to JS -->
+<!-- Pass PHP data to JS -->
 <script>
     const salesAmount = <?= json_encode($total_sales) ?>;
     const riderId = <?= json_encode($active_rider_id) ?>;
