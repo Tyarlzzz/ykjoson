@@ -126,10 +126,10 @@ function getWeeklyExpenses($year, $month, $week)
   try {
     $db = new Database();
     $pdo = $db->getConnection();
-    Expense_Gas::setConnection($pdo);
+    Expense::setConnection($pdo);
     
     // Use numeric month (1-12) format, as stored in the database
-    $expenses = Expense_Gas::getByMonthYear($month, $year, 'Gas System');
+    $expenses = Expense::getByMonthYear($month, $year, 'Gas System');
     
     // Find week expenses
     foreach ($expenses as $expense) {
