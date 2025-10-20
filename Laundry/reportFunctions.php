@@ -3,8 +3,7 @@ require_once '../database/Database.php';
 require_once '../Models/Models.php';
 require_once '../Models/Laundry.php';
 require_once '../Models/Item_inventory.php';
-
-
+require_once '../Models/Expense_Laundry.php';
 
 
 // Get sales report data for laundry system with optional filters
@@ -101,7 +100,15 @@ require_once '../Models/Item_inventory.php';
     }
 
     $customerCount = count($uniqueCustomers);
-    $netWorth = $totalPaid;
+    
+    // Get weekly expenses if week is specified
+    $weeklyExpenses = 0;
+    if ($week !== null && $month !== null) {
+      $weeklyExpenses = getWeeklyExpenses($year, $month, $week);
+    }
+    
+    // Calculate net worth: sales - expenses
+    $netWorth = $totalSales - $weeklyExpenses;
 
     return [
       'salesData' => $orders,
@@ -109,7 +116,8 @@ require_once '../Models/Item_inventory.php';
       'totalPaid' => $totalPaid,
       'customerCount' => $customerCount,
       'netWorth' => $netWorth,
-      'paidCount' => $paidCount
+      'paidCount' => $paidCount,
+      'weeklyExpenses' => $weeklyExpenses
     ];
 
   } catch (PDOException $e) {
@@ -120,8 +128,35 @@ require_once '../Models/Item_inventory.php';
       'totalPaid' => 0,
       'customerCount' => 0,
       'netWorth' => 0,
-      'paidCount' => 0
+      'paidCount' => 0,
+      'weeklyExpenses' => 0
     ];
+  }
+}
+
+// Get weekly expenses for a specific week
+function getWeeklyExpenses($year, $month, $week)
+{
+  try {
+    // Initialize database connection for Expense model
+    $db = new Database();
+    $pdo = $db->getConnection();
+    Expense::setConnection($pdo);
+    
+    // Use numeric month (1-12) since that's what's stored in the database
+    $expenses = Expense::getByMonthYear($month, $year, 'Laundry Business');
+    
+    // Find the expense for the specific week
+    foreach ($expenses as $expense) {
+      if ($expense['week_number'] == $week) {
+        return floatval($expense['total_amount']);
+      }
+    }
+    
+    return 0;
+  } catch (Exception $e) {
+    error_log("Error fetching weekly expenses: " . $e->getMessage());
+    return 0;
   }
 }
 
@@ -296,7 +331,8 @@ function getCurrentWeekData($pdo)
       'sales' => $report['totalSales'],
       'customers' => $report['customerCount'],
       'paid' => $report['paidCount'],
-      'netWorth' => $report['netWorth']
+      'netWorth' => $report['netWorth'],
+      'expenses' => $report['weeklyExpenses']
     ];
 
   } catch (Exception $e) {
@@ -306,7 +342,8 @@ function getCurrentWeekData($pdo)
       'sales' => 0,
       'customers' => 0,
       'paid' => 0,
-      'netWorth' => 0
+      'netWorth' => 0,
+      'expenses' => 0
     ];
   }
 }
@@ -330,26 +367,5 @@ function getMonthName($monthNum)
   ];
 
   return $monthNames[$monthNum] ?? 'January';
-}
-
-// Get short month name 
-function getShortMonthName($monthNum)
-{
-  $monthNames = [
-    1 => 'Jan',
-    2 => 'Feb',
-    3 => 'Mar',
-    4 => 'Apr',
-    5 => 'May',
-    6 => 'Jun',
-    7 => 'Jul',
-    8 => 'Aug',
-    9 => 'Sep',
-    10 => 'Oct',
-    11 => 'Nov',
-    12 => 'Dec'
-  ];
-
-  return $monthNames[$monthNum] ?? 'Jan';
 }
 ?>

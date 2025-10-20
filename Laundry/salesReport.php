@@ -33,7 +33,7 @@ $fullMonthNames = [
   11 => 'November',
   12 => 'December'
 ];
-?>?>
+?>
 
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
   <div class="w-full">
@@ -63,7 +63,7 @@ $fullMonthNames = [
             <div class="flex items-center justify-between">
                 <span id="weekDisplay" class="ms-3 ps-1 border-l border-gray-900 text-md">
                     <?php
-                        echo getShortMonthName($currentMonth) . ' - Week ' . $currentWeekData['week'];
+                        echo getMonthName($currentMonth) . ' - Week ' . $currentWeekData['week'];
                     ?>
                 </span>            
             </div>
