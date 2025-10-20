@@ -12,7 +12,7 @@ let MAX_WEEKS = 4;
 
 const monthlyCardContainer = document.createElement('div');
 monthlyCardContainer.className =
-  "bg-yellow-100 border-l-4 border-yellow-600 text-yellow-800 p-4 mb-6 rounded-lg shadow font-['Outfit']";
+  "flex font-['Outfit'] bg-blue-100 border border-blue-600 text-blue-800 p-4 mb-6 rounded-lg shadow justify-between items-center";
 monthlyCardContainer.innerHTML = `
   <h2 class="text-3xl font-bold">Total Monthly Expenses</h2>
   <p id="monthlyTotal" class="text-4xl font-semibold mt-2">₱ 0.00</p>
