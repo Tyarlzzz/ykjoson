@@ -44,13 +44,13 @@ if ($brandSales) {
 
         <!-- Total Customer Card -->
         <a href="OrderList.php">
-          <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+          <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
             <div class="flex items-center gap-3 mb-1">
               <div
                 class="w-12 h-12 rounded-full bg-gradient-to-br from-green-200 via-green-300 to-green-400 flex items-center justify-center">
                 <img class="w-8 h-8" src="../assets/images/customers.png" alt="totalCustomerIcon">
               </div>
-              <span class="text-sm font-semibold text-gray-700">Total Customer</span>
+              <span class="font-medium text-gray-700">Total Customer</span>
             </div>
             <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
               <?php
@@ -64,13 +64,13 @@ if ($brandSales) {
 
         <!-- Pending Order Card -->
         <a href="OrderList.php?status=Pending">
-          <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+          <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
             <div class="flex items-center gap-3 mb-1">
               <div
                 class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-100 via-yellow-200 to-yellow-300 flex items-center justify-center">
                 <img class="w-8 h-8 ms-2" src="../assets/images/pending.png" alt="pendingOrderIcon">
               </div>
-              <span class="text-sm font-semibold text-gray-700">Pending Order</span>
+              <span class="font-medium text-gray-700">Pending Order</span>
             </div>
             <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
               <?php
@@ -88,13 +88,13 @@ if ($brandSales) {
 
         <!-- Borrowed Tanks Card -->
         <a href="OrderList.php?status=Borrowed">
-          <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+          <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
             <div class="flex items-center gap-3 mb-1">
               <div
                 class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 via-orange-200 to-orange-300 flex items-center justify-center">
                 <img class="w-8 h-8" src="../assets/images/borrowed.png" alt="borrowedTanksIcon">
               </div>
-              <span class="text-sm font-semibold text-gray-700">Borrowed Tanks</span>
+              <span class="font-medium text-gray-700">Borrowed Tanks</span>
             </div>
             <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
               <?php
@@ -109,13 +109,13 @@ if ($brandSales) {
 
         <!-- Returned Tanks Card -->
         <a href="OrderList.php?status=Returned">
-          <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+          <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
             <div class="flex items-center gap-3 mb-1">
               <div
                 class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 via-pink-300 to-purple-300 flex items-center justify-center">
                 <img class="w-8 h-8" src="../assets/images/returned.png" alt="returnedTanksIcon">
               </div>
-              <span class="text-sm font-semibold text-gray-700">Returned Tanks</span>
+              <span class="font-medium text-gray-700">Returned Tanks</span>
             </div>
             <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
               <?php
@@ -129,13 +129,13 @@ if ($brandSales) {
       </div>
 
       <!-- Top Brands Sold Card -->
-      <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
+      <div class="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
         <div class="flex items-center gap-3 mb-1">
           <div
             class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 flex items-center justify-center">
             <img class="w-6 h-6" src="../assets/images/bar-chart.png" alt="topBrandsIcon">
           </div>
-          <span class="text-sm font-semibold text-gray-700">Top Brands Sold</span>
+          <span class="font-medium text-gray-700">Top Brands Sold</span>
         </div>
         <div class="flex flex-col items-center gap-3 md:gap-5">
           <!-- Pie Chart -->
@@ -176,7 +176,7 @@ if ($brandSales) {
 
         <!-- Delivered Button -->
         <a href="OrderList.php?status=Delivered"
-          class="bg-gradient-to-br from-green-500 via-green-40 0 to-green-300 text-white rounded-2xl shadow-md flex-1 flex flex-col items-start justify-center px-6">
+          class="bg-gradient-to-br from-green-500 via-green-40 0 to-green-300 text-white rounded-2xl shadow-lg flex-1 flex flex-col items-start justify-center px-6">
           <div class="flex items-center gap-2">
             <svg class="w-12 h-12" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" fill="white" />
