@@ -1,10 +1,10 @@
 <?php
-session_start();
+    session_start();
 
-if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== true) {
-    header('Location: ownerAccess.php');
-    exit;
-}
+    if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== true) {
+        header('Location: ownerAccess.php');
+        exit;
+    }
 ?>
 
 <?php require '../layout/header.php' ?>
@@ -102,7 +102,6 @@ if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== tru
         </div>
     </div>
 </main>
-
 
 <script src="../assets/js/laundry_system_js/addExpense.js"></script>
 <?php require '../layout/footer.php' ?>
