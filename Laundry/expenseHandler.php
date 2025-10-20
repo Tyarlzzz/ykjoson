@@ -1,7 +1,7 @@
 <?php
 require_once '../database/Database.php';
 require_once '../Models/Models.php';
-require_once '../Models/Expense.php';
+require_once '../Models/Expense_Laundry.php';
 
 header('Content-Type: application/json');
 
