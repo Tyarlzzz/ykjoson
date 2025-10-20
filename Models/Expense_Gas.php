@@ -1,11 +1,10 @@
 <?php
     require_once 'Models.php';
 
-    class Expense_Gas extends Model {
+    class Expense extends Model {
         protected static $table = 'expenses';
 
-        // Get all expenses for Gas System, filtered by month and year
-        public static function getByMonthYear($month, $year, $business_type = 'Gas System') {
+        public static function getByMonthYear($month, $year, $business_type = 'Gas Business') {
             try {
                 $sql = "SELECT * FROM " . static::$table . " 
                         WHERE business_type = :business_type 
@@ -23,7 +22,6 @@
             }
         }
 
-        // Insert or update a week's expenses
         public static function saveOrUpdateWeek($data) {
             try {
                 $sql = "SELECT expense_id FROM " . static::$table . " 
@@ -41,7 +39,6 @@
                 $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($existing) {
-                    // Update existing record
                     $updateSql = "UPDATE " . static::$table . " 
                                 SET expense_items = :expense_items, 
                                     total_amount = :total_amount,
@@ -59,7 +56,6 @@
                     ]);
                     return $existing['expense_id'];
                 } else {
-                    // Create new record
                     $insertSql = "INSERT INTO " . static::$table . " 
                                 (business_type, week_number, month, year, week_start_date, week_end_date, expense_items, total_amount)
                                 VALUES (:business_type, :week_number, :month, :year, :week_start_date, :week_end_date, :expense_items, :total_amount)";
@@ -81,8 +77,7 @@
             }
         }
 
-        // Calculate total monthly expenses
-        public static function getMonthlyTotal($month, $year, $business_type = 'Gas System') {
+        public static function getMonthlyTotal($month, $year, $business_type = 'Gas Business') {
             try {
                 $sql = "SELECT SUM(total_amount) AS monthly_total
                         FROM " . static::$table . "

@@ -8,7 +8,7 @@
     try {
         $database = new Database();
         $conn = $database->getConnection();
-        Expense_Gas::setConnection($conn);
+        Expense::setConnection($conn);
 
         $method = $_SERVER['REQUEST_METHOD'];
 
@@ -34,7 +34,7 @@
             $week_start = date('Y-m-d', strtotime("$year-$month-01 +".($week_number-1)." week"));
             $week_end = date('Y-m-d', strtotime("$week_start +6 days"));
 
-            $id = Expense_Gas::saveOrUpdateWeek([
+            $id = Expense::saveOrUpdateWeek([
                 'business_type' => $input['business_type'],
                 'week_number' => $week_number,
                 'month' => $month,
@@ -58,8 +58,8 @@
             $month = $_GET['month'] ?? date('n');
             $year = $_GET['year'] ?? date('Y');
 
-            $weeks = Expense_Gas::getByMonthYear($month, $year, $business_type);
-            $monthly_total = Expense_Gas::getMonthlyTotal($month, $year, $business_type);
+            $weeks = Expense::getByMonthYear($month, $year, $business_type);
+            $monthly_total = Expense::getMonthlyTotal($month, $year, $business_type);
 
             echo json_encode([
                 "status" => "success",
