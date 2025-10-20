@@ -1,4 +1,12 @@
 <?php
+
+    session_start();
+
+    if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== true) {
+        header('Location: ownerAccess.php');
+        exit;
+    }
+
     require_once '../layout/header.php';
     require_once '../database/Database.php';
     require_once '../Models/Models.php';
@@ -58,7 +66,10 @@
     <div class="w-full">
         <div class="mb-6 flex justify-between items-center">
             <h1 class="ps-3 font-['Outfit'] text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
-            <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+            <div class="flex items-center gap-2">
+                <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+                <a href="logoutInventorySales.php" class="bg-blue-600 text-white py-1 px-4 rounded-full">Logout</a>
+            </div>
         </div>
 
         <div class="flex mb-0">

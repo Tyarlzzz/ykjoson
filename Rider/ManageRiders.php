@@ -1,8 +1,14 @@
 <?php
 session_start();
 
+$currentURL = $_SERVER['PHP_SELF'];
+
 if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== true) {
-    header('Location: /projects/YKJoson/Gas/ownerAccess.php');
+    if(strpos($currentURL, 'Laundry') !== false) {
+        header('Location: ../Laundry/ownerAccess.php');
+    } else if(strpos($currentURL, 'Gas') !== false) {
+        header('Location: ../Gas/ownerAccess.php');
+    }
     exit;
 }
 
@@ -37,6 +43,14 @@ if (strpos($previousURL, 'Laundry') !== false || strpos($currentPath, 'Laundry')
     $isGas = false;
 }
 
+if (strpos($currentPath, 'Laundry') !== false) {
+    $logoutHref = '../Laundry/logoutInventorySales.php';
+} elseif (strpos($currentPath, 'Gas') !== false) {
+    $logoutHref = '../Gas/logoutInventorySales.php';
+} else {
+    $logoutHref = 'logoutInventorySales.php';
+}
+
 if (isset($_GET['success'])) {
   echo '<script>
                 Swal.fire({
@@ -64,7 +78,7 @@ if (isset($_GET['error'])) {
       <h1 class="ps-3 text-3xl font-['Outfit'] font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
       <div class="flex items-center gap-2">
         <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
-        <a href="logoutInventorySales.php" class="bg-red-600 text-white py-1 px-4 rounded-full">Logout</a>
+        <a href="<?php echo $logoutHref; ?>" class="<?php echo (strpos($currentPath, 'Laundry') !== false ? "bg-blue-600 text-white" : "bg-red-600 text-white")?> text-white py-1 px-4 rounded-full">Logout</a>
       </div>
     </div>
 
