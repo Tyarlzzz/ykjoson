@@ -1,6 +1,6 @@
 <?php
 // Change this to your desired password
-$password = "halimawmagpagawangsystem123";
+$password = "owner123";
 
 // Generate hash using bcrypt
 $hash = password_hash($password, PASSWORD_DEFAULT);

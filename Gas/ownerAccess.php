@@ -7,7 +7,7 @@ if (isset($_SESSION['owner_logged_in']) && $_SESSION['owner_logged_in'] === true
   exit;
 }
 
-$stored_hash = '$2y$10$8QSkF45/HnykkXQkwPUObu/ZGFa9Un.TEETCn4sDiufxoqKRqpi3e'; // akolangpwedepumasok123
+$stored_hash = '$2y$10$0fOdy1oX7pZxiczZgZI/vuKOOj4Taj4kZZXIwNOQAr26jyIcp1wNa'; // owner123
 
 $error = '';
 
