@@ -3,215 +3,225 @@ const cardsList = document.getElementById('cardsList');
 const weekTitle = document.getElementById('weekTitle');
 const saveExpensesBtn = document.getElementById('saveExpensesBtn');
 const cancelBtn = document.getElementById('cancelBtn');
-
-// Product management elements
 const productList = document.querySelector('.productList');
 const addBtn = document.getElementById('addProductBtn');
 
-// State variables
-let weekCount = 1;
 let currentEditingWeek = 1;
-let isNewWeek = false;
-const MAX_WEEKS = 4;
+let weekExpenses = {};
+let MAX_WEEKS = 4;
 
-// Store expenses per week in sessionStorage
-let weekExpenses = JSON.parse(sessionStorage.getItem('weekExpenses')) || {};
+const monthlyCardContainer = document.createElement('div');
+monthlyCardContainer.className =
+  "bg-yellow-100 border-l-4 border-yellow-600 text-yellow-800 p-4 mb-6 rounded-lg shadow font-['Outfit']";
+monthlyCardContainer.innerHTML = `
+  <h2 class="text-3xl font-bold">Total Monthly Expenses</h2>
+  <p id="monthlyTotal" class="text-4xl font-semibold mt-2">₱ 0.00</p>
+`;
+document.querySelector('.p-6').prepend(monthlyCardContainer);
 
-// Function to create a new product row
 function createProductRow(productName = '', price = '') {
   const row = document.createElement('div');
   row.className = 'flex justify-between items-center product-row gap-4 mx-4';
-
   row.innerHTML = `
-  <div class="flex items-center gap-3 flex-1">
-      <button type="button" class="bg-red-600 text-white font-['Outfit'] rounded-full w-10 h-10 flex items-center justify-center text-2xl remove-btn flex-shrink-0">−</button>
+    <div class="flex items-center gap-3 flex-1">
+      <button type="button" class="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center text-2xl remove-btn flex-shrink-0">−</button>
       <input type="text" placeholder="Enter product" value="${productName}" class="flex-1 text-lg bg-white border-2 border-gray-300 focus:border-blue-600 focus:outline-none px-4 py-2 rounded-lg transition-colors product-input">
-  </div>
-  <input type="number" placeholder="0.00" value="${price}" class="me-4 w-24 text-lg bg-white border-2 border-gray-300 focus:border-blue-600 focus:outline-none px-4 py-2 rounded-lg text-right transition-colors price-input">
+    </div>
+    <input type="number" placeholder="0.00" value="${price}" class="me-4 w-24 text-lg bg-white border-2 border-gray-300 focus:border-blue-600 focus:outline-none px-4 py-2 rounded-lg text-right transition-colors price-input">
   `;
-
-  // Attach remove event to the new button
-  row.querySelector('.remove-btn').addEventListener('click', () => {
-    row.remove();
-  });
-
+  row.querySelector('.remove-btn').addEventListener('click', () => row.remove());
   return row;
 }
 
-// Load products for a specific week
-function loadProductsForWeek(weekNumber) {
-  productList.innerHTML = '';
-  const weekData = weekExpenses[`week${weekNumber}`];
-  
-  if (!weekData || weekData.products.length === 0) {
-    // Add one empty row if no products
-    productList.appendChild(createProductRow());
-  } else {
-    weekData.products.forEach(product => {
-      productList.appendChild(createProductRow(product.productName, product.price));
-    });
-  }
-}
-
-// Function to create a week card
 function createWeekCard(weekNumber, totalExpenses = 0) {
   const card = document.createElement('button');
   card.type = 'button';
   card.className = 'text-left hover:opacity-90 transition-opacity week-card-btn';
   card.setAttribute('data-week', weekNumber);
   card.onclick = () => openExpenseForm(weekNumber);
-  
+
   const cardDiv = document.createElement('div');
   cardDiv.className = 'bg-blue-600 text-white rounded-xl p-8';
   cardDiv.innerHTML = `
     <h1 class="text-3xl font-['Outfit'] pb-2">Week ${weekNumber}</h1>
     <div class="flex justify-between items-center">
       <p class="font-[Switzer'] text-2xl">Total Expenses: </p> 
-      <span class="font-['Outfit'] text-3xl week-total">P ${totalExpenses.toLocaleString()}</span>
+      <span class="font-['Outfit'] text-3xl week-total">₱ ${Number(totalExpenses).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
     </div>
   `;
-  
+
   card.appendChild(cardDiv);
   return card;
 }
 
-// Function to open expense form
-function openExpenseForm(weekNumber, isNew = false) {
-  isNewWeek = isNew;
-  currentEditingWeek = weekNumber;
-  weekTitle.textContent = `Week ${weekNumber}`;
-  
-  // Load products for this specific week
-  loadProductsForWeek(weekNumber);
-  
-  // Show/hide cancel button based on whether it's a new week
-  if (isNew) {
-    cancelBtn.classList.add('hidden');
+function loadProductsForWeek(weekNumber) {
+  productList.innerHTML = '';
+  const weekData = weekExpenses[`week${weekNumber}`];
+  if (!weekData || weekData.products.length === 0) {
+    productList.appendChild(createProductRow());
   } else {
-    cancelBtn.classList.remove('hidden');
+    weekData.products.forEach(p => productList.appendChild(createProductRow(p.productName, p.price)));
   }
+  weekTitle.textContent = `Week ${weekNumber}`;
 }
 
-// Add new product row on click
-addBtn.addEventListener('click', () => {
-  const newRow = createProductRow();
-  productList.appendChild(newRow);
-});
-
-// Create week button
-createWeekBtn.addEventListener('click', () => {
-  if (weekCount >= MAX_WEEKS) {
-    alert('All 4 weeks have been created. Please complete all weeks before creating a new month.');
-    return;
-  }
-  weekCount++;
-  const newCard = createWeekCard(weekCount, 0);
-  newCard.setAttribute('data-week', weekCount);
-  cardsList.appendChild(newCard);
-  openExpenseForm(weekCount, true);
-});
-
-// Cancel button - reload the saved data for current week
-cancelBtn.addEventListener('click', () => {
-  loadProductsForWeek(currentEditingWeek);
-});
-
-// Reset weeks button (shown when all 4 weeks are completed)
-function showResetOption() {
-  const allWeeksCards = cardsList.querySelectorAll('.week-card-btn');
-  if (allWeeksCards.length === MAX_WEEKS) {
-    createWeekBtn.innerHTML = `
-      <svg class="w-10 h-10 flex-shrink-0 mt-2" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-5.0 -10.0 110.0 135.0">
-        <path d="m83.602 16.398c-18.5-18.5-48.699-18.5-67.199 0s-18.5 48.699 0 67.199 48.699 18.5 67.199 0c18.5-18.496 18.5-48.699 0-67.199zm-9.1016 37.801h-20.398v20.398h-8.3984v-20.398h-20.301v-8.3984h20.301l-0.003906-20.301h8.3984v20.301h20.301z" fill="white"/>
-      </svg>
-      <span class="text-2xl">Start New Month</span>
-    `;
-    createWeekBtn.onclick = resetWeeks;
-  }
+function openExpenseForm(weekNumber) {
+  currentEditingWeek = weekNumber;
+  loadProductsForWeek(weekNumber);
+  cancelBtn.classList.remove('hidden');
 }
 
-function resetWeeks() {
-  weekCount = 1;
-  cardsList.innerHTML = '';
-  weekExpenses = {}; // Clear all week expenses
-  sessionStorage.setItem('weekExpenses', JSON.stringify(weekExpenses));
-  
-  const firstCard = createWeekCard(1, 0);
-  firstCard.setAttribute('data-week', 1);
-  cardsList.appendChild(firstCard);
-  openExpenseForm(1, true);
-  
-  createWeekBtn.innerHTML = `
-    <svg class="w-10 h-10 flex-shrink-0 mt-2" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-5.0 -10.0 110.0 135.0">
-      <path d="m83.602 16.398c-18.5-18.5-48.699-18.5-67.199 0s-18.5 48.699 0 67.199 48.699 18.5 67.199 0c18.5-18.496 18.5-48.699 0-67.199zm-9.1016 37.801h-20.398v20.398h-8.3984v-20.398h-20.301v-8.3984h20.301l-0.003906-20.301h8.3984v20.301h20.301z" fill="white"/>
-    </svg>
-    <span class="text-2xl">Create Week Expenses</span>
-  `;
-  createWeekBtn.onclick = null;
-}
+// Add new product
+addBtn.addEventListener('click', () => productList.appendChild(createProductRow()));
 
-// Save expenses
-saveExpensesBtn.addEventListener('click', () => {
+saveExpensesBtn.addEventListener('click', async () => {
   const productRows = document.querySelectorAll('.product-row');
-  let totalExpenses = 0;
   const products = [];
+  let total = 0;
 
   productRows.forEach(row => {
-    const productName = row.querySelector('.product-input').value;
+    const productName = row.querySelector('.product-input').value.trim();
     const price = parseFloat(row.querySelector('.price-input').value) || 0;
-    
     if (productName || price) {
       products.push({ productName, price });
-      totalExpenses += price;
+      total += price;
     }
   });
 
-  // Save to weekExpenses object
-  weekExpenses[`week${currentEditingWeek}`] = {
-    products: products,
-    total: totalExpenses
-  };
-  sessionStorage.setItem('weekExpenses', JSON.stringify(weekExpenses));
-
-  // Update card total
-  const existingCard = cardsList.querySelector(`[data-week="${currentEditingWeek}"]`);
-  if (existingCard) {
-    const weekTotal = existingCard.querySelector('.week-total');
-    if (weekTotal) {
-      weekTotal.textContent = `P ${totalExpenses.toLocaleString()}`;
-    }
+  if (products.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'No Products Entered',
+      text: 'Please add at least one product before saving.'
+    });
+    return;
   }
-  
-  showResetOption();
+
+  const payload = {
+    business_type: 'Laundry Business',
+    week_number: currentEditingWeek,
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+    expense_items: products,
+    total_amount: total
+  };
+
+  try {
+    const response = await fetch('expenseHandler.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+
+    if (result.status === 'success') {
+      Swal.fire({
+        icon: 'success',
+        title: `Week ${currentEditingWeek} Saved!`,
+        text: `Your expenses for Week ${currentEditingWeek} have been successfully saved.`,
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      weekExpenses[`week${currentEditingWeek}`] = { products, total };
+      const existingCard = cardsList.querySelector(`[data-week="${currentEditingWeek}"]`);
+      if (existingCard) {
+        existingCard.querySelector('.week-total').textContent =
+          `₱ ${Number(total).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      }
+
+      updateMonthlyTotalDisplay();
+
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error Saving!',
+        text: result.message || 'An unknown error occurred.'
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Connection Error!',
+      text: error.message
+    });
+  }
 });
 
-// Initialize - Load existing weeks from sessionStorage
-function initializeWeeks() {
-  // Count existing weeks
+createWeekBtn.addEventListener('click', () => {
   const existingWeeks = Object.keys(weekExpenses).length;
-  weekCount = existingWeeks || 1;
-  
-  if (existingWeeks > 0) {
-    // Load all existing week cards
-    for (let i = 1; i <= existingWeeks; i++) {
-      const weekData = weekExpenses[`week${i}`];
-      const card = createWeekCard(i, weekData ? weekData.total : 0);
-      card.setAttribute('data-week', i);
-      cardsList.appendChild(card);
-    }
-  } else {
-    // Create first week if none exist
-    const firstCard = createWeekCard(1, 0);
-    firstCard.setAttribute('data-week', 1);
-    cardsList.appendChild(firstCard);
+  if (existingWeeks >= MAX_WEEKS) {
+    Swal.fire({
+      icon: 'info',
+      title: 'All Weeks Created',
+      text: 'All 4 weeks have been created. Start a new month instead.'
+    });
+    return;
   }
-  
-  // Open the first week
-  openExpenseForm(1, existingWeeks === 0);
-  
-  // Check if we should show reset option
-  showResetOption();
+  const newWeekNum = existingWeeks + 1;
+  weekExpenses[`week${newWeekNum}`] = { products: [], total: 0 };
+  const newCard = createWeekCard(newWeekNum, 0);
+  cardsList.appendChild(newCard);
+  openExpenseForm(newWeekNum);
+});
+
+async function loadAllWeeks() {
+  const month = new Date().getMonth() + 1;
+  const year = new Date().getFullYear();
+
+  try {
+    const response = await fetch(`expenseHandler.php?month=${month}&year=${year}&business_type=Laundry%20Business`);
+    const result = await response.json();
+
+    if (result.status === 'success') {
+      const weeks = result.data.weeks || [];
+      const monthlyTotal = result.data.monthly_total || 0;
+
+      // Update monthly total card
+      document.getElementById('monthlyTotal').textContent =
+        `₱ ${Number(monthlyTotal).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+      // Reset week cards
+      cardsList.innerHTML = '';
+      weekExpenses = {};
+
+      if (weeks.length > 0) {
+        weeks.forEach(w => {
+          const weekNum = w.week_number;
+          const products = JSON.parse(w.expense_items);
+          weekExpenses[`week${weekNum}`] = { products, total: parseFloat(w.total_amount) };
+          const card = createWeekCard(weekNum, w.total_amount);
+          cardsList.appendChild(card);
+        });
+      } else {
+        weekExpenses[`week1`] = { products: [], total: 0 };
+        cardsList.appendChild(createWeekCard(1, 0));
+      }
+
+      openExpenseForm(1);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Load Failed',
+        text: result.message || 'Could not fetch expense data.'
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error Loading!',
+      text: error.message
+    });
+  }
 }
 
-// Initialize on page load
-initializeWeeks();
+function updateMonthlyTotalDisplay() {
+  let total = 0;
+  Object.values(weekExpenses).forEach(week => total += week.total || 0);
+  document.getElementById('monthlyTotal').textContent =
+    `₱ ${Number(total).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+}
+
+cancelBtn.addEventListener('click', () => loadProductsForWeek(currentEditingWeek));
+
+document.addEventListener('DOMContentLoaded', loadAllWeeks);
