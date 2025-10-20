@@ -12,7 +12,7 @@ if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== tru
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
     <div class="w-full">
         <div class="mb-6 flex justify-between items-center">
-      <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
+      <h1 class="font-[Outfit] ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
         <div class="flex items-center gap-2">
             <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
             <a href="logoutInventorySales.php" class="bg-blue-600 text-white py-1 px-4 rounded-full">Logout</a>
@@ -20,7 +20,7 @@ if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== tru
         </div>
 
         <div class="flex mb-0">
-            <a href="expenses.php" class="px-8 py-1 bg-blue-600 text-white font-semibold rounded-t-2xl z-0">Expenses</a>
+            <a href="expenses.php" class="px-8 py-1 bg-blue-600 text-white rounded-t-2xl z-0">Expenses</a>
             <a href="salesReport.php"
                 class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold rounded-t-2xl -ml-3 z-0">Sales
                 Report</a>

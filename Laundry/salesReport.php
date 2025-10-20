@@ -56,7 +56,7 @@ $fullMonthNames = [
     <div class="flex mb-0">
         <a href="expenses.php" class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold rounded-t-2xl z-0">Expenses</a>
         <a href="salesReport.php"
-            class="px-5 py-1 bg-blue-600 text-white font-semibold rounded-t-2xl -ml-3 z-0">Sales
+            class="px-5 py-1 bg-blue-600 text-white rounded-t-2xl -ml-3 z-0">Sales
             Report</a>
         <a href="pricing.php"
             class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Pricing</a>
