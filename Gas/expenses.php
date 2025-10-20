@@ -15,8 +15,7 @@
       <h1 class="ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
       <div class="flex items-center gap-2">
         <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
-        <a href="logoutInventorySales.php"
-          class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600">Logout</a>
+        <a href="logoutInventorySales.php" class="bg-red-600 text-white py-1 px-4 rounded-full">Logout</a>
       </div>
     </div>
 
