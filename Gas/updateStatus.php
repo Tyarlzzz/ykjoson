@@ -50,7 +50,7 @@ try {
     $conn = $database->getConnection();
     Model::setConnection($conn);
 
-    // ✅ If marking as "Paid", also set paid_at and archive_at (60 seconds from now)
+    // ✅ If marking as "Paid", also set paid_at and archive_at (for auto-archiving)
     if ($new_status === 'Paid') {
         $sql = "UPDATE orders 
                 SET status = :status, 
@@ -77,19 +77,6 @@ try {
 
     if ($stmt->rowCount() === 0) {
         throw new Exception('Order not found or already has this status');
-    }
-
-    // If status was changed to Paid, check for other orders ready to archive
-    if ($new_status === 'Paid') {
-        try {
-            error_log("Gas order $order_id marked as Paid and scheduled for archiving in 60 seconds");
-            
-            // Check if there are any OTHER orders ready to archive (not this one we just updated)
-            $archiveResult = GasArchivedOrder::autoArchivePaidOrders();
-            error_log("Gas archive check result: " . json_encode($archiveResult));
-        } catch (Exception $e) {
-            error_log("Error running Gas archive check: " . $e->getMessage());
-        }
     }
 
     ob_clean();

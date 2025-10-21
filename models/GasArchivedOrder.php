@@ -48,10 +48,6 @@ class GasArchivedOrder extends Model {
     ========================================================== */
     public static function archiveOrder($order_id) {
         try {
-            // Start transaction to ensure data consistency
-            self::$conn->beginTransaction();
-            
-            // Step 1: Insert into archive table
             $sql = "INSERT INTO gas_archived_orders 
                     (order_id, customer_id, user_id, fullname, phone_number, address, 
                      total_weight, total_price, is_rushed, note, date_created, date_delivered)
@@ -67,7 +63,7 @@ class GasArchivedOrder extends Model {
                         o.is_rushed,
                         o.note,
                         o.created_at AS date_created,
-                        COALESCE(o.delivered_at, o.paid_at, NOW()) AS date_delivered
+                        NOW() AS date_delivered
                     FROM orders o
                     INNER JOIN customer c ON o.customer_id = c.customer_id
                     LEFT JOIN gas_ordered_items goi ON o.order_id = goi.order_id
@@ -76,42 +72,21 @@ class GasArchivedOrder extends Model {
                       AND o.status = 'Paid'
                     GROUP BY o.order_id, o.customer_id, o.user_id, 
                              c.fullname, c.phone_number, c.address, 
-                             o.is_rushed, o.note, o.created_at, o.delivered_at, o.paid_at";
+                             o.is_rushed, o.note, o.created_at";
 
             $stmt = self::$conn->prepare($sql);
             $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
 
-            if (!$stmt->execute() || $stmt->rowCount() === 0) {
-                self::$conn->rollBack();
-                error_log("⚠️ Failed to archive Gas order #$order_id: No rows inserted");
+            if (!$stmt->execute()) {
+                $error = $stmt->errorInfo();
+                error_log("⚠️ Failed to archive Gas order #$order_id: " . implode(' | ', $error));
                 return false;
             }
 
-            // Step 2: Delete related gas_ordered_items
-            $deleteItemsStmt = self::$conn->prepare("DELETE FROM gas_ordered_items WHERE order_id = :order_id");
-            $deleteItemsStmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
-            $deleteItemsStmt->execute();
-            
-            // Step 3: Delete the original order
-            $deleteOrderStmt = self::$conn->prepare("DELETE FROM orders WHERE order_id = :order_id AND business_type = 'Gas System'");
-            $deleteOrderStmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
-            
-            if (!$deleteOrderStmt->execute()) {
-                self::$conn->rollBack();
-                error_log("⚠️ Failed to delete original Gas order #$order_id");
-                return false;
-            }
-
-            // Commit transaction
-            self::$conn->commit();
-            error_log("✅ Successfully archived and removed Gas order #$order_id");
+            error_log("✅ Successfully archived Gas order #$order_id");
             return true;
 
         } catch (PDOException $e) {
-            // Rollback on error
-            if (self::$conn->inTransaction()) {
-                self::$conn->rollBack();
-            }
             error_log("❌ PDO Exception during Gas archive: " . $e->getMessage());
             throw new Exception("Error archiving Gas order: " . $e->getMessage());
         }
@@ -123,17 +98,21 @@ class GasArchivedOrder extends Model {
     ========================================================== */
     public static function autoArchivePaidOrders() {
         try {
-            // Find orders that have archive_at <= NOW() and haven't been archived yet
-            // Use MySQL NOW() to avoid timezone issues between PHP and MySQL
+            $archiveDelayMinutes = 1; // ⏱ Change delay time here
+
+            $eligibleStart = date('Y-m-d H:i:s', strtotime("-{$archiveDelayMinutes} minute"));
+            $now = date('Y-m-d H:i:s');
+
             $sql = "SELECT o.order_id
                     FROM orders o
                     WHERE o.business_type = 'Gas System'
                       AND o.status = 'Paid'
-                      AND o.archive_at IS NOT NULL
-                      AND o.archive_at <= NOW()
+                      AND o.paid_at BETWEEN :start_time AND :end_time
                       AND o.order_id NOT IN (SELECT order_id FROM gas_archived_orders)";
             
             $stmt = self::$conn->prepare($sql);
+            $stmt->bindParam(':start_time', $eligibleStart);
+            $stmt->bindParam(':end_time', $now);
             $stmt->execute();
 
             $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -154,13 +133,9 @@ class GasArchivedOrder extends Model {
             }
 
             return [
-                'total_processed' => count($orders),
-                'archived_count' => $archivedCount,
-                'failed_count' => count($failed),
-                'details' => array_merge(
-                    array_fill(0, $archivedCount, "Successfully archived Gas order"),
-                    array_map(function($f) { return "Failed to archive Gas order: $f"; }, $failed)
-                )
+                'total_checked' => count($orders),
+                'archived' => $archivedCount,
+                'failed' => $failed
             ];
 
         } catch (PDOException $e) {
