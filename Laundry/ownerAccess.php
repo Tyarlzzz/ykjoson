@@ -99,13 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'Content-Type': 'application/x-www-form-urlencoded',
       }
     })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Forgotten your password? It was sent to your email');
-        } else {
-          alert('Error: ' + data.message);
-        }
+      .then(response => {
+        alert('Forgotten your password? It was sent to your email');
       })
       .catch(error => {
         alert('Forgotten your password? It was sent to your email');
