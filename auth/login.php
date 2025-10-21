@@ -1,9 +1,8 @@
 <?php
 session_start();
 
-// Predefined credentials
 $validEmail = 'ykjoson@gmail.com';
-$validPassword = 'password123';
+$validPasswordHash = '$2y$10$EUKmcrJLjbYY0tGxhJNrYuUiJxTnJvlmRBUyLcxC1jzQz46sYuy0S'; // 'password123'
 
 $error = '';
 
@@ -12,7 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     
-    if ($email === $validEmail && $password === $validPassword) {
+    // Verify email and password
+    if ($email === $validEmail && password_verify($password, $validPasswordHash)) {
         // Successful login
         $_SESSION['user_email'] = $email;
         header('Location: ../Laundry/index.php');
