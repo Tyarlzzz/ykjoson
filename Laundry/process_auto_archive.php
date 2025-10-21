@@ -48,8 +48,7 @@ try {
         try {
             error_log("Auto-archiving order ID: $orderId");
             
-            // Step 1: Change status to "Delivered" if it's "Paid"
-            $updateStatusStmt = $pdo->prepare("UPDATE orders SET status = 'Delivered' WHERE order_id = ? AND status = 'Paid'");
+            $updateStatusStmt = $pdo->prepare("UPDATE orders SET status = 'Paid' WHERE order_id = ?");
             $updateStatusStmt->execute([$orderId]);
             
             // Step 2: Archive the order

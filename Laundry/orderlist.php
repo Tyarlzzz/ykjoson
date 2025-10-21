@@ -104,7 +104,6 @@
                                 <?php echo $order['status']; ?>
                                 <?php if ($order['status'] === 'Paid' && $order['archive_at']): ?>
                                     <div class="text-xs mt-1 text-gray-200 archive-timer" data-archive-at="<?php echo $order['archive_at']; ?>">
-                                        ⏱ Archiving in...
                                     </div>
                                 <?php endif; ?>
                             </button>
