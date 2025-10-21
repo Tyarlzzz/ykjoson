@@ -41,7 +41,8 @@
                     </div>
                         <div class="font-['Outfit'] font-bold text-3xl ms-3">
                             <?php
-                            $totalCustomers = count(Laundry::all());
+                            $laundryList = Laundry::all() ?? []; 
+                            $totalCustomers = count($laundryList);
                             echo $totalCustomers;
                             ?>
                         </div>

@@ -120,7 +120,7 @@ $total_amount = $total_sales + $current_petty;
                 <h2 class="font-bold text-lg text-center">PETTY CASH</h2>
                 <p class="text-black-500 text-base border-b-2 border-gray-500 text-center" id="receiptDate"></p>
                 <p class="text-md text-black-800 font-semibold mb-4 text-left">
-                    Name: <?= htmlspecialchars($selected_rider['fullname']) ?><br>
+                Name: <?= htmlspecialchars($selected_rider['fullname'] ?? 'No rider available, add one first!') ?><br>
                     <div class="flex items-center justify-between mt-1">
                         <span id="currentPettyCash" class="text-sm text-gray-500">
                             Current Petty Cash: ₱<?= number_format($current_petty, 2) ?>

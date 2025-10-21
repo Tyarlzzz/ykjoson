@@ -54,7 +54,8 @@ if ($brandSales) {
             </div>
             <div class="text-3xl font-['Outfit'] font-bold text-gray-900 ms-3">
               <?php
-              $totalCustomers = count(GasOrder::all());
+              $gasList = GasOrder::all() ?? []; 
+              $totalCustomers = count($gasList);
               echo $totalCustomers;
               ?>
             </div>
