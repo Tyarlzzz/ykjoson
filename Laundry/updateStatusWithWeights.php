@@ -65,7 +65,9 @@ try {
     $flat_rate_standard = $pricing['standard_clothes']['flat_rate_standard'];
     $flat_rate_rush = $pricing['standard_clothes']['flat_rate_rush'];
 
-    if ($clothes_weight < $min_weight && $min_weight > 0) {
+    // Only apply minimum fee if clothes_weight > 0
+    // If clothes_weight is 0, it means order has no clothes (Barong/Gown only)
+    if ($clothes_weight > 0 && $clothes_weight < $min_weight && $min_weight > 0) {
         $clothes_total = $is_rushed ? $flat_rate_rush : $flat_rate_standard;
     } else {
         $clothes_total = $clothes_weight * $clothes_price_per_kg;

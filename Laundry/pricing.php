@@ -38,6 +38,22 @@
             $success = laundry_pricing::updatePrice($pricing_id, $new_price, $price_column);
 
             if ($success) {
+                // Get the updated record to calculate flat rates
+                $updated_record = laundry_pricing::getPricingById($pricing_id);
+                
+                if ($updated_record && $updated_record->item_type === 'standard_clothes') {
+                    // Calculate and update flat rates
+                    $minimum_weight = $updated_record->minimum_weight;
+                    $standard_price = $updated_record->standard_price;
+                    $rush_price = $updated_record->rush_price;
+                    
+                    $flat_rate_standard = $standard_price * $minimum_weight;
+                    $flat_rate_rush = $rush_price * $minimum_weight;
+                    
+                    // Update flat rates in database
+                    laundry_pricing::updateFlatRates($pricing_id, $flat_rate_standard, $flat_rate_rush);
+                }
+
                 echo '<script>
                     Swal.fire({
                         title: "Success!",
@@ -236,7 +252,7 @@
         }
         modalPricingId.value = id;
         modalPriceColumn.value = priceColumn;
-        newPriceInput.value = ''; // clear previous
+        newPriceInput.value = '';
         modal.classList.remove('hidden');
     }
 

@@ -130,5 +130,36 @@
                 die("Error updating price: " . $e->getMessage());
             }
         }
+
+        public static function getPricingById($pricing_id) {
+            try {
+                $sql = "SELECT * FROM `laundry_pricing` WHERE pricing_id = :pricing_id LIMIT 1";
+                $stmt = self::$conn->prepare($sql);
+                $stmt->execute([':pricing_id' => $pricing_id]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $result ? new self($result) : null;
+            } catch (PDOException $e) {
+                die("Error fetching pricing by ID: " . $e->getMessage());
+            }
+        }
+
+        public static function updateFlatRates($pricing_id, $flat_rate_standard, $flat_rate_rush) {
+            try {
+                $sql = "UPDATE `laundry_pricing` 
+                        SET flat_rate_standard = :flat_rate_standard, 
+                            flat_rate_rush = :flat_rate_rush,
+                            updated_at = NOW()
+                        WHERE pricing_id = :pricing_id";
+                
+                $stmt = self::$conn->prepare($sql);
+                return $stmt->execute([
+                    ':flat_rate_standard' => $flat_rate_standard,
+                    ':flat_rate_rush' => $flat_rate_rush,
+                    ':pricing_id' => $pricing_id
+                ]);
+            } catch (PDOException $e) {
+                die("Error updating flat rates: " . $e->getMessage());
+            }
+        }
     }
 ?>

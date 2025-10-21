@@ -229,11 +229,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (data.breakdown) {
                                 breakdownHTML = `
                                     <div class="bg-blue-50 p-3 rounded-lg text-sm mt-3 border border-blue-200">
-                                        <p class="font-bold mb-2 text-blue-800">💰 Price Breakdown:</p>
+                                        <p class="font-bold mb-2 text-blue-800">Price Breakdown:</p>
                                         ${data.breakdown.clothes_total > 0 ? `<p class="text-gray-700">• Clothes: ₱${parseFloat(data.breakdown.clothes_total).toFixed(2)}</p>` : ''}
                                         ${data.breakdown.comforter_total > 0 ? `<p class="text-gray-700">• Comforter/Curtains: ₱${parseFloat(data.breakdown.comforter_total).toFixed(2)}</p>` : ''}
-                                        ${data.breakdown.barong_total > 0 ? `<p class="text-gray-700">• Barong (${data.breakdown.barong_qty} pcs × ₱250): ₱${parseFloat(data.breakdown.barong_total).toFixed(2)}</p>` : ''}
-                                        ${data.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gowns_qty} pcs × ₱500): ₱${parseFloat(data.breakdown.gowns_total).toFixed(2)}</p>` : ''}
+                                        ${data.breakdown.barong_total > 0 ? `<p class="text-gray-700">• Barong (${data.breakdown.barong_qty} pcs × ₱${parseFloat(data.breakdown.barong_price).toFixed(2)}): ₱${parseFloat(data.breakdown.barong_total).toFixed(2)}</p>` : ''}
+                                        ${data.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${data.breakdown.gowns_qty} pcs × ₱${parseFloat(data.breakdown.gowns_price).toFixed(2)}): ₱${parseFloat(data.breakdown.gowns_total).toFixed(2)}</p>` : ''}
                                     </div>
                                 `;
                             }
