@@ -3,20 +3,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeBtn = document.getElementById('closeGasModal');
     const statusContainer = document.getElementById('statusOptionsContainer');
 
-setTimeout(() => {
-    fetch('/ykjoson/Gas/process_auto_archive.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.archived_count > 0) {
-                console.log(`✓ Archived ${data.archived_count} order(s) after 70 seconds`);
-                // Silently reload the page so user sees archive updated
-                location.reload();
-            }
-        })
-        .catch(error => {
-            console.log('Archive check completed');
-        });
-}, 70000); // Wait 70 seconds before checking (60 second delay + 10 second buffer)
+    setTimeout(() => {
+        fetch('/ykjoson/Gas/process_auto_archive.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.archived_count > 0) {
+                    console.log(`✓ Archived ${data.archived_count} order(s) after 70 seconds`);
+                    // Silently reload the page so user sees archive updated
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.log('Archive check completed');
+            });
+    }, 70000); // Wait 70 seconds before checking (60 second delay + 10 second buffer)
 
     // All possible statuses with their styling
     const allStatuses = {
@@ -357,4 +357,48 @@ setTimeout(() => {
             modal.classList.add('hidden');
         }
     });
+
+    // status filter and search functionality
+    const statusFilter = document.getElementById('statusFilter');
+    const customSearch = document.getElementById('customSearch');
+    const tableRows = document.querySelectorAll('#orderlistTable tbody tr');
+
+    // Function to filter table rows
+    function filterTable() {
+        const searchValue = customSearch ? customSearch.value.toLowerCase().trim() : '';
+        const statusValue = statusFilter ? statusFilter.value.toLowerCase().trim() : '';
+        
+        tableRows.forEach(row => {
+            if (row.cells.length < 6) {
+                return;
+            }
+            const name = row.cells[1].textContent.toLowerCase();
+            const location = row.cells[2].textContent.toLowerCase();
+            const phone = row.cells[3].textContent.toLowerCase();
+            const statusButton = row.querySelector('.openGasStatusModal');
+            const status = statusButton ? statusButton.getAttribute('data-current-status').toLowerCase() : '';
+            
+            const searchMatch = searchValue === '' || 
+                              name.includes(searchValue) || 
+                              location.includes(searchValue) || 
+                              phone.includes(searchValue);
+            
+            const statusMatch = statusValue === '' || status === statusValue;
+            
+            // Show/hide row based on both filters
+            if (searchMatch && statusMatch) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    if (statusFilter) {
+        statusFilter.addEventListener('change', filterTable);
+    }
+
+    if (customSearch) {
+        customSearch.addEventListener('input', filterTable);
+    }
 });
