@@ -51,16 +51,12 @@ try {
             $updateStatusStmt = $pdo->prepare("UPDATE orders SET status = 'Paid' WHERE order_id = ?");
             $updateStatusStmt->execute([$orderId]);
             
-            // Step 2: Archive the order
-            $result = LaundryArchivedOrder::archiveOrder($orderId);
+            // Step 2: Archive the order using the correct method
+            $result = LaundryArchivedOrder::archiveOrderWithCustomDeliveryDate($orderId);
             
             if ($result) {
-                // Clear the archive_at timestamp after successful archiving
-                $clearStmt = $pdo->prepare("UPDATE orders SET archive_at = NULL WHERE order_id = ?");
-                $clearStmt->execute([$orderId]);
-                
                 $archived[] = $orderId;
-                error_log("Successfully auto-archived order ID: $orderId");
+                error_log("Successfully auto-archived and removed order ID: $orderId");
             } else {
                 $errors[] = "Failed to archive order $orderId";
                 error_log("Failed to auto-archive order ID: $orderId");

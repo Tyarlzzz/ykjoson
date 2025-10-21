@@ -211,25 +211,17 @@
          */
         public static function archiveOrdersPaidTwoDaysAgo() {
             try {
-                // 🎯 CUSTOMIZE ARCHIVE ELIGIBILITY WINDOW HERE:
-                $archiveDelayMinutes = 1; // 1 = 1 minute, 2 = 2 minutes, 0.5 = 30 seconds
-                
-                // Calculate the eligibility window
-                $eligibilityTime = date('Y-m-d H:i:s', strtotime("-{$archiveDelayMinutes} minute"));
-                $twoDaysAgoStart = $eligibilityTime;
-                $twoDaysAgoEnd = date('Y-m-d H:i:s'); // Current time
-
-                // Find orders that were paid exactly 2 days ago and haven't been archived
+                // Find orders that have archive_at <= NOW() and haven't been archived yet
+                // Use MySQL NOW() to avoid timezone issues between PHP and MySQL
                 $sql = "SELECT o.order_id 
                         FROM orders o 
                         WHERE o.business_type = 'Laundry System' 
                         AND o.status = 'Paid'
-                        AND o.paid_at BETWEEN :start_date AND :end_date
+                        AND o.archive_at IS NOT NULL
+                        AND o.archive_at <= NOW()
                         AND o.order_id NOT IN (SELECT order_id FROM laundry_archived_orders)";
                 
                 $stmt = self::$conn->prepare($sql);
-                $stmt->bindParam(':start_date', $twoDaysAgoStart);
-                $stmt->bindParam(':end_date', $twoDaysAgoEnd);
                 $stmt->execute();
                 
                 $ordersToArchive = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -272,6 +264,10 @@
          */
         public static function archiveOrderWithCustomDeliveryDate($order_id) {
             try {
+                // Start transaction to ensure data consistency
+                self::$conn->beginTransaction();
+                
+                // Step 1: Insert into archive table  
                 $sql = "INSERT INTO laundry_archived_orders 
                         (order_id, customer_id, user_id, fullname, phone_number, address, 
                          total_weight, total_price, is_rushed, note, date_created, date_delivered)
@@ -282,7 +278,7 @@
                             c.fullname,
                             c.phone_number,
                             c.address,
-                            o.total_weight,
+                            COALESCE(SUM(loi.weight_kg), 0) as total_weight,
                             o.total_price,
                             o.is_rushed,
                             o.note,
@@ -295,14 +291,43 @@
                         AND o.business_type = 'Laundry System'
                         AND o.status = 'Paid'
                         GROUP BY o.order_id, o.customer_id, o.user_id, c.fullname, c.phone_number, 
-                                 c.address, o.is_rushed, o.note, o.created_at, o.paid_at";
+                                 c.address, o.total_price, o.is_rushed, o.note, o.created_at, 
+                                 o.paid_at";
                 
                 $stmt = self::$conn->prepare($sql);
                 $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
+                $archiveSuccess = $stmt->execute();
                 
-                return $stmt->execute();
+                if (!$archiveSuccess || $stmt->rowCount() === 0) {
+                    self::$conn->rollBack();
+                    return false;
+                }
+                
+                // Step 2: Delete related laundry_ordered_items
+                $deleteItemsStmt = self::$conn->prepare("DELETE FROM laundry_ordered_items WHERE order_id = :order_id");
+                $deleteItemsStmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
+                $deleteItemsStmt->execute();
+                
+                // Step 3: Delete the original order
+                $deleteOrderStmt = self::$conn->prepare("DELETE FROM orders WHERE order_id = :order_id AND business_type = 'Laundry System'");
+                $deleteOrderStmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
+                $deleteSuccess = $deleteOrderStmt->execute();
+                
+                if (!$deleteSuccess) {
+                    self::$conn->rollBack();
+                    return false;
+                }
+                
+                // Commit transaction
+                self::$conn->commit();
+                error_log("Order $order_id successfully archived and removed from orders table");
+                return true;
                 
             } catch (PDOException $e) {
+                // Rollback on error
+                if (self::$conn->inTransaction()) {
+                    self::$conn->rollBack();
+                }
                 throw new Exception("Error archiving order with custom delivery date: " . $e->getMessage());
             }
         }
