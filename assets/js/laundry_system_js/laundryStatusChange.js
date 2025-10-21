@@ -311,17 +311,55 @@ document.addEventListener('DOMContentLoaded', function() {
         }))
         .then(data => {
             if (data.success) {
-                // Show success message for all statuses
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Order status updated to ' + newStatus,
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    modal.classList.add('hidden');
-                    location.reload();
-                });
+                // If status is "Paid", show countdown timer instead of immediate reload
+                if (newStatus === 'Paid') {
+                    let secondsLeft = 60;
+                    Swal.fire({
+                        title: '✓ Payment Confirmed!',
+                        html: `
+                            <div class="text-center">
+                                <p class="text-lg font-semibold text-gray-700 mb-4">Order will auto-archive in...</p>
+                                <div class="text-6xl font-bold text-red-600 mb-4" id="countdown">${secondsLeft}s</div>
+                                <p class="text-sm text-gray-600">The order will automatically move to the archive in 60 seconds</p>
+                            </div>
+                        `,
+                        icon: 'success',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: true,
+                        confirmButtonText: 'OK, Got it!',
+                        confirmButtonColor: '#10B981',
+                        didOpen: () => {
+                            // Start countdown
+                            const countdownInterval = setInterval(() => {
+                                secondsLeft--;
+                                const countdownEl = document.getElementById('countdown');
+                                if (countdownEl) {
+                                    countdownEl.textContent = secondsLeft + 's';
+                                }
+                                
+                                // Stop at 0
+                                if (secondsLeft <= 0) {
+                                    clearInterval(countdownInterval);
+                                }
+                            }, 1000);
+                        }
+                    }).then(() => {
+                        modal.classList.add('hidden');
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Order status updated to ' + newStatus,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        modal.classList.add('hidden');
+                        location.reload();
+                    });
+                }
             } else {
                 throw new Error(data.message || 'Failed to update status');
             }
