@@ -13,7 +13,7 @@ $(document).ready(function() {
             ordering: false,
             autoWidth: false,
             language: {
-                emptyTable: "No laundry orders found. Create your first order to get started!",
+                emptyTable: "No orders found. Create your first order to get started!",
                 zeroRecords: "No orders match your search criteria."
             },
             columnDefs: [

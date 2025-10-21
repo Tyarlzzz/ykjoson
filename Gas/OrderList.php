@@ -167,11 +167,6 @@ if (isset($_GET['error'])) {
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
-            <tr>
-              <td colspan="6" class="text-center py-8 text-gray-500 italic">
-                No Gas Orders Found.
-              </td>
-            </tr>
           <?php endif; ?>
         </tbody>
       </table>
