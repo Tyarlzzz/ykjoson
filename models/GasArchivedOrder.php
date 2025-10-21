@@ -1,273 +1,185 @@
 <?php
-    /**
-     * 🎯 ARCHIVE TIMING CONFIGURATION:
-     * 
-     * To change the archive eligibility window, modify this variable on line ~206:
-     * $archiveDelayMinutes = 1; // Change this number (in minutes)
-     * 
-     * Examples:
-     * - 0.5 = 30 seconds
-     * - 1 = 1 minute
-     * - 2 = 2 minutes  
-     * - 5 = 5 minutes
-     * - 10 = 10 minutes
-     */
+/**
+ * 🎯 GAS ARCHIVE MODEL (FINAL VERSION)
+ * 
+ * Handles automatic archiving for Gas System orders.
+ * 
+ * 💡 Archive Delay Configuration:
+ *   - Change $archiveDelayMinutes to adjust how long after "Paid" an order should be archived.
+ *   - Example:
+ *       0.5 = 30 seconds
+ *       1   = 1 minute
+ *       2   = 2 minutes
+ *       5   = 5 minutes
+ */
 
-    require_once 'Models.php';
+require_once 'Models.php';
 
-    class GasArchivedOrder extends Model {
-        protected static $table = "gas_archived_orders";
+class GasArchivedOrder extends Model {
+    protected static $table = "gas_archived_orders";
 
-        public $archived_id;
-        public $order_id;
-        public $customer_id;
-        public $user_id;
-        public $fullname;
-        public $phone_number;
-        public $address;
-        public $total_price;
-        public $note;
-        public $date_created;
-        public $date_delivered;
-        public $created_at;
-        public $updated_at;
+    public $archived_id;
+    public $order_id;
+    public $customer_id;
+    public $user_id;
+    public $fullname;
+    public $phone_number;
+    public $address;
+    public $total_weight;
+    public $total_price;
+    public $is_rushed;
+    public $note;
+    public $date_created;
+    public $date_delivered;
+    public $created_at;
+    public $updated_at;
 
-        public function __construct(array $data = []) {
-            foreach ($data as $key => $value) {
-                if (property_exists($this, $key)) {
-                    $this->$key = $value;
-                }
+    public function __construct(array $data = []) {
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
             }
         }
+    }
 
-        public static function all() {
-            $result = parent::all();
-            return $result
-                ? array_map(fn($data) => new self($data), $result)
-                : null;
-        }
+    /* ==========================================================
+       ✅ CORE ARCHIVE METHOD
+       Archives a single paid Gas order.
+    ========================================================== */
+    public static function archiveOrder($order_id) {
+        try {
+            $sql = "INSERT INTO gas_archived_orders 
+                    (order_id, customer_id, user_id, fullname, phone_number, address, 
+                     total_weight, total_price, is_rushed, note, date_created, date_delivered)
+                    SELECT 
+                        o.order_id,
+                        o.customer_id,
+                        COALESCE(o.user_id, 0) AS user_id,
+                        c.fullname,
+                        c.phone_number,
+                        c.address,
+                        COALESCE(SUM(goi.quantity), 0) AS total_weight,
+                        COALESCE(SUM(goi.total), 0) AS total_price,
+                        o.is_rushed,
+                        o.note,
+                        o.created_at AS date_created,
+                        NOW() AS date_delivered
+                    FROM orders o
+                    INNER JOIN customer c ON o.customer_id = c.customer_id
+                    LEFT JOIN gas_ordered_items goi ON o.order_id = goi.order_id
+                    WHERE o.order_id = :order_id 
+                      AND o.business_type = 'Gas System'
+                      AND o.status = 'Paid'
+                    GROUP BY o.order_id, o.customer_id, o.user_id, 
+                             c.fullname, c.phone_number, c.address, 
+                             o.is_rushed, o.note, o.created_at";
 
-        public static function find($id) {
-            $result = parent::find($id);
-            return $result ? new self($result) : null;
-        }
+            $stmt = self::$conn->prepare($sql);
+            $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
 
-        public static function create(array $data) {
-            $result = parent::create($data);
-            return $result ? new self($result) : null;
-        }
-
-        public function update(array $data) {
-            $result = parent::updateByID($this->archived_id, $data);
-
-            if ($result) {
-                foreach ($data as $key => $value) {
-                    if (property_exists($this, $key)) {
-                        $this->$key = $value;
-                    }
-                }
-                return true;
-            } else {
+            if (!$stmt->execute()) {
+                $error = $stmt->errorInfo();
+                error_log("⚠️ Failed to archive Gas order #$order_id: " . implode(' | ', $error));
                 return false;
             }
-        }
 
-        public function save() {
-            $data = [
-                "order_id" => $this->order_id,
-                "customer_id" => $this->customer_id,
-                "user_id" => $this->user_id,
-                "fullname" => $this->fullname,
-                "phone_number" => $this->phone_number,
-                "address" => $this->address,
-                "total_price" => $this->total_price,
-                "note" => $this->note,
-                "date_created" => $this->date_created,
-                "date_delivered" => $this->date_delivered,
-                "updated_at" => $this->updated_at
+            error_log("✅ Successfully archived Gas order #$order_id");
+            return true;
+
+        } catch (PDOException $e) {
+            error_log("❌ PDO Exception during Gas archive: " . $e->getMessage());
+            throw new Exception("Error archiving Gas order: " . $e->getMessage());
+        }
+    }
+
+    /* ==========================================================
+       ✅ AUTO-ARCHIVE FOR PAID ORDERS
+       Archives all 'Paid' Gas orders after delay.
+    ========================================================== */
+    public static function autoArchivePaidOrders() {
+        try {
+            $archiveDelayMinutes = 1; // ⏱ Change delay time here
+
+            $eligibleStart = date('Y-m-d H:i:s', strtotime("-{$archiveDelayMinutes} minute"));
+            $now = date('Y-m-d H:i:s');
+
+            $sql = "SELECT o.order_id
+                    FROM orders o
+                    WHERE o.business_type = 'Gas System'
+                      AND o.status = 'Paid'
+                      AND o.paid_at BETWEEN :start_time AND :end_time
+                      AND o.order_id NOT IN (SELECT order_id FROM gas_archived_orders)";
+            
+            $stmt = self::$conn->prepare($sql);
+            $stmt->bindParam(':start_time', $eligibleStart);
+            $stmt->bindParam(':end_time', $now);
+            $stmt->execute();
+
+            $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $archivedCount = 0;
+            $failed = [];
+
+            foreach ($orders as $row) {
+                $id = $row['order_id'];
+                try {
+                    if (self::archiveOrder($id)) {
+                        $archivedCount++;
+                    } else {
+                        $failed[] = $id;
+                    }
+                } catch (Exception $e) {
+                    $failed[] = $id . " (" . $e->getMessage() . ")";
+                }
+            }
+
+            return [
+                'total_checked' => count($orders),
+                'archived' => $archivedCount,
+                'failed' => $failed
             ];
 
-            $this->update($data);
+        } catch (PDOException $e) {
+            throw new Exception("Error during auto-archiving: " . $e->getMessage());
         }
+    }
 
-        public function delete() {
-            $result = parent::deleteByID($this->archived_id);
-            
-            if ($result) {
-                foreach ($this as $key => $value) {
-                    unset($this->$key);
-                }
-                return true;
-            } else {
-                return false;
-            }
-        }
+    /* ==========================================================
+       ✅ CHECK IF ORDER IS ALREADY ARCHIVED
+    ========================================================== */
+    public static function isOrderArchived($order_id) {
+        $sql = "SELECT COUNT(*) AS count FROM gas_archived_orders WHERE order_id = :order_id";
+        $stmt = self::$conn->prepare($sql);
+        $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row && $row['count'] > 0;
+    }
 
-        public static function where($column, $operation, $value) {
-            $result = parent::where($column, $operation, $value);
-            return $result
-                ? array_map(fn($data) => new self($data), $result)
-                : null;
-        }
+    /* ==========================================================
+       ✅ FETCH ARCHIVED ORDERS
+    ========================================================== */
+public static function getAllArchived($limit = 50, $offset = 0) {
+    $sql = "SELECT * FROM gas_archived_orders 
+            ORDER BY date_delivered DESC 
+            LIMIT :limit OFFSET :offset";
+    $stmt = self::$conn->prepare($sql);
+    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
 
-        /**
-         * Archive a completed Gas order
-         * This method takes an order_id and creates an archived record
-         */
-        public static function archiveOrder($order_id) {
-            try {
-                $sql = "INSERT INTO gas_archived_orders 
-                        (order_id, customer_id, user_id, fullname, phone_number, address, total_price, note, date_created, date_delivered)
-                        SELECT 
-                            o.order_id,
-                            o.customer_id,
-                            o.user_id,
-                            c.fullname,
-                            c.phone_number,
-                            c.address,
-                            COALESCE(SUM(loi.total), 0) as total_price,
-                            o.note,
-                            o.created_at as date_created,
-                            NOW() as date_delivered
-                        FROM orders o
-                        INNER JOIN customer c ON o.customer_id = c.customer_id
-                        LEFT JOIN gas_ordered_items loi ON o.order_id = loi.order_id
-                        WHERE o.order_id = :order_id 
-                        AND o.business_type = 'Gas System'
-                        AND o.status = 'Delivered'
-                        GROUP BY o.order_id, o.customer_id, o.user_id, c.fullname, c.phone_number, 
-                                 c.address, o.note, o.created_at";
-                
-                $stmt = self::$conn->prepare($sql);
-                $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
-                
-                return $stmt->execute();
-                
-            } catch (PDOException $e) {
-                die("Error archiving order: " . $e->getMessage());
-            }
-        }
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $results
+        ? array_map(fn($data) => new self($data), $results)
+        : [];
+}
 
-        /**
-         * Get all archived orders with pagination support
-         */
-        public static function getAllArchived($limit = 50, $offset = 0) {
-            try {
-                $sql = "SELECT * FROM gas_archived_orders 
-                        ORDER BY date_delivered DESC 
-                        LIMIT :limit OFFSET :offset";
-                
-                $stmt = self::$conn->prepare($sql);
-                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-                $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-                $stmt->execute();
-                
-                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                return count($results) > 0 
-                    ? array_map(fn($data) => new self($data), $results)
-                    : null;
-                
-            } catch (PDOException $e) {
-                die("Error fetching archived orders: " . $e->getMessage());
-            }
-        }
 
-        /**
-         * Get archived orders by date range
-         */
-        public static function getByDateRange($start_date, $end_date) {
-            try {
-                $sql = "SELECT * FROM gas_archived_orders 
-                        WHERE DATE(date_delivered) BETWEEN :start_date AND :end_date
-                        ORDER BY date_delivered DESC";
-                
-                $stmt = self::$conn->prepare($sql);
-                $stmt->bindParam(':start_date', $start_date);
-                $stmt->bindParam(':end_date', $end_date);
-                $stmt->execute();
-                
-                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                return count($results) > 0 
-                    ? array_map(fn($data) => new self($data), $results)
-                    : null;
-                    
-            } catch (PDOException $e) {
-                die("Error fetching archived orders by date range: " . $e->getMessage());
-            }
-        }
-
-        /**
-         * Archive orders that were paid 2 days ago
-         * This method should be called daily via a cron job or scheduled task
-         */
-        public static function archiveOrdersPaidTwoDaysAgo() {
-            try {
-                // 🎯 CUSTOMIZE ARCHIVE ELIGIBILITY WINDOW HERE:
-                $archiveDelayMinutes = 1; // 1 = 1 minute, 2 = 2 minutes, 0.5 = 30 seconds
-                
-                // Calculate the eligibility window
-                $eligibilityTime = date('Y-m-d H:i:s', strtotime("-{$archiveDelayMinutes} minute"));
-                $twoDaysAgoStart = $eligibilityTime;
-                $twoDaysAgoEnd = date('Y-m-d H:i:s'); // Current time
-
-                // Find orders that were paid exactly 2 days ago and haven't been archived
-                $sql = "SELECT o.order_id 
-                        FROM orders o 
-                        WHERE o.business_type = 'Gas System' 
-                        AND o.status = 'Paid'
-                        AND o.paid_at BETWEEN :start_date AND :end_date
-                        AND o.order_id NOT IN (SELECT order_id FROM gas_archived_orders)";
-                
-                $stmt = self::$conn->prepare($sql);
-                $stmt->bindParam(':start_date', $twoDaysAgoStart);
-                $stmt->bindParam(':end_date', $twoDaysAgoEnd);
-                $stmt->execute();
-                
-                $ordersToArchive = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                $archived_count = 0;
-                $failed_count = 0;
-                $results = [];
-                
-                foreach ($ordersToArchive as $order) {
-                    $order_id = $order['order_id'];
-                    
-                    try {
-                        if (self::archiveOrderWithCustomDeliveryDate($order_id)) {
-                            $archived_count++;
-                            $results[] = "Successfully archived order ID: $order_id";
-                        } else {
-                            $failed_count++;
-                            $results[] = "Failed to archive order ID: $order_id";
-                        }
-                    } catch (Exception $e) {
-                        $failed_count++;
-                        $results[] = "Error archiving order ID $order_id: " . $e->getMessage();
-                    }
-                }
-                
-                return [
-                    'total_processed' => count($ordersToArchive),
-                    'archived_count' => $archived_count,
-                    'failed_count' => $failed_count,
-                    'details' => $results
-                ];
-                
-            } catch (PDOException $e) {
-                throw new Exception("Error finding orders to archive: " . $e->getMessage());
-            }
-        }
-
-        /**
-         * Archive a specific order with paid_at date as delivery date
-         */
-        public static function archiveOrderWithCustomDeliveryDate($order_id) {
+    
+            public static function archiveOrderWithCustomDeliveryDate($order_id) {
             try {
                 $sql = "INSERT INTO gas_archived_orders 
                         (order_id, customer_id, user_id, fullname, phone_number, address, 
-                        total_price, note, date_created, date_delivered)
+                         total_weight, total_price, is_rushed, note, date_created, date_delivered)
                         SELECT 
                             o.order_id,
                             o.customer_id,
@@ -275,7 +187,9 @@
                             c.fullname,
                             c.phone_number,
                             c.address,
+                            COALESCE(SUM(loi.weight_kg), 0) as total_weight,
                             COALESCE(SUM(loi.total), 0) as total_price,
+                            o.is_rushed,
                             o.note,
                             o.created_at as date_created,
                             COALESCE(o.paid_at, NOW()) as date_delivered
@@ -286,7 +200,7 @@
                         AND o.business_type = 'Gas System'
                         AND o.status = 'Paid'
                         GROUP BY o.order_id, o.customer_id, o.user_id, c.fullname, c.phone_number, 
-                                 c.address, o.note, o.created_at, o.paid_at";
+                                 c.address, o.is_rushed, o.note, o.created_at, o.paid_at";
                 
                 $stmt = self::$conn->prepare($sql);
                 $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
@@ -298,22 +212,64 @@
             }
         }
 
-        /**
-         * Check if an order is already archived
-         */
-        public static function isOrderArchived($order_id) {
-            try {
-                $sql = "SELECT COUNT(*) as count FROM gas_archived_orders WHERE order_id = :order_id";
-                $stmt = self::$conn->prepare($sql);
-                $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
-                $stmt->execute();
-                
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                return $result['count'] > 0;
-                
-            } catch (PDOException $e) {
-                die("Error checking if order is archived: " . $e->getMessage());
+        public static function archiveOrdersPaidTwoDaysAgo() {
+    try {
+        // Archive delay: 2 days
+        $startDate = date('Y-m-d H:i:s', strtotime('-2 days'));
+        $endDate = date('Y-m-d H:i:s');
+
+        $sql = "SELECT o.order_id 
+                FROM orders o 
+                WHERE o.business_type = 'Gas System' 
+                  AND o.status = 'Paid'
+                  AND o.paid_at BETWEEN :start_date AND :end_date
+                  AND o.order_id NOT IN (SELECT order_id FROM gas_archived_orders)";
+        
+        $stmt = self::$conn->prepare($sql);
+        $stmt->bindParam(':start_date', $startDate);
+        $stmt->bindParam(':end_date', $endDate);
+        $stmt->execute();
+
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $archivedCount = 0;
+
+        foreach ($orders as $order) {
+            if (self::archiveOrder($order['order_id'])) {
+                // ✅ Keep "Paid" as-is; do NOT change to "Delivered"
+                $markArchived = self::$conn->prepare("
+                    UPDATE orders 
+                    SET archive_at = NOW() 
+                    WHERE order_id = :order_id
+                ");
+                $markArchived->bindParam(':order_id', $order['order_id'], PDO::PARAM_INT);
+                $markArchived->execute();
+
+                $archivedCount++;
             }
         }
+
+        return [
+            'total_processed' => count($orders),
+            'archived_count' => $archivedCount
+        ];
+    } catch (PDOException $e) {
+        throw new Exception("Error auto-archiving Gas orders: " . $e->getMessage());
     }
+}
+
+
+    /* ==========================================================
+       ✅ FETCH ARCHIVED ORDERS BY DATE RANGE
+    ========================================================== */
+    public static function getByDateRange($start, $end) {
+        $sql = "SELECT * FROM gas_archived_orders 
+                WHERE DATE(date_delivered) BETWEEN :start AND :end 
+                ORDER BY date_delivered DESC";
+        $stmt = self::$conn->prepare($sql);
+        $stmt->bindParam(':start', $start);
+        $stmt->bindParam(':end', $end);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
 ?>

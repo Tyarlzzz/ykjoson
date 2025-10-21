@@ -1,5 +1,6 @@
 <?php
     require_once 'Order.php';
+    require_once 'GasArchivedOrder.php';
 
     class GasOrder extends Order {
         public static function all() {
@@ -54,6 +55,9 @@
             return $borrowedOrders ? count($borrowedOrders) : 0;
         }
 
+        /**
+         * Get all gas orders with details (excludes archived orders)
+         */
         public static function getAllOrdersWithDetails() {
             try {
                 $sql = "SELECT 
@@ -71,7 +75,9 @@
                         LEFT JOIN gas_ordered_items goi ON o.order_id = goi.order_id
                         LEFT JOIN `item allotment` ia ON goi.allotment_id = ia.allotment_id
                         LEFT JOIN `item inventory` ii ON ia.item_id = ii.item_id
+                        LEFT JOIN gas_archived_orders lao ON o.order_id = lao.order_id
                         WHERE o.business_type = 'Gas System'
+                          AND lao.order_id IS NULL
                         GROUP BY o.order_id, o.status, o.is_rushed, o.created_at, c.fullname, c.address, c.phone_number
                         ORDER BY o.created_at DESC";
                 
@@ -87,6 +93,9 @@
             }
         }
 
+        /**
+         * Get a single order with details (only if not already archived)
+         */
         public static function getOrderWithDetails($order_id) {
             try {
                 $sql = "SELECT 
@@ -101,8 +110,10 @@
                             c.phone_number
                         FROM orders o
                         INNER JOIN customer c ON o.customer_id = c.customer_id
+                        LEFT JOIN gas_archived_orders lao ON o.order_id = lao.order_id
                         WHERE o.order_id = :order_id 
                         AND o.business_type = 'Gas System'
+                        AND lao.order_id IS NULL
                         LIMIT 1";
                 
                 $stmt = self::$conn->prepare($sql);
@@ -310,6 +321,48 @@
                 
             } catch (PDOException $e) {
                 die("Error deleting order item: " . $e->getMessage());
+            }
+        }
+
+        /**
+         * Get today's active Gas orders (excludes archived orders)
+         */
+        public static function getTodaysOrders($limit = 50, $offset = 0) {
+            try {
+                $today = date('Y-m-d');
+
+                $sql = "SELECT 
+                            o.order_id,
+                            o.status,
+                            o.is_rushed,
+                            o.created_at,
+                            c.fullname,
+                            c.address,
+                            c.phone_number,
+                            COALESCE((SELECT SUM(goi.quantity) 
+                                      FROM gas_ordered_items goi
+                                      WHERE goi.order_id = o.order_id), 0) as total_items
+                        FROM orders o
+                        INNER JOIN customer c ON o.customer_id = c.customer_id
+                        LEFT JOIN gas_archived_orders gao ON o.order_id = gao.order_id
+                        WHERE o.business_type = 'Gas System'
+                          AND DATE(o.created_at) = :today
+                          AND gao.order_id IS NULL
+                        ORDER BY o.created_at DESC
+                        LIMIT :limit OFFSET :offset";
+
+                $stmt = self::$conn->prepare($sql);
+                $stmt->bindParam(':today', $today);
+                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+                $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                return count($results) > 0 ? $results : null;
+
+            } catch (PDOException $e) {
+                die("Error fetching today's gas orders: " . $e->getMessage());
             }
         }
 

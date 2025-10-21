@@ -1,7 +1,10 @@
 <?php
-    require_once '../database/Database.php';
-    require_once '../Models/GasCustomer.php';
-    include '../layout/header.php';
+require_once '../database/Database.php';
+require_once '../Models/Models.php';
+require_once '../Models/GasCustomer.php';
+require_once '../Models/Order.php';
+require_once '../Models/GasOrder.php';
+include '../layout/header.php';
 
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
         try {

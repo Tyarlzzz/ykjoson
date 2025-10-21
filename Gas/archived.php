@@ -5,11 +5,14 @@ if (!isset($_SESSION['owner_logged_in']) || $_SESSION['owner_logged_in'] !== tru
     header('Location: ownerAccess.php');
     exit;
 }
+?>
 
+<?php 
 require '../layout/header.php';
 require_once '../database/Database.php';
 require_once '../Models/Models.php';
 require_once '../Models/GasArchivedOrder.php';
+require_once '../Models/GasOrder.php';
 
 // Initialize database connection
 $database = new Database();
@@ -32,7 +35,7 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
       <div>
         <h1 class="ps-3 text-3xl font-['Outfit'] font-extrabold border-l-4 border-gray-900 text-gray-800">Inventory & Sales Report</h1>
       </div>
-      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2">
         <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
         <a href="logoutInventorySales.php" class="bg-red-600 text-white py-1 px-4 rounded-full">Logout</a>
       </div>
@@ -45,11 +48,11 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
             <a href="salesReport.php" class="px-5 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Sales
             Report</a>
             <a href="pricing.php"
-            class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Inventory</a>
+            class="px-8 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Pricing</a>
             <a href="../Rider/ManageRiders.php"
             class="px-10 py-1 bg-gray-300 text-gray-700 font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-0">Riders</a>
             <a href="archived.php"
-            class="px-8 py-1 bg-red-600 text-white font-semibold border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Archived</a>
+            class="px-8 py-1 bg-red-600 text-white border-l-2 border-gray-400 rounded-t-2xl -ml-3 z-10">Archived</a>
         </div>
 
 
@@ -73,7 +76,7 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
       </div>
 
       <div class="overflow-x-auto rounded-xl border border-gray-500">
-        <table id="archivedOrdersTable" class="w-full text-left table-auto ">
+        <table id="gasArchivedOrdersTable" class="w-full text-left table-auto ">
           <thead class="bg-gray-50">
             <tr class="text-sm text-black-500 uppercase">
               <th class="p-4 text-left">Order #</th>
@@ -125,7 +128,7 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
-    const table = document.getElementById('archivedOrdersTable');
+    const table = document.getElementById('gasArchivedOrdersTable');
     const tbody = table.getElementsByTagName('tbody')[0];
     const rows = Array.from(tbody.getElementsByTagName('tr'));
 

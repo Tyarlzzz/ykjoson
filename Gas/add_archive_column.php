@@ -6,7 +6,7 @@ $db = new Database();
 $conn = $db->getConnection();
 
 // Convert PDO to mysqli for ALTER TABLE
-$mysqli = new mysqli('127.0.0.1', 'root', 'Gwenadam1217.', 'ykjoson');
+$mysqli = new mysqli('localhost', 'root', 'cessganda', 'ykjoson');
 
 // For MySQL versions that don't support IF NOT EXISTS, check first
 $checkColumn = "SHOW COLUMNS FROM orders LIKE 'archive_at'";

@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeBtn = document.getElementById('closeGasModal');
     const statusContainer = document.getElementById('statusOptionsContainer');
 
+setTimeout(() => {
+    fetch('/ykjoson/Gas/process_auto_archive.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.archived_count > 0) {
+                console.log(`✓ Archived ${data.archived_count} order(s) after 70 seconds`);
+                // Silently reload the page so user sees archive updated
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.log('Archive check completed');
+        });
+}, 70000); // Wait 70 seconds before checking (60 second delay + 10 second buffer)
+
     // All possible statuses with their styling
     const allStatuses = {
         'Pending': {
@@ -118,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        fetch('updateStatus.php', {
+        fetch('/ykjoson/Gas/updateStatus.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -180,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        fetch('updateStatus.php', {
+        fetch('/ykjoson/Gas/updateStatus.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
