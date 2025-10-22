@@ -59,7 +59,7 @@ try {
         WHERE DATE(o.order_date) = :today
     ");
     $stmt_gas->execute([':today' => $today]);
-    $gas_sales = (float)$stmt_gas->fetchColumn();
+    $gas_sales = (float) $stmt_gas->fetchColumn();
 
     // LAUNDRY
     $stmt_laundry = $conn->prepare("
@@ -69,10 +69,17 @@ try {
         WHERE DATE(o.order_date) = :today
     ");
     $stmt_laundry->execute([':today' => $today]);
-    $laundry_sales = (float)$stmt_laundry->fetchColumn();
+    $laundry_sales = (float) $stmt_laundry->fetchColumn();
 
     $total_sales = $gas_sales + $laundry_sales;
-    $total_amount = $new_petty + $total_sales;
+
+    // ✅ Get total petty cash from ALL riders
+    $stmt_all_petty = $conn->query("SELECT IFNULL(SUM(petty_cash), 0) AS total_petty FROM riders");
+    $total_petty_all = (float) $stmt_all_petty->fetchColumn();
+
+    // ✅ Combine for grand total display
+    $total_amount = $total_petty_all + $total_sales;
+
 
     echo json_encode([
         'success' => true,

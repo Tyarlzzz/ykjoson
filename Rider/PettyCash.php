@@ -15,7 +15,7 @@ try {
 }
 
 // Determine active rider
-$active_rider_id = isset($_GET['rider_id']) ? (int)$_GET['rider_id'] : ($riders[0]['id'] ?? 1);
+$active_rider_id = isset($_GET['rider_id']) ? (int) $_GET['rider_id'] : ($riders[0]['id'] ?? 1);
 $selected_rider = null;
 foreach ($riders as $rider) {
     if ($rider['id'] == $active_rider_id) {
@@ -45,7 +45,7 @@ try {
         ) AS gas_orders
     ");
     $stmt_gas->execute([':today' => $today]);
-    $gas_sales = (float)$stmt_gas->fetchColumn();
+    $gas_sales = (float) $stmt_gas->fetchColumn();
 
     // LAUNDRY SALES — each order counted once (no duplication)
     $stmt_laundry = $conn->prepare("
@@ -56,7 +56,7 @@ try {
           AND o.business_type = 'Laundry System'
     ");
     $stmt_laundry->execute([':today' => $today]);
-    $laundry_sales = (float)$stmt_laundry->fetchColumn();
+    $laundry_sales = (float) $stmt_laundry->fetchColumn();
 
     // Total combined
     $total_sales = $gas_sales + $laundry_sales;
@@ -66,7 +66,7 @@ try {
 }
 
 
-$current_petty = (float)($selected_rider['petty_cash'] ?? 0);
+$current_petty = (float) ($selected_rider['petty_cash'] ?? 0);
 $total_amount = $total_sales + $current_petty;
 ?>
 
@@ -74,7 +74,8 @@ $total_amount = $total_sales + $current_petty;
     <div class="w-full">
         <!-- Header -->
         <div class="mb-8 flex justify-between items-center">
-            <h1 class="font-[Outfit] ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Petty Cash</h1>
+            <h1 class="font-[Outfit] ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Petty Cash
+            </h1>
             <p class="text-gray-500 text-base" id="currentDate"></p>
         </div>
 
@@ -83,7 +84,7 @@ $total_amount = $total_sales + $current_petty;
             <?php foreach ($riders as $rider): ?>
                 <?php $is_active = ($rider['id'] == $active_rider_id); ?>
                 <a href="?rider_id=<?= $rider['id'] ?>"
-                   class="rider-tab px-4 py-2 rounded-xl font-semibold text-white <?= $is_active ? 'bg-blue-600' : 'bg-gray-400' ?>">
+                    class="rider-tab px-4 py-2 rounded-xl font-semibold text-white <?= $is_active ? 'bg-blue-600' : 'bg-gray-400' ?>">
                     <?= htmlspecialchars($rider['fullname']) ?>
                 </a>
             <?php endforeach; ?>
@@ -93,9 +94,12 @@ $total_amount = $total_sales + $current_petty;
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-20">
             <!-- Left: Calculator -->
             <div class="lg:col-span-3 bg-white shadow-md rounded-xl p-6 self-start">
-                <div class="bg-gray-100 rounded-xl flex justify-between items-center p-8 mb-6 shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]">
+                <div
+                    class="bg-gray-100 rounded-xl flex justify-between items-center p-8 mb-6 shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]">
                     <span class="text-6xl font-bold">₱</span>
-                    <input type="text" id="amountInput" class="flex-1 ml-2 bg-transparent outline-none text-4xl font-bold text-gray-700 pt-4 text-end" readonly>
+                    <input type="text" id="amountInput"
+                        class="flex-1 ml-2 bg-transparent outline-none text-4xl font-bold text-gray-700 pt-4 text-end"
+                        readonly>
                 </div>
 
                 <div class="flex justify-end mb-4">
@@ -105,13 +109,14 @@ $total_amount = $total_sales + $current_petty;
                 <!-- Number Pad -->
                 <div class="grid grid-cols-3 gap-4" id="numpad">
                     <?php
-                        $numbers = [1,2,3,4,5,6,7,8,9,".",0];
-                        foreach ($numbers as $num) {
-                            $jsNum = is_numeric($num) ? $num : "'$num'";
-                            echo "<button onclick='appendNumber($jsNum)' class='bg-gray-200 text-5xl shadow-md font-extrabold py-2 rounded-xl'>$num</button>";
-                        }
+                    $numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0];
+                    foreach ($numbers as $num) {
+                        $jsNum = is_numeric($num) ? $num : "'$num'";
+                        echo "<button onclick='appendNumber($jsNum)' class='bg-gray-200 text-5xl shadow-md font-extrabold py-2 rounded-xl'>$num</button>";
+                    }
                     ?>
-                    <button type="button" onclick="submitAmount()" class="bg-blue-600 text-2xl font-semibold text-white py-4 rounded-xl">Submit</button>
+                    <button type="button" onclick="submitAmount()"
+                        class="bg-blue-600 text-2xl font-semibold text-white py-4 rounded-xl">Submit</button>
                 </div>
             </div>
 
@@ -120,16 +125,17 @@ $total_amount = $total_sales + $current_petty;
                 <h2 class="font-bold text-lg text-center">PETTY CASH</h2>
                 <p class="text-black-500 text-base border-b-2 border-gray-500 text-center" id="receiptDate"></p>
                 <p class="text-md text-black-800 font-semibold mb-4 text-left">
-                Name: <?= htmlspecialchars($selected_rider['fullname'] ?? 'No rider available, add one first!') ?><br>
-                    <div class="flex items-center justify-between mt-1">
-                        <span id="currentPettyCash" class="text-sm text-gray-500">
-                            Current Petty Cash: ₱<?= number_format($current_petty, 2) ?>
-                        </span>
-                        <button onclick="clearPettyCash()"
-                                class="ml-2 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold px-3 py-1 rounded-md">
-                            Clear
-                        </button>
-                    </div>
+                    Name:
+                    <?= htmlspecialchars($selected_rider['fullname'] ?? 'No rider available, add one first!') ?><br>
+                <div class="flex items-center justify-between mt-1">
+                    <span id="currentPettyCash" class="text-sm text-gray-500">
+                        Current Petty Cash: ₱<?= number_format($current_petty, 2) ?>
+                    </span>
+                    <button onclick="clearPettyCash()"
+                        class="ml-2 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold px-3 py-1 rounded-md">
+                        Clear
+                    </button>
+                </div>
                 </p>
 
 
@@ -153,7 +159,7 @@ $total_amount = $total_sales + $current_petty;
                     </div>
 
                     <div class="flex justify-between items-center border-t-2 border-black pt-4">
-                        <span class="text-gray-600 font-semibold">Total Amount</span>
+                        <span class="text-gray-600 font-semibold">Total Amount for Rider</span>
                     </div>
                     <div class="flex justify-end items-center">
                         <p id="totalAmount" class="text-5xl font-extrabold text-black-700">
@@ -164,8 +170,10 @@ $total_amount = $total_sales + $current_petty;
 
                 <!-- Buttons -->
                 <div class="mt-6 flex gap-4">
-                    <button onclick="deletePettyCash()" class="flex-1 bg-red-500 text-white py-2 rounded-md font-semibold">Delete</button>
-                    <button onclick="confirmPettyCash()" class="flex-1 bg-green-500 text-white py-2 rounded-md font-semibold">Confirm</button>
+                    <button onclick="deletePettyCash()"
+                        class="flex-1 bg-red-500 text-white py-2 rounded-md font-semibold">Delete</button>
+                    <button onclick="confirmPettyCash()"
+                        class="flex-1 bg-green-500 text-white py-2 rounded-md font-semibold">Confirm</button>
                 </div>
             </div>
         </div>
