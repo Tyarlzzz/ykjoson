@@ -9,7 +9,7 @@ $database = new Database();
 $conn = $database->getConnection();
 Model::setConnection($conn);
 
-$todaysOrders = Gas::getTodaysOrders();
+$todaysOrders = GasOrder::getAllOrdersWithDetails();
 
 // Get monthly brand sales data
 $brandSales = GasOrder::getMonthlyBrandSales();
