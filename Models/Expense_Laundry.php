@@ -96,5 +96,20 @@
                 die("Error calculating total: " . $e->getMessage());
             }
         }
+
+        public static function deleteMonth($month, $year, $business_type) {
+            try {
+                $sql = "DELETE FROM " . static::$table . " WHERE business_type = :business_type AND month = :month AND year = :year";
+                $stmt = self::$conn->prepare($sql);
+                $success = $stmt->execute([
+                    ':business_type' => $business_type,
+                    ':month' => $month,
+                    ':year' => $year
+                ]);
+                return $success;
+            } catch (PDOException $e) {
+                die("Error deleting expenses: " . $e->getMessage());
+            }
+        }
     }
 ?>

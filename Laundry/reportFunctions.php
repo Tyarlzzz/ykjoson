@@ -225,7 +225,9 @@ function getWeeklySalesData($pdo, $year, $month)
         'week' => $week,
         'sales' => $report['totalSales'],
         'customers' => $report['customerCount'],
-        'paid' => $report['paidCount']
+        'paid' => $report['paidCount'],
+        'netWorth' => isset($report['netWorth']) ? $report['netWorth'] : ($report['totalSales'] - ($report['weeklyExpenses'] ?? 0)),
+        'weeklyExpenses' => $report['weeklyExpenses'] ?? 0
       ];
     }
 

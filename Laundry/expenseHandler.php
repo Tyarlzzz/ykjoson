@@ -71,6 +71,43 @@
             exit;
         }
 
+        if ($method === 'DELETE') {
+            $input = json_decode(file_get_contents('php://input'), true);
+
+            if (!$input) {
+                echo json_encode(["status" => "error", "message" => "Invalid JSON input."]);
+                exit;
+            }
+
+            $business_type = $input['business_type'] ?? '';
+            $month = $input['month'] ?? 0;
+            $year = $input['year'] ?? 0;
+
+            if (empty($business_type) || $month < 1 || $month > 12 || $year < 2000) {
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Invalid parameters"
+                ]);
+                exit;
+            }
+
+            // Delete all expenses for this month
+            $deleted = Expense::deleteMonth($month, $year, $business_type);
+
+            if ($deleted) {
+                echo json_encode([
+                    "status" => "success",
+                    "message" => "Month reset successfully"
+                ]);
+            } else {
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Failed to reset month"
+                ]);
+            }
+            exit;
+        }
+
         echo json_encode(["status" => "error", "message" => "Invalid request method."]);
 
     } catch (Throwable $e) {

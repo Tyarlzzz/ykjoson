@@ -37,7 +37,7 @@
                 <div class="flex justify-between items-center pb-4">
                     <h2 class="text-3xl font-[Outfit] space-x-2">Weekly Expenses Report&nbsp;&nbsp;<span
                             class="font-[Switzer] text-lg"><?php echo date("F, Y"); ?></span></h2>
-                    <button id="createWeekBtn"
+                    <button id="resetMonthBtn"
                         class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-xl font-['Switzer'] flex items-center gap-2 hover:bg-blue-700 transition-colors">
                         <svg class="w-10 h-10 flex-shrink-0 mt-2" xmlns="http://www.w3.org/2000/svg" version="1.1"
                             viewBox="-5.0 -10.0 110.0 135.0">
@@ -45,7 +45,7 @@
                                 d="m83.602 16.398c-18.5-18.5-48.699-18.5-67.199 0s-18.5 48.699 0 67.199 48.699 18.5 67.199 0c18.5-18.496 18.5-48.699 0-67.199zm-9.1016 37.801h-20.398v20.398h-8.3984v-20.398h-20.301v-8.3984h20.301l-0.003906-20.301h8.3984v20.301h20.301z"
                                 fill="white" />
                         </svg>
-                        <span class="text-2xl">Create Week Expenses</span>
+                        <span class="text-2xl">Reset Week Expenses</span>
                     </button>
                 </div>
 

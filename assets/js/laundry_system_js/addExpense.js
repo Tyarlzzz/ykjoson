@@ -1,14 +1,14 @@
-const createWeekBtn = document.getElementById('createWeekBtn');
 const cardsList = document.getElementById('cardsList');
 const weekTitle = document.getElementById('weekTitle');
 const saveExpensesBtn = document.getElementById('saveExpensesBtn');
 const cancelBtn = document.getElementById('cancelBtn');
 const productList = document.querySelector('.productList');
 const addBtn = document.getElementById('addProductBtn');
+const resetMonthBtn = document.getElementById('resetMonthBtn');
 
 let currentEditingWeek = 1;
 let weekExpenses = {};
-let MAX_WEEKS = 4;
+const MAX_WEEKS = 4;
 
 const monthlyCardContainer = document.createElement('div');
 monthlyCardContainer.className =
@@ -31,6 +31,13 @@ function createProductRow(productName = '', price = '') {
   `;
   row.querySelector('.remove-btn').addEventListener('click', () => row.remove());
   return row;
+}
+
+// Initialize all weeks with empty data
+function initializeWeeks() {
+  for (let i = 1; i <= MAX_WEEKS; i++) {
+    weekExpenses[`week${i}`] = { products: [], total: 0 };
+  }
 }
 
 function createWeekCard(weekNumber, totalExpenses = 0) {
@@ -71,8 +78,37 @@ function openExpenseForm(weekNumber) {
   cancelBtn.classList.remove('hidden');
 }
 
+// Update the week card display
+function updateWeekCard(weekNumber, total) {
+  const existingCard = cardsList.querySelector(`[data-week="${weekNumber}"]`);
+  if (existingCard) {
+    existingCard.querySelector('.week-total').textContent =
+      `₱ ${Number(total).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+  }
+}
+
+// Update monthly total display
+function updateMonthlyTotalDisplay() {
+  let total = 0;
+  Object.values(weekExpenses).forEach(week => total += week.total || 0);
+  document.getElementById('monthlyTotal').textContent =
+    `₱ ${Number(total).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+}
+
+// Render all week cards
+function renderAllWeekCards() {
+  cardsList.innerHTML = '';
+  for (let i = 1; i <= MAX_WEEKS; i++) {
+    const weekData = weekExpenses[`week${i}`] || { products: [], total: 0 };
+    const card = createWeekCard(i, weekData.total);
+    cardsList.appendChild(card);
+  }
+}
+
 // Add new product
-addBtn.addEventListener('click', () => productList.appendChild(createProductRow()));
+addBtn.addEventListener('click', () => {
+  productList.appendChild(createProductRow());
+});
 
 saveExpensesBtn.addEventListener('click', async () => {
   const productRows = document.querySelectorAll('.product-row');
@@ -123,13 +159,13 @@ saveExpensesBtn.addEventListener('click', async () => {
         showConfirmButton: false
       });
 
+      // Update local state
       weekExpenses[`week${currentEditingWeek}`] = { products, total };
-      const existingCard = cardsList.querySelector(`[data-week="${currentEditingWeek}"]`);
-      if (existingCard) {
-        existingCard.querySelector('.week-total').textContent =
-          `₱ ${Number(total).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-      }
-
+      
+      // Update card display
+      updateWeekCard(currentEditingWeek, total);
+      
+      // Update monthly total
       updateMonthlyTotalDisplay();
 
     } else {
@@ -148,22 +184,7 @@ saveExpensesBtn.addEventListener('click', async () => {
   }
 });
 
-createWeekBtn.addEventListener('click', () => {
-  const existingWeeks = Object.keys(weekExpenses).length;
-  if (existingWeeks >= MAX_WEEKS) {
-    Swal.fire({
-      icon: 'info',
-      title: 'All Weeks Created',
-      text: 'All 4 weeks have been created. Start a new month instead.'
-    });
-    return;
-  }
-  const newWeekNum = existingWeeks + 1;
-  weekExpenses[`week${newWeekNum}`] = { products: [], total: 0 };
-  const newCard = createWeekCard(newWeekNum, 0);
-  cardsList.appendChild(newCard);
-  openExpenseForm(newWeekNum);
-});
+// Note: UI uses 4 fixed week cards; no dynamic "create week" button. Weeks initialized on load.
 
 async function loadAllWeeks() {
   const month = new Date().getMonth() + 1;
@@ -174,30 +195,40 @@ async function loadAllWeeks() {
     const result = await response.json();
 
     if (result.status === 'success') {
-      const weeks = result.data.weeks || [];
+      const weeksData = result.data.weeks || [];
       const monthlyTotal = result.data.monthly_total || 0;
 
-      // Update monthly total card
+      // Initialize all weeks with empty data first
+      initializeWeeks();
+
+      // Populate with data
+      if (weeksData.length > 0) {
+        weeksData.forEach(w => {
+          const weekNum = Number(w.week_number);
+          if (weekNum >= 1 && weekNum <= MAX_WEEKS) {
+            let products = [];
+            try {
+              products = w.expense_items ? JSON.parse(w.expense_items) : [];
+            } catch (e) {
+              console.error('Error parsing expense items:', e);
+              products = [];
+            }
+            const total = parseFloat(w.total_amount);
+            weekExpenses[`week${weekNum}`] = {
+              products,
+              total: Number.isFinite(total) ? total : 0
+            };
+          }
+        });
+      }
+
+      // Render all week cards
+      renderAllWeekCards();
+
       document.getElementById('monthlyTotal').textContent =
         `₱ ${Number(monthlyTotal).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
 
-      // Reset week cards
-      cardsList.innerHTML = '';
-      weekExpenses = {};
-
-      if (weeks.length > 0) {
-        weeks.forEach(w => {
-          const weekNum = w.week_number;
-          const products = JSON.parse(w.expense_items);
-          weekExpenses[`week${weekNum}`] = { products, total: parseFloat(w.total_amount) };
-          const card = createWeekCard(weekNum, w.total_amount);
-          cardsList.appendChild(card);
-        });
-      } else {
-        weekExpenses[`week1`] = { products: [], total: 0 };
-        cardsList.appendChild(createWeekCard(1, 0));
-      }
-
+      // Open Week 1 by default
       openExpenseForm(1);
     } else {
       Swal.fire({
@@ -223,5 +254,66 @@ function updateMonthlyTotalDisplay() {
 }
 
 cancelBtn.addEventListener('click', () => loadProductsForWeek(currentEditingWeek));
+
+// Reset month - clear all expenses
+resetMonthBtn.addEventListener('click', async () => {
+  const result = await Swal.fire({
+    icon: 'warning',
+    title: 'Reset Month?',
+    text: 'This will reset all expenses for the current month. This action cannot be undone.',
+    showCancelButton: true,
+    confirmButtonColor: '#2563eb',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Yes, Reset Month',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (result.isConfirmed) {
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+
+    try {
+      const response = await fetch('expenseHandler.php', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          business_type: 'Laundry Business',
+          month: month,
+          year: year
+        })
+      });
+      const deleteResult = await response.json();
+
+      if (deleteResult.status === 'success') {
+        Swal.fire({
+          icon: 'success',
+          title: 'Month Reset!',
+          text: 'All expenses have been cleared successfully.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+
+        // Reset local state
+        initializeWeeks();
+        renderAllWeekCards();
+        updateMonthlyTotalDisplay();
+        openExpenseForm(1);
+
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Reset Failed',
+          text: deleteResult.message || 'Could not reset month data.'
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Connection Error!',
+        text: error.message
+      });
+    }
+  }
+});
 
 document.addEventListener('DOMContentLoaded', loadAllWeeks);
