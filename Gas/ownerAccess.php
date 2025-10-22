@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </label>
         <div class="relative">
           <input type="password" id="password" name="password"
-            class="w-full px-4 py-2 mb-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
             placeholder="Enter password" required>
           <button type="button" id="togglePassword"
             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
@@ -60,9 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </svg>
           </button>
         </div>
-        <a href="#" class="text-sm ms-1 mt-3">
-          Forgot password?
-        </a>
+        <div>
+          <button type="button" id="forgotPassword"
+            class="text-sm font-medium mt-0">
+            Forgot Password?
+          </button>
+        </div>
       </div>
 
       <div class="flex justify-end mt-6">
