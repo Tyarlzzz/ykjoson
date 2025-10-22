@@ -128,8 +128,19 @@ function updateSummaryCardsForMonth() {
 
     if (salesCard) salesCard.textContent = `₱ ${currentWeek.sales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     if (customersCard) customersCard.textContent = currentWeek.customers;
-    if (deliveredCard) deliveredCard.textContent = currentWeek.delivered;
-    if (netWorthCard) netWorthCard.textContent = `₱ ${currentWeek.sales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    // Use 'paid' (server provides the number of paid/delivered orders)
+    if (deliveredCard) deliveredCard.textContent = currentWeek.paid ?? 0;
+
+    // Use netWorth if provided by server; otherwise fallback to sales - weeklyExpenses when available
+    let netDisplay = null;
+    if (typeof currentWeek.netWorth !== 'undefined') {
+      netDisplay = currentWeek.netWorth;
+    } else if (typeof currentWeek.weeklyExpenses !== 'undefined') {
+      netDisplay = currentWeek.sales - currentWeek.weeklyExpenses;
+    } else {
+      netDisplay = currentWeek.sales;
+    }
+    if (netWorthCard) netWorthCard.textContent = `₱ ${Number(netDisplay).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
     // Update week display
     const weekDisplay = document.getElementById('weekDisplay');
