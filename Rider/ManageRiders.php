@@ -133,7 +133,7 @@ if (isset($_GET['error'])) {
 
             <div class="flex item-end mt-6">
               <button type="submit"
-                class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition">
+                class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition">
                 <span class="text-xl">+</span>
                 <span>Add Rider</span>
               </button>
