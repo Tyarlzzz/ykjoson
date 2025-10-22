@@ -83,7 +83,6 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
               <th class="p-4 text-left">Date Delivered</th>
               <th class="p-4 text-left">Customer Name</th>
               <th class="p-4 text-left">Phone Number</th>
-              <th class="p-4 text-center">Weight</th>
               <th class="p-4 text-right">Total Price</th>
             </tr>
           </thead>
@@ -99,7 +98,6 @@ $totalArchived = $archivedOrders ? count($archivedOrders) : 0;
                           <td class="p-4 text-gray-600"><?php echo date('M j, Y', strtotime($order->date_delivered)); ?></td>
                           <td class="p-4 text-gray-800 font-medium"><?php echo htmlspecialchars($order->fullname); ?></td>
                           <td class="p-4 text-gray-600"><?php echo htmlspecialchars($order->phone_number); ?></td>
-                          <td class="p-4 text-gray-600 text-center"><?php echo number_format($order->total_weight, 1); ?> kg</td>
                           <td class="p-4 text-gray-800 font-semibold text-right">₱<?php echo number_format($order->total_price, 2); ?></td>
                       </tr>
                   <?php endforeach; ?>
