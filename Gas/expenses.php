@@ -45,7 +45,7 @@
                                 d="m83.602 16.398c-18.5-18.5-48.699-18.5-67.199 0s-18.5 48.699 0 67.199 48.699 18.5 67.199 0c18.5-18.496 18.5-48.699 0-67.199zm-9.1016 37.801h-20.398v20.398h-8.3984v-20.398h-20.301v-8.3984h20.301l-0.003906-20.301h8.3984v20.301h20.301z"
                                 fill="white" />
                         </svg>
-                        <span class="text-2xl">Create Week Expenses</span>
+                        <span class="text-2xl">Reset Week Expenses</span>
                     </button>
                 </div>
 
