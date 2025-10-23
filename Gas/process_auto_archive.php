@@ -52,28 +52,12 @@ try {
         try {
             error_log("🔁 Auto-archiving Gas order ID: $orderId");
 
-            // ✅ Step 1: Archive order while still in 'Paid' status
+            // ✅ Archive the order (this will copy to archive table and delete original)
             $result = GasArchivedOrder::archiveOrder($orderId);
 
-            // ✅ Step 2: Change status to Delivered only after successful archive
             if ($result) {
-                $updateStatusStmt = $pdo->prepare("
-                    UPDATE orders 
-                    SET status = 'Delivered', updated_at = NOW()
-                    WHERE order_id = ? AND status = 'Paid'
-                ");
-                $updateStatusStmt->execute([$orderId]);
-
-                // Step 3: Clear archive_at after successful archive
-                $clearStmt = $pdo->prepare("
-                    UPDATE orders 
-                    SET archive_at = NULL 
-                    WHERE order_id = ?
-                ");
-                $clearStmt->execute([$orderId]);
-
                 $archived[] = $orderId;
-                error_log("✅ Successfully auto-archived Gas order ID: $orderId");
+                error_log("✅ Successfully auto-archived and removed Gas order ID: $orderId");
             } else {
                 $errors[] = "❌ Failed to archive order $orderId";
                 error_log("❌ Failed to archive Gas order ID: $orderId");
