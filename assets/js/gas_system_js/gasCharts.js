@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
           borderColor: 'rgba(220,38,38,1)',
           backgroundColor: 'rgba(220,38,38,0.1)',
           fill: true,
-          tension: 0.4,
-          pointRadius: 4,
+          tension: 0,
+          pointRadius: 6,
           pointHoverRadius: 6
         }]
       },
