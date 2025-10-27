@@ -70,8 +70,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="tops-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="tops-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('tops')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('tops')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('tops')"
@@ -91,8 +93,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="bottoms-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="bottoms-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('bottoms')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('bottoms')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('bottoms')"
@@ -112,8 +116,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="undies-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="undies-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('undies')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('undies')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('undies')"
@@ -133,8 +139,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="socks-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="socks-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('socks')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('socks')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('socks')"
@@ -163,8 +171,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="towels-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="towels-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('towels')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('towels')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('towels')"
@@ -184,8 +194,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="beds-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="beds-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('beds')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('beds')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('beds')"
@@ -205,8 +217,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="gowns-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="gowns-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('gowns')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('gowns')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('gowns')"
@@ -226,8 +240,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="barong-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="barong-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('barong')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('barong')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('barong')"
@@ -250,8 +266,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="curtains-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="curtains-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('curtains')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('curtains')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('curtains')"
@@ -271,8 +289,10 @@
                 </div>
                 <div class="flex items-center justify-center gap-1">
                   <div class="inline-flex overflow-hidden border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="comforter-qty" contenteditable="true" class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
+                    <span id="comforter-qty" contenteditable="true" 
+                      class="w-12 text-center font-bold text-gray-700 text-xl focus:outline-none"
                       onfocus="this.classList.add('bg-gray-100')"
+                      oninput="handleQtyChange('comforter')"
                       onblur="this.classList.remove('bg-gray-100'); handleQtyChange('comforter')">0</span>
                   </div>
                   <button type="button" onclick="decreaseQty('comforter')"
