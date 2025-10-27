@@ -12,12 +12,6 @@ if (isset($_SESSION['user_email'])) {
     exit();
 }
 
-// Check if user is already logged in
-if (isset($_SESSION['user_email'])) {
-    header('Location: ../Laundry/index.php');
-    exit();
-}
-
 
 $validEmail = 'ykjoson@gmail.com';
 $validPasswordHash = '$2y$10$EUKmcrJLjbYY0tGxhJNrYuUiJxTnJvlmRBUyLcxC1jzQz46sYuy0S'; // 'password123'
