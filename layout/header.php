@@ -1,3 +1,27 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Public endpoints that should not trigger redirect to login
+$publicPaths = ["/auth/login.php", "/auth/send.php"];
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+$isPublic = false;
+foreach ($publicPaths as $p) {
+    if (strpos($requestUri, $p) !== false) {
+        $isPublic = true;
+        break;
+    }
+}
+
+// redirect to login if not authenticated (sa lahat ng pages) and if not public yung URL.
+if (empty($_SESSION['user_email']) && !$isPublic) {
+    // Use an absolute path relative to the webroot. Update if you have different base URL.
+    header('Location: /projects/ykjoson/auth/login.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>

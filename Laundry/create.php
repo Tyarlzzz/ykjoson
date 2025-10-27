@@ -6,8 +6,10 @@
     <!-- Header --> <!-- DITO MAY CHANGES -->
     <div class="mb-8 flex justify-between items-center">
       <h1 class="font-[Outfit] ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Add Order</h1>
-        <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
-        
+      <div class="flex justify-center items-center gap-2">
+            <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+            <a href="../auth/logout.php" class="bg-blue-600 text-white py-1 px-4 rounded-full">Logout</a>
+      </div>
     </div>
     <form action="store.php" method="POST" id="orderForm">
       <div class="flex gap-8">
