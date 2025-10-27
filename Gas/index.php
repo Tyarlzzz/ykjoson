@@ -34,7 +34,10 @@ if ($brandSales) {
     <!-- Header -->
     <div class="flex justify-between items-center">
       <h1 class="font-['Outfit'] font-bold text-3xl py-3 pl-2">&nbsp;&nbsp;|&nbsp;&nbsp;Point of Sale System</h1>
-      <p class="text-gray-500 text-base pr-6"><?php echo date('F j, Y'); ?></p>
+      <div class="flex justify-center items-center gap-2 me-6">
+        <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+        <a href="../auth/logout.php" class="bg-red-600 text-white py-1 px-4 rounded-full">Logout</a>
+      </div>
     </div>
 
     <!-- Statistics Cards Section -->

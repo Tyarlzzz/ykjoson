@@ -4,9 +4,12 @@
 <main class="font-[Switzer] flex-1 p-8 bg-gray-50 overflow-auto">
   <div class="w-full">
     <!-- Header -->
-    <div class="mb-8 flex justify-between items-center">
+      <div class="mb-8 flex justify-between items-center">
       <h1 class="font-[Outfit] ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Add Order</h1>
-      <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+      <div class="flex justify-center items-center gap-2">
+        <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+        <a href="../auth/logout.php" class="bg-red-600 text-white py-1 px-4 rounded-full">Logout</a>
+      </div>
     </div>
 
     <form action="store.php" method="POST" id="orderForm">
@@ -57,8 +60,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="petron-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
+                    <span id="petron-qty" class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <button type="button" onclick="decreaseQty('petron')"
@@ -80,8 +82,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="econo-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
+                    <span id="econo-qty" class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <button type="button" onclick="decreaseQty('econo')"
@@ -103,8 +104,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
                   <div
                     class="inline-flex border-2 border-gray-200 shadow-sm items-center justify-center bg-white rounded-md px-2 py-1">
-                    <span id="seagas-qty"
-                      class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
+                    <span id="seagas-qty" class="w-12 text-center font-bold text-gray-700 text-xl">0</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <button type="button" onclick="decreaseQty('seagas')"

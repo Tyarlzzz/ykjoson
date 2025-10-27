@@ -76,7 +76,10 @@ $total_amount = $total_sales + $current_petty;
         <div class="mb-8 flex justify-between items-center">
             <h1 class="font-[Outfit] ps-3 text-3xl font-extrabold border-l-4 border-gray-900 text-gray-800">Petty Cash
             </h1>
-            <p class="text-gray-500 text-base" id="currentDate"></p>
+            <div class="flex justify-center items-center gap-2">
+                <p class="text-gray-500 text-base"><?php echo date('F j, Y'); ?></p>
+                <a href="../auth/logout.php" class="border-2 border-black text-black py-1 px-3 rounded-full">Logout</a>
+            </div>
         </div>
 
         <!-- Rider Tabs -->
