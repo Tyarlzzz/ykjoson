@@ -140,14 +140,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             fetch('send.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Password sent to your email! Please check your inbox and spam folder.');
+                } else {
+                    alert('Failed to send: ' + (data.message || 'Unknown error'));
                 }
             })
-            .then(response => {
-                alert('Forgotten your password? It was sent to your email');
-            })
             .catch(error => {
-                alert('Forgotten your password? It was sent to your email');
+                console.error('Error:', error);
+                alert('Error sending email. Please try again later.');
             });
         });
     </script>
