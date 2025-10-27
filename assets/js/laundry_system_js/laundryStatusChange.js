@@ -547,7 +547,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 </div>
                                                 ${breakdownHTML}
                                                 <p class="mt-3 text-xl font-bold text-green-700">TOTAL: ₱${parseFloat(orderData.total_price || 0).toFixed(2)}</p>
-                                                <p class="mt-3 text-sm text-gray-600">You can manually print the receipt later.</p>
                                             </div>
                                         `,
                                         icon: 'warning',
