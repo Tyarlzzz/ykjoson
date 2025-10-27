@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+
+// Prevent caching of this page
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 if (isset($_SESSION['user_email'])) {
     header('Location: ../Laundry/index.php');
     exit();
