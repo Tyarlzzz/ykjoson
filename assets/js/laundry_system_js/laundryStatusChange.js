@@ -427,9 +427,153 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                 case 'For Delivery':
                     availableStatuses = ['Delivered'];
-                    break;
+                    
+                    // Add Delivered button first
+                    availableStatuses.forEach(status => {
+                        const statusInfo = allStatuses[status];
+                        const button = document.createElement('button');
+                        button.className = `font-[Outfit] status-option w-full ${statusInfo.bgColor} ${statusInfo.textColor} py-4 rounded-md`;
+                        button.setAttribute('data-status', status);
+                        button.setAttribute('data-order-id', orderId);
+                        button.textContent = status;
+                        
+                        button.addEventListener('click', function() {
+                            updateOrderStatus(orderId, status);
+                        });
+                        
+                        statusContainer.appendChild(button);
+                    });
+                    
+                    // Add Reprint button below Delivered button
+                    const reprintButton = document.createElement('button');
+                    reprintButton.className = 'font-[Outfit] w-full bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-md mt-2 transition-colors';
+                    reprintButton.textContent = 'Reprint Receipt';
+                    
+                    reprintButton.addEventListener('click', function() {
+                        // Close modal first
+                        modal.classList.add('hidden');
+                        
+                        // Show printing loading
+                        Swal.fire({
+                            title: 'Reprinting Receipt...',
+                            text: 'Please wait...',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        // First fetch order data for breakdown
+                        fetch('getOrderTotal.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ order_id: parseInt(orderId) })
+                        })
+                        .then(response => response.json())
+                        .then(orderData => {
+                            // Now call print function
+                            return printReceipt(orderId)
+                                .then(printData => {
+                                    console.log('Reprint successful:', printData);
+                                    
+                                    let breakdownHTML = '';
+                                    if (orderData.breakdown) {
+                                        breakdownHTML = `
+                                            <div class="bg-blue-50 p-3 rounded-lg text-sm mt-3 border border-blue-200">
+                                                <p class="font-bold mb-2 text-blue-800">Price Breakdown:</p>
+                                                ${orderData.breakdown.clothes_total > 0 ? `<p class="text-gray-700">• Clothes: ₱${parseFloat(orderData.breakdown.clothes_total).toFixed(2)}</p>` : ''}
+                                                ${orderData.breakdown.comforter_total > 0 ? `<p class="text-gray-700">• Comforter/Curtains: ₱${parseFloat(orderData.breakdown.comforter_total).toFixed(2)}</p>` : ''}
+                                                ${orderData.breakdown.barong_total > 0 ? `<p class="text-gray-700">• Barong (${orderData.breakdown.barong_qty} pcs × ₱${parseFloat(orderData.breakdown.barong_price).toFixed(2)}): ₱${parseFloat(orderData.breakdown.barong_total).toFixed(2)}</p>` : ''}
+                                                ${orderData.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${orderData.breakdown.gowns_qty} pcs × ₱${parseFloat(orderData.breakdown.gowns_price).toFixed(2)}): ₱${parseFloat(orderData.breakdown.gowns_total).toFixed(2)}</p>` : ''}
+                                            </div>
+                                        `;
+                                    }
+                                    
+                                    const clothesWeight = orderData.clothes_weight || 0;
+                                    const comforterWeight = orderData.comforter_curtains_weight || 0;
+                                    const totalWeight = orderData.total_weight || 0;
+                                    
+                                    Swal.fire({
+                                        title: 'Receipt Reprinted!',
+                                        html: `
+                                            <div class="text-left">
+                                                <p class="mb-2 text-green-600">✓ Receipt printed successfully</p>
+                                                <div class="bg-gray-50 p-3 rounded-lg text-sm">
+                                                    <p><strong>Clothes:</strong> ${clothesWeight} kg</p>
+                                                    <p><strong>Comforter:</strong> ${comforterWeight} kg</p>
+                                                    <p class="mt-2 font-bold border-t pt-2"><strong>Total Weight:</strong> ${totalWeight} kg</p>
+                                                </div>
+                                                ${breakdownHTML}
+                                                <p class="mt-3 text-2xl font-bold text-green-700">TOTAL: ₱${parseFloat(orderData.total_price || 0).toFixed(2)}</p>
+                                            </div>
+                                        `,
+                                        icon: 'success',
+                                        confirmButtonText: 'OK',
+                                        confirmButtonColor: '#10B981'
+                                    });
+                                })
+                                .catch(printError => {
+                                    console.error('Reprint failed:', printError);
+                                    
+                                    let breakdownHTML = '';
+                                    if (orderData.breakdown) {
+                                        breakdownHTML = `
+                                            <div class="bg-blue-50 p-3 rounded-lg text-sm mt-3 border border-blue-200">
+                                                <p class="font-bold mb-2 text-blue-800">Price Breakdown:</p>
+                                                ${orderData.breakdown.clothes_total > 0 ? `<p class="text-gray-700">• Clothes: ₱${parseFloat(orderData.breakdown.clothes_total).toFixed(2)}</p>` : ''}
+                                                ${orderData.breakdown.comforter_total > 0 ? `<p class="text-gray-700">• Comforter/Curtains: ₱${parseFloat(orderData.breakdown.comforter_total).toFixed(2)}</p>` : ''}
+                                                ${orderData.breakdown.barong_total > 0 ? `<p class="text-gray-700">• Barong (${orderData.breakdown.barong_qty} pcs × ₱${parseFloat(orderData.breakdown.barong_price).toFixed(2)}): ₱${parseFloat(orderData.breakdown.barong_total).toFixed(2)}</p>` : ''}
+                                                ${orderData.breakdown.gowns_total > 0 ? `<p class="text-gray-700">• Gown (${orderData.breakdown.gowns_qty} pcs × ₱${parseFloat(orderData.breakdown.gowns_price).toFixed(2)}): ₱${parseFloat(orderData.breakdown.gowns_total).toFixed(2)}</p>` : ''}
+                                            </div>
+                                        `;
+                                    }
+                                    
+                                    const clothesWeight = orderData.clothes_weight || 0;
+                                    const comforterWeight = orderData.comforter_curtains_weight || 0;
+                                    const totalWeight = orderData.total_weight || 0;
+                                    
+                                    Swal.fire({
+                                        title: 'Print Failed',
+                                        html: `
+                                            <div class="text-left">
+                                                <p class="mb-2 text-red-600">✗ Failed to print receipt</p>
+                                                <p class="text-sm text-gray-600 mb-3">Error: ${printError.message}</p>
+                                                <div class="bg-gray-50 p-3 rounded-lg text-sm">
+                                                    <p><strong>Clothes:</strong> ${clothesWeight} kg</p>
+                                                    <p><strong>Comforter:</strong> ${comforterWeight} kg</p>
+                                                    <p class="mt-2 font-bold border-t pt-2"><strong>Total Weight:</strong> ${totalWeight} kg</p>
+                                                </div>
+                                                ${breakdownHTML}
+                                                <p class="mt-3 text-xl font-bold text-green-700">TOTAL: ₱${parseFloat(orderData.total_price || 0).toFixed(2)}</p>
+                                                <p class="mt-3 text-sm text-gray-600">You can manually print the receipt later.</p>
+                                            </div>
+                                        `,
+                                        icon: 'warning',
+                                        confirmButtonText: 'OK',
+                                        confirmButtonColor: '#3085d6'
+                                    });
+                                });
+                        })
+                        .catch(fetchError => {
+                            console.error('Failed to fetch order data:', fetchError);
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Failed to fetch order details',
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        });
+                    });
+                    
+                    statusContainer.appendChild(reprintButton);
+                    
+                    modal.classList.remove('hidden');
+                    return; // Exit early for For Delivery case
+                    
                 case 'Delivered':
-                    // FIXED: Fetch total price first, then display
+                    // Fetch total price first, then display
                     fetchOrderTotalPrice(orderId).then(totalPrice => {
                         const confirmMessage = document.createElement('div');
                         confirmMessage.className = 'text-center py-6';
