@@ -181,6 +181,7 @@ function handleQtyChange(clothes) {
     let newValue = parseInt(qtyElement.innerText.trim()) || 0;
     if (newValue >= 0) {
       quantities[clothes] = newValue; 
+      updateDisplay(clothes); 
       updateSummary(); 
       updateButtonState();
     } else {
@@ -287,7 +288,7 @@ document.getElementById('orderForm').addEventListener('submit', function(e) {
       return false;
     }
   }
-
+  
   // Submit when form is valid
   return true;
 });
