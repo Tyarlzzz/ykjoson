@@ -16,10 +16,7 @@ foreach ($publicPaths as $p) {
 
 // redirect to login if not authenticated (sa lahat ng pages) and if not public yung URL.
 if (empty($_SESSION['user_email']) && !$isPublic) {
-    
-    // Redirect to login using a URL relative to the current request
-    $redirect = rtrim(dirname($_SERVER['PHP_SELF']), '/\\') . '/../auth/login.php';
-    header('Location: ' . $redirect);
+    header('Location: /ykjoson/auth/login.php');
     exit();
 }
 ?>
